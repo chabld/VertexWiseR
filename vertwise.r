@@ -263,7 +263,7 @@ decode_img=function(img,contrast="positive")
   
   ##compiling the results
   row.names(decoder_df)=gsub(pattern = "terms_abstract_tfidf__",x=row.names(decoder_df), replacement = "")
-  result=data.frame(row.names(decoder_df),as.numeric(decoder_df))
+  result=data.frame(row.names(decoder_df),round(as.numeric(decoder_df),3))
   colnames(result)=c("keyword","r")
   result=result[order(-result$r),]
   
