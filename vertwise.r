@@ -110,7 +110,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
     neg_clusterIDmap[neg_clusterIDmap>max(cluster_neg$clusid)]=0
   }
   cluster_results=list(cluster_pos,cluster_neg)
-  names(cluster_results)=c("Positive clusters","Negative clusters")
+  names(cluster_results)=c("Positive contrast","Negative contrast")
   
   tstat[intersect(which(neg_clusterIDmap==0),which(pos_clusterIDmap==0))]=NA
   
