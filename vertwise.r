@@ -7,7 +7,13 @@
 
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
 {
-  
+  list.of.packages <- c("label4MRI", "reticulate")
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
   for (column in 1:NCOL(all_predictors))
   {
     if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
@@ -130,7 +136,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
 ##CT surface plots
 plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold="#00BFC4")
 {
-  
+  list.of.packages <- "fsbrain"
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
   if(fs_path== "fsaverage5")
   {
     fs_path=paste(getwd(),"/fsaverage5", sep="")
@@ -173,7 +185,13 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
 
 plotCT2=function(data, filename)
 {
-  
+  list.of.packages <- "reticulate"
+  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
   if(length(data) != 20484)
   {
     stop("Data has to be a numeric vector with 20484 values")
