@@ -163,18 +163,18 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   {
     limits=c(0,max(data,na.rm = T))
     symm=F
-    colfunc=colorRampPalette(c(hot,"white"))
+    colfunc=colorRampPalette(c("white",hot))
   } 
   else if (range(data,na.rm = T)[2]<=0)
   {
     limits=c(-max(abs(data),na.rm = T),0)
-    colfunc=colorRampPalette(c("white",cold))
+    colfunc=colorRampPalette(c(cold,"white"))
     symm=F
   } 
   else 
   {
     limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
-    colfunc=colorRampPalette(c("white",cold,hot,"white"))
+    colfunc=colorRampPalette(c(cold,"white",hot))
     symm=T
   }
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
