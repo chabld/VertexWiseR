@@ -39,6 +39,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
   
   ##fitting model
   mask=array(rep(T,NCOL(CT_data)))
+  maskNA=which(colSums(CT_data != 0) == 0)
   mask[which(colSums(CT_data != 0) == 0)]=F
   model0 = brainstat.stats.terms$FixedEffect(all_predictors, "_check_categorical" = F)
   model=brainstat.stats.SLM$SLM(model = model0,
@@ -119,6 +120,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
   names(cluster_results)=c("Positive contrast","Negative contrast")
   
   tstat[intersect(which(neg_clusterIDmap==0),which(pos_clusterIDmap==0))]=NA
+  tstat[is.na(tstat)]=0
+  tstat[maskNA]=NA
   
   posmask=array(rep(0,NCOL(CT_data)))
   posmask[which(tstat>0)]=1
