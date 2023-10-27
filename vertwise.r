@@ -178,7 +178,7 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
     symm=T
   }
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
-                             views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
+                             views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray100"))
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
 }
 
