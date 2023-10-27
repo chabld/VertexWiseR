@@ -154,7 +154,7 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   {
     stop("Data has to be a numeric vector with 20484 values")
   } 
-
+  
   if(file.exists(fs_path)== F)
   {
     stop("fs_path does not exist")
@@ -163,22 +163,22 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   {
     limits=c(0,max(data,na.rm = T))
     symm=F
-    colfunc=colorRampPalette(c("white",hot))
+    colfunc=colorRampPalette(c(hot,"white"))
   } 
   else if (range(data,na.rm = T)[2]<=0)
   {
     limits=c(-max(abs(data),na.rm = T),0)
-    colfunc=colorRampPalette(c(cold,"white"))
+    colfunc=colorRampPalette(c("white",cold))
     symm=F
   } 
   else 
   {
     limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
-    colfunc=colorRampPalette(c(cold,"white",hot))
+    colfunc=colorRampPalette(c("white",cold,hot,"white"))
     symm=T
   }
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
-                            views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="white"))
+                             views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
 }
 
