@@ -2,7 +2,8 @@
 ## LAST UPDATED: 18 October 2023
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
-
+############################################################################################################################
+############################################################################################################################
 ##vertex wise analysis
 
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
@@ -135,7 +136,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
   
   return(returnobj)
 }
-
+############################################################################################################################
+############################################################################################################################
 ##CT surface plots
 plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold="#00BFC4")
 {
@@ -185,7 +187,6 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
 }
 
-
 plotCT2=function(data, filename)
 {
   list.of.packages <- "reticulate"
@@ -206,7 +207,6 @@ plotCT2=function(data, filename)
   
   left=brainstat.datasets$fetch_template_surface("fsaverage5", join=F)[1]
   right=brainstat.datasets$fetch_template_surface("fsaverage5", join=F)[2]
-  
   
   if(range(data,na.rm = T)[1]>=0)
   {
@@ -229,10 +229,10 @@ plotCT2=function(data, filename)
                                                 interactive=F, color_bar=T,  transparent_bg=FALSE)
     CTplot$screenshot(filename=filename,transparent_bg = F)
   }
-
 }
 
-
+############################################################################################################################
+############################################################################################################################
 ##CT image decoding
 decode_img=function(img,contrast="positive")
 {
@@ -273,7 +273,6 @@ decode_img=function(img,contrast="positive")
   {
     cat("neurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
     download.file(url="https://blogs.ntu.edu.sg/cogbrainhealthlab/files/2023/10/neurosynth_dataset.pkl_.gz",destfile = "neurosynth_dataset.pkl.gz")
-    
   } 
   ##running the decoding process
   neurosynth_dset = nimare.dataset$Dataset$load("neurosynth_dataset.pkl.gz")
