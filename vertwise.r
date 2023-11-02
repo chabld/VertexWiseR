@@ -1,5 +1,4 @@
 ## WRAPPERS FOR VERTEX-WISE FUNCTIONS
-## LAST UPDATED: 18 October 2023
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
 ############################################################################################################################
