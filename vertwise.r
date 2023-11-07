@@ -162,29 +162,27 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   if(file.exists(fs_path)== F)
   {
     stop("fs_path does not exist")
-  } 
-  symm=T
-  if(missing(limits))
+  }   
+    
+  if(range(data,na.rm = T)[1]>=0)
     {
-      if(range(data,na.rm = T)[1]>=0)
-      {
-        limits=c(0,max(data,na.rm = T))
-        symm=F
-        colfunc=colorRampPalette(c("white",hot))
-      } 
-      else if (range(data,na.rm = T)[2]<=0)
-      {
-        limits=c(-max(abs(data),na.rm = T),0)
-        colfunc=colorRampPalette(c(cold,"white"))
-        symm=F
-      } 
-      else 
-      {
-        limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
-        colfunc=colorRampPalette(c(cold,"white",hot))
-        symm=T
-      }
+      limits=c(0,max(data,na.rm = T))
+      symm=F
+      colfunc=colorRampPalette(c("white",hot))
+    } 
+    else if (range(data,na.rm = T)[2]<=0)
+    {
+      limits=c(-max(abs(data),na.rm = T),0)
+      colfunc=colorRampPalette(c(cold,"white"))
+      symm=F
+    } 
+    else 
+    {
+      limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
+      colfunc=colorRampPalette(c(cold,"white",hot))
+      symm=T
     }
+
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
                              views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
