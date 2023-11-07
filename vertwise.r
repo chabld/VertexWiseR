@@ -163,6 +163,7 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   {
     stop("fs_path does not exist")
   } 
+  symm=T
   if(missing(limits))
     {
       if(range(data,na.rm = T)[1]>=0)
@@ -183,9 +184,6 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
         colfunc=colorRampPalette(c(cold,"white",hot))
         symm=T
       }
-    } else 
-    {symm=T}
-    
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
                              views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
