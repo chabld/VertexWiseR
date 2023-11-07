@@ -138,7 +138,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
 ############################################################################################################################
 ############################################################################################################################
 ##CT surface plots
-plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold="#00BFC4")
+plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold="#00BFC4", limits)
 {
   list.of.packages <- "fsbrain"
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -163,24 +163,29 @@ plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold
   {
     stop("fs_path does not exist")
   } 
-  if(range(data,na.rm = T)[1]>=0)
-  {
-    limits=c(0,max(data,na.rm = T))
-    symm=F
-    colfunc=colorRampPalette(c("white",hot))
-  } 
-  else if (range(data,na.rm = T)[2]<=0)
-  {
-    limits=c(-max(abs(data),na.rm = T),0)
-    colfunc=colorRampPalette(c(cold,"white"))
-    symm=F
-  } 
-  else 
-  {
-    limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
-    colfunc=colorRampPalette(c(cold,"white",hot))
-    symm=T
-  }
+  if(missing(limits))
+    {
+      if(range(data,na.rm = T)[1]>=0)
+      {
+        limits=c(0,max(data,na.rm = T))
+        symm=F
+        colfunc=colorRampPalette(c("white",hot))
+      } 
+      else if (range(data,na.rm = T)[2]<=0)
+      {
+        limits=c(-max(abs(data),na.rm = T),0)
+        colfunc=colorRampPalette(c(cold,"white"))
+        symm=F
+      } 
+      else 
+      {
+        limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
+        colfunc=colorRampPalette(c(cold,"white",hot))
+        symm=T
+      }
+    } else 
+    {symm=T}
+    
   plotCT=vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
                              views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
   img=suppressWarnings(export(plotCT,output_img = filename, grid=F, silent=T))
