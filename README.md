@@ -20,7 +20,7 @@ Open up RStudio, click `Tools > Global Options`. Under the `Python` tab,
 click `Select` and choose the Conda environment that you have just
 installed. Then, click `Apply`.
 
-<img src="images/pythonsetup.png"  width="50%" height="50%"/>
+<img src="images/pythonsetup.png"/>
 
 #### 2. Install the BrainStat python module
 
