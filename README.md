@@ -14,7 +14,7 @@ Miniconda3 to my PATH environment variable” option is selected during
 the installation process. You can safely ignore the warning. Restart
 your computer after the installation.
 
-<img src="install.png" style="width:50.0%" />
+![](images/install.png)  
 
 Open up RStudio, click `Tools > Global Options`. Under the `Python` tab,
 click `Select` and choose the Conda environment that you have just
