@@ -20,7 +20,7 @@ Open up RStudio, click `Tools > Global Options`. Under the `Python` tab,
 click `Select` and choose the Conda environment that you have just
 installed. Then, click `Apply`.
 
-![](pythonsetup.png)  
+![](images/pythonsetup.png)  
   
 
 #### 2. Install the BrainStat python module
@@ -146,7 +146,7 @@ plotCT(data = results$thresholded_tstat_map, fs_path = "../data/fsaverage5",file
 
 - `filename`: filename of the output image
 
-![](sigcluster.png) Mac users may encounter some problems running the
+![](images/sigcluster.png) Mac users may encounter some problems running the
 above code, in which case you can try the following code. The
 `plotCT2()` only requires 2 parameters; it does not require the
 `fs_path` parameter, because it accesses the fsaverage5 folder on the
@@ -158,7 +158,7 @@ surface images on MacOS
 plotCT2(data = results$thresholded_tstat_map, filename = "sigcluster2.png")
 ```
 
-![](sigcluster2.png)
+![](images/sigcluster2.png)
 
 #### Extracting the CT values for each subject
 
@@ -307,7 +307,7 @@ results$cluster_level_results
 plotCT(data = results$thresholded_tstat_map, fs_path = "../data/fsaverage5",filename = "sexdiff.png")
 ```
 
-![](sexdiff.png)
+![](images/sexdiff.png)
 
 According to these results, since the female sex is coded as 1 and males
 as 0, the regions colored in red are thicker in females, whereas those
