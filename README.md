@@ -14,14 +14,13 @@ Miniconda3 to my PATH environment variable” option is selected during
 the installation process. You can safely ignore the warning. Restart
 your computer after the installation.
 
-![](images/install.png){width=50% height=50%}
+<img src="images/install.png"  width="50%" height="50%"/>
 
 Open up RStudio, click `Tools > Global Options`. Under the `Python` tab,
 click `Select` and choose the Conda environment that you have just
 installed. Then, click `Apply`.
 
-![](images/pythonsetup.png){width=50% height=50%}
-  
+<img src="images/pythonsetup.png"  width="50%" height="50%"/>
 
 #### 2. Install the BrainStat python module
 
