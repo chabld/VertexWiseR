@@ -378,7 +378,7 @@ wordcloud(words = keywords$keyword, ##keyword input
           ) 
 ```
 
-![](decode_image_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](images/wordcloud.png)<!-- -->
 
 These keywords may not be very accurate but they should give you a rough
 idea for interpreting your results. Take note that these keywords are
