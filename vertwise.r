@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##vertex wise analysis
 
-vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
+vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, schaefer=F)
 {
   list.of.packages <- c("label4MRI", "reticulate")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -77,8 +77,16 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
       clus_tstat[pos_clusterIDmap!=clusno]=0
       cluster_pos$tstat[clusno]=round(clus_tstat[which.max(clus_tstat)],2)
       cluster_pos[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
-      cluster_pos$region[clusno]=mni_to_region_name(cluster_pos[clusno,4],cluster_pos[clusno,5],cluster_pos[clusno,6])$aal.label
-      remove(clus_tstat)
+      if(schaefer==F)
+      {
+        cluster_pos$region[clusno]=mni_to_region_name(cluster_pos[clusno,4],cluster_pos[clusno,5],cluster_pos[clusno,6])$aal.label
+      } else if (schaefer==T)
+      {
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+        idx_pos=ROImap[[1]][which.max(clus_tstat)]
+        cluster_pos$region[clusno]=ROImap[[2]][idx_pos]
+      }
+      remove(clus_tstat,idx_pos)
     }
     pos_clusterIDmap=model$P$clusid[[1]]
     pos_clusterIDmap[pos_clusterIDmap>max(cluster_pos$clusid)]=0
@@ -110,8 +118,16 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05)
       clus_tstat[neg_clusterIDmap!=clusno]=0
       cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
       cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
-      cluster_neg$region[clusno]=mni_to_region_name(cluster_neg[clusno,4],cluster_neg[clusno,5],cluster_neg[clusno,6])$aal.label
-      remove(clus_tstat)
+      if(schaefer==F)
+      {
+        cluster_neg$region[clusno]=mni_to_region_name(cluster_neg[clusno,4],cluster_neg[clusno,5],cluster_neg[clusno,6])$aal.label
+      } else if (schaefer==T)
+      {
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+        idx_neg=ROImap[[1]][which.min(clus_tstat)]
+        cluster_neg$region[clusno]=ROImap[[2]][idx_neg]
+      }
+      remove(clus_tstat,idx_neg)
     }
     neg_clusterIDmap=model$P$clusid[[2]]
     neg_clusterIDmap[neg_clusterIDmap>max(cluster_neg$clusid)]=0
