@@ -1,4 +1,4 @@
-## WRAPPERS FOR VERTEX-WISE FUNCTIONS
+## To extract schaefer-100 atlas ROI values from fsaverage5 vertex-wise data
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
 ############################################################################################################################
