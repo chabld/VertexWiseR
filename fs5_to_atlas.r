@@ -4,7 +4,7 @@
 ############################################################################################################################
 ############################################################################################################################
 
-fs5_to_atlas=function(data,atlas) ## atlas: 1=Deskian, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360
+fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360
 {
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
   nregions=max(ROImap[[1]][,atlas])
@@ -31,3 +31,15 @@ fs5_to_atlas=function(data,atlas) ## atlas: 1=Deskian, 2=Schaefer-100, 3=Schaefe
   }
   return(ROI)
 }
+
+atlas_to_fs5=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360
+  {
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+  nregions=max(ROImap[[1]][,atlas])
+  fs5_dat=rep(NA,20484)
+  for (region in 1:nregions)
+    {
+    fs5_dat[which(ROImap[[1]][,atlas]==region]]=data[region]
+    }
+  return(as.numeric(fs5_dat))
+  }
