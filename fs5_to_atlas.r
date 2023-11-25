@@ -1,10 +1,12 @@
-## To extract schaefer-100 atlas ROI values from fsaverage5 vertex-wise data
+## To extract atlas ROI values from fsaverage5 vertex-wise data
+
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
 ############################################################################################################################
 ############################################################################################################################
 
-fs5_to_atlas=function(data)
+## atlas 1=Deskian, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360
+fs5_to_atlas=function(data,atlas)
 {
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
   nregions=max(ROImap[[1]][,atlas])
