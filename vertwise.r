@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##vertex wise analysis
 
-vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=4)
+vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)
 {
   list.of.packages <- c("label4MRI", "reticulate")
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
