@@ -15,7 +15,7 @@ fs5_to_atlas=function(data,atlas) ## atlas: 1=Deskian, 2=Schaefer-100, 3=Schaefe
   data[is.na(data)]=0
   if(length(data)==20484)
   {
-  data=matrix(dat,ncol=20484,nrow=1)  
+  data=matrix(data,ncol=20484,nrow=1)  
   ROI=rep(NA,nregions)
     for (region in 1:nregions)
     {
