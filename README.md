@@ -50,7 +50,7 @@ you unzip the zip file
 
 #### Load R packages and custom-made R functions for vertex-wise analysis and visualization
 
-Notice that the 4th line is not a `library()` command, instead, we are
+Notice that the 3rd line is not a `library()` command, instead, we are
 using the `source()` command to load the custom-made R functions from
 the web
 
