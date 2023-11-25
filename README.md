@@ -1,7 +1,7 @@
 Vertex-wise R functions for analyzing and visualizing cortical thickness 
 ================
 Cognitive and Brain Health Laboratory
-2023-10-19
+2023-11-26
 
 ### Analyzing and visualzing cortical thickness
 
