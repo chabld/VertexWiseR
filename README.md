@@ -249,7 +249,6 @@ below (next to Console) and enter `python -m pip install nimare`
 ``` r
 library(reticulate)
 library(fsbrain)
-library(label4MRI)
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
 ```
 
@@ -290,16 +289,16 @@ results$cluster_level_results
 ```
 
     ## $`Positive contrast`
-    ##   clusid nverts     P     X     Y    Z tstat        region
-    ## 1      1     46 0.001 -48.4 -30.2 57.1  3.74 Postcentral_L
-    ## 2      2     29 0.022  45.9 -25.1 63.7  3.91 Postcentral_R
-    ## 3      3     30 0.026 -38.8 -72.8 48.0  4.34     Angular_L
+    ##   clusid nverts     P     X     Y    Z tstat              region
+    ## 1      1     46 0.001 -48.4 -30.2 57.1  3.74      lh-postcentral
+    ## 2      2     29 0.022  45.9 -25.1 63.7  3.91      rh-postcentral
+    ## 3      3     30 0.026 -38.8 -72.8 48.0  4.34 lh-inferiorparietal
     ## 
     ## $`Negative contrast`
-    ##   clusid nverts     P     X     Y    Z tstat    region
-    ## 1      1     56 <.001 -38.0 -13.8 18.1 -4.95  Insula_L
-    ## 2      2     52 <.001  20.2 -48.3 -3.8 -3.79 Lingual_R
-    ## 3      3     48 0.001 -19.7 -52.6 -1.8 -3.87 Lingual_L
+    ##   clusid nverts     P     X     Y    Z tstat     region
+    ## 1      1     56 <.001 -38.0 -13.8 18.1 -4.95  lh-insula
+    ## 2      2     52 <.001  20.2 -48.3 -3.8 -3.79 rh-lingual
+    ## 3      3     48 0.001 -19.7 -52.6 -1.8 -3.87 lh-lingual
 
 ``` r
 plotCT(data = results$thresholded_tstat_map, fs_path = "../data/fsaverage5",filename = "sexdiff.png")
