@@ -4,9 +4,10 @@
 ############################################################################################################################
 ############################################################################################################################
 
-fs5_to_sch100=function(data)
+fs5_to_atlas=function(data)
 {
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+  nregions=max(ROImap[[1]][,atlas])
   if(length(data)%%20484!=0)
   {
     stop("Length of data is not a multiple of 20484")
@@ -15,15 +16,15 @@ fs5_to_sch100=function(data)
   if(length(data)==20484)
   {
   data=matrix(dat,ncol=20484,nrow=1)  
-  ROI=rep(NA,100)
-    for (region in 1:100)
+  ROI=rep(NA,nregions)
+    for (region in 1:nregions)
     {
       ROI[region]=mean(data[which(ROImap[[1]]==region)])
     }
   } else 
   {
-    ROI=matrix(NA, nrow=NROW(data), ncol=100)
-    for (region in 1:100)
+    ROI=matrix(NA, nrow=NROW(data), ncol=nregions)
+    for (region in 1:nregions)
     {
       ROI[,region]=rowMeans(data[,which(ROImap[[1]]==region)])
     }
