@@ -114,7 +114,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       clus_tstat[neg_clusterIDmap!=clusno]=0
       cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
       cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
-      if(exists("ROImap", inherit=F)==F)
+      if(!exists("ROImap", inherit=F))
         {
         load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
         } 
