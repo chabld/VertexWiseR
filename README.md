@@ -33,8 +33,7 @@ below (next to Console) and enter `python -m pip install brainstat`
 #### 3. Install R packages
 
 ``` r
-install.packages(c("fsbrain","reticulate","devtools"))
-devtools::install_github("yunshiuan/label4MRI") 
+install.packages(c("fsbrain","reticulate"))
 ```
 
   
@@ -58,7 +57,6 @@ the web
 ``` r
 library(fsbrain)
 library(reticulate)
-library(label4MRI)
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
 ```
 
@@ -107,8 +105,8 @@ results$cluster_level_results
 
     ## $`Positive contrast`
     ##   clusid nverts     P    X    Y    Z tstat        region
-    ## 1      1     43 0.008 63.6 -7.7 32.7  3.13 Postcentral_R
-    ## 2      2     36 0.021 42.7 -0.7 47.3  3.86  Precentral_R
+    ## 1      1     43 0.008 63.6 -7.7 32.7  3.13 rh-postcentral
+    ## 2      2     36 0.021 42.7 -0.7 47.3  3.86  rh-precentral
     ## 
     ## $`Negative contrast`
     ## [1] "No significant clusters"
@@ -130,7 +128,8 @@ in the `Negative contrast`.
   cluster
 
 - `region`: the region this highest t-stat vertex is located in, as
-  determined/labelled using the AAL atlas
+  determined/labelled using the [Desikan
+  atlas](https://surfer.nmr.mgh.harvard.edu/ftp/articles/desikan06-parcellation.pdf)
 
 #### Plotting
 
