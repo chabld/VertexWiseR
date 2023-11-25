@@ -19,14 +19,14 @@ fs5_to_atlas=function(data,atlas) ## atlas: 1=Deskian, 2=Schaefer-100, 3=Schaefe
   ROI=rep(NA,nregions)
     for (region in 1:nregions)
     {
-      ROI[region]=mean(data[which(ROImap[[1]]==region)])
+      ROI[region]=mean(data[which(ROImap[[1]][,atlas]==region)])
     }
   } else 
   {
     ROI=matrix(NA, nrow=NROW(data), ncol=nregions)
     for (region in 1:nregions)
     {
-      ROI[,region]=rowMeans(data[,which(ROImap[[1]]==region)])
+      ROI[,region]=rowMeans(data[,which(ROImap[[1]][,atlas]==region)])
     }
   }
   return(ROI)
