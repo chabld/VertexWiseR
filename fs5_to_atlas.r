@@ -39,7 +39,7 @@ atlas_to_fs5=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefe
   fs5_dat=rep(NA,20484)
   for (region in 1:nregions)
     {
-    fs5_dat[which(ROImap[[1]][,atlas]==region]]=data[region]
+    fs5_dat[which(ROImap[[1]][,atlas]==region]=data[region]
     }
   return(as.numeric(fs5_dat))
   }
