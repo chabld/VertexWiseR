@@ -3,6 +3,31 @@
 
 ############################################################################################################################
 ############################################################################################################################
+##smoothing fsaverage5 and fsaverage6 data
+
+brainstat.mesh.data=reticulate::import("brainstat.mesh.data")
+brainstat.datasets=reticulate::import("brainstat.datasets")  
+
+smooth=function(data,FWHM=10)
+{
+  col0=which(colSums(CT_dat==0) == nrow(CT_dat))
+  if(ncol(CT_dat)==20484)
+    {
+    surftemp=brainstat.datasets$fetch_template_surface("fsaverage5", join=T)
+    vert_mm=3.5
+    }
+  if(ncol(CT_dat)==81924)
+    {
+    surftemp=brainstat.datasets$fetch_template_surface("fsaverage6", join=T)
+    vert_mm=2
+    }
+  smooth=brainstat.mesh.data$mesh_smooth(Y=CT_dat,surf=surftemp, FWHM = FWHM/vert_mm)
+  smooth[,col0]=0
+  return(smooth)  
+}
+
+############################################################################################################################
+############################################################################################################################
 ##vertex wise analysis
 
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)
@@ -226,21 +251,21 @@ plotCT2=function(data, filename)
   if(range(data,na.rm = T)[1]>=0)
   {
     CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="Reds", nan_color=tuple(as.integer(c(1,1,1,1))),
-                                            size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),
+                                            size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,
                                             interactive=F, color_bar=T,  transparent_bg=FALSE)
     CTplot$screenshot(filename=filename,transparent_bg = F)
   } 
   else if (range(data,na.rm = T)[2]<=0)
   {
     CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="Blues", nan_color=tuple(as.integer(c(1,1,1,1))),
-                                                size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),
+                                                size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,
                                                 interactive=F, color_bar=T,  transparent_bg=FALSE)
     CTplot$screenshot(filename=filename,transparent_bg = F)
   } 
   else 
   {
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="RdBu", nan_color=tuple(as.integer(c(1,1,1,1))),color_range="sym",
-                                                size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),
+    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="RdBu", nan_color=tuple(as.integer(c(1,1,1,1))),
+                                                size=tuple(as.integer(c(1920,600))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,color_range='sym',
                                                 interactive=F, color_bar=T,  transparent_bg=FALSE)
     CTplot$screenshot(filename=filename,transparent_bg = F)
   }
