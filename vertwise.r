@@ -189,7 +189,6 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
   } 
   if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
   
-  data[data==0]=NaN
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   brainspace.plotting=reticulate::import("brainspace.plotting")  
 
@@ -205,7 +204,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
   }
   
   CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
-                                              size=reticulate::tuple(as.integer(c(1920,400))),
+                                              size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(c(0.7, 0.7, 0.7, 1)),
                                               return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range='sym',
                                               label_text=list('left'=list(title)),interactive=F, color_bar=T,  transparent_bg=FALSE)
   CTplot$screenshot(filename=filename,transparent_bg = F)
