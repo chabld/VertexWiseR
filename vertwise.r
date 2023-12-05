@@ -205,7 +205,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
   }
   
   CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
-                                              nan_color=reticulate::tuple(as.integer(c(1,1,1,1))),size=reticulate::tuple(as.integer(c(1920,400))),
+                                              size=reticulate::tuple(as.integer(c(1920,400))),
                                               return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range='sym',
                                               label_text=list('left'=list(title)),interactive=F, color_bar=T,  transparent_bg=FALSE)
   CTplot$screenshot(filename=filename,transparent_bg = F)
