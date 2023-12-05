@@ -195,17 +195,27 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
   left=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[1]
   right=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[2]
   
-  
   if(missing("cmap"))
   {
-    if(range(data,na.rm = T)[1]>=0){cmap="Reds"}
-    else if (range(data,na.rm = T)[2]<=0){cmap="Blues"}
-    else{cmap="RdBu"}  
+    if(range(data,na.rm = T)[1]>=0)
+      {
+      cmap="Reds"
+      range=NULL
+      }
+    else if (range(data,na.rm = T)[2]<=0)
+      {cmap="Blues"
+      range=NULL
+      }
+    else
+      {
+      cmap="RdBu"
+      range="sym"
+      }  
   }
   
   CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
                                               size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(c(0.7, 0.7, 0.7, 1)),
-                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range='sym',
+                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=range,
                                               label_text=list('left'=list(title)),interactive=F, color_bar=T,  transparent_bg=FALSE)
   CTplot$screenshot(filename=filename,transparent_bg = F)
 
