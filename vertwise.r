@@ -173,61 +173,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
 ############################################################################################################################
 ############################################################################################################################
 ##CT surface plots
-plotCT=function(data, fs_path, filename, surface="inflated", hot="#F8766D", cold="#00BFC4", limits, grid=F,legend_title="t-statistic")
-{
-  list.of.packages <- "fsbrain"
-  new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) 
-  {
-    cat(paste("The following package are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }  
-  if(fs_path== "fsaverage5")
-  {
-    fs_path=paste(getwd(),"/fsaverage5", sep="")
-  } else if(fs_path== "fsaverage5/")
-  {
-    fs_path=paste(getwd(),"/fsaverage5", sep="")
-  }
-  if(length(data) != 20484)
-  {
-    stop("Data has to be a numeric vector with 20484 values")
-  } 
-  
-  if(file.exists(fs_path)== F)
-  {
-    stop("fs_path does not exist")
-  }   
-    
-  if(range(data,na.rm = T)[1]>=0)
-    {
-      limits=c(0,max(data,na.rm = T))
-      symm=F
-      colfunc=colorRampPalette(c("white",hot))
-    } 
-    else if (range(data,na.rm = T)[2]<=0)
-    {
-      limits=c(-max(abs(data),na.rm = T),0)
-      colfunc=colorRampPalette(c(cold,"white"))
-      symm=F
-    } 
-    else 
-    {
-      limits=c(-max(abs(data),na.rm = T), max(abs(data),na.rm = T))
-      colfunc=colorRampPalette(c(cold,"white",hot))
-      symm=T
-    }
 
-  plotCT=fsbrain::vis.data.on.subject(gsub("fsaverage5","",fs_path), "fsaverage5", morph_data_both = data, surface=surface, 
-                             views=NULL, makecmap_options = list('colFn'=colfunc, range=limits,symm=symm,col.na="gray80"))
-  img=suppressWarnings(fsbrain::export(plotCT,output_img = filename, grid=grid, silent=T,colorbar_legend=legend_title))
-  rgl::close3d()
-  rgl::close3d()
-  rgl::close3d()
-  rgl::close3d()
-}
-
-plotCT2=function(data, filename)
+plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
 {
   list.of.packages <- "reticulate"
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -240,35 +187,29 @@ plotCT2=function(data, filename)
   {
     stop("Data has to be a numeric vector with 20484 values")
   } 
+  if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
   
   data[data==0]=NaN
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   brainspace.plotting=reticulate::import("brainspace.plotting")  
+
+  left=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[1]
+  right=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[2]
   
-  left=brainstat.datasets$fetch_template_surface("fsaverage5", join=F)[1]
-  right=brainstat.datasets$fetch_template_surface("fsaverage5", join=F)[2]
   
-  if(range(data,na.rm = T)[1]>=0)
+  if(missing("cmap"))
   {
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="Reds", nan_color=tuple(as.integer(c(1,1,1,1))),
-                                            size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,
-                                            interactive=F, color_bar=T,  transparent_bg=FALSE)
-    CTplot$screenshot(filename=filename,transparent_bg = F)
-  } 
-  else if (range(data,na.rm = T)[2]<=0)
-  {
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="Blues", nan_color=tuple(as.integer(c(1,1,1,1))),
-                                                size=tuple(as.integer(c(1920,500))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,
-                                                interactive=F, color_bar=T,  transparent_bg=FALSE)
-    CTplot$screenshot(filename=filename,transparent_bg = F)
-  } 
-  else 
-  {
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=np_array(data),cmap="RdBu", nan_color=tuple(as.integer(c(1,1,1,1))),
-                                                size=tuple(as.integer(c(1920,600))),return_plotter=T,background=tuple(as.integer(c(1,1,1))),zoom=1.2,color_range='sym',
-                                                interactive=F, color_bar=T,  transparent_bg=FALSE)
-    CTplot$screenshot(filename=filename,transparent_bg = F)
+    if(range(data,na.rm = T)[1]>=0){cmap="Reds"}
+    else if (range(data,na.rm = T)[2]<=0){cmap="Blues"}
+    else{cmap="RdBu"}  
   }
+  
+  CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
+                                              nan_color=reticulate::tuple(as.integer(c(1,1,1,1))),size=reticulate::tuple(as.integer(c(1920,400))),
+                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range='sym',
+                                              label_text=list('left'=list(title)),interactive=F, color_bar=T,  transparent_bg=FALSE)
+  CTplot$screenshot(filename=filename,transparent_bg = F)
+
 }
 
 ############################################################################################################################
