@@ -5,12 +5,12 @@
 ############################################################################################################################
 ##smoothing fsaverage5 and fsaverage6 data
 
-brainstat.mesh.data=reticulate::import("brainstat.mesh.data")
-brainstat.datasets=reticulate::import("brainstat.datasets")  
+
 
 smooth=function(data,FWHM=10)
 {
-  library(reticulate)
+  brainstat.mesh.data=reticulate::import("brainstat.mesh.data")
+  brainstat.datasets=reticulate::import("brainstat.datasets")  
   col0=which(colSums(CT_dat==0) == nrow(CT_dat))
   if(ncol(CT_dat)==20484)
     {
@@ -41,7 +41,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
     cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
     install.packages(new.packages)
   } 
-  library(reticulate)
+
   for (column in 1:NCOL(all_predictors))
   {
     if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
@@ -81,7 +81,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   tstat=model$t
   ##extracting positive results
   #cluster level
-  cluster_pos=py_to_r(model$P[["clus"]][[1]])
+  cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]])
   cluster_pos=cluster_pos[cluster_pos$P<p,]
   if(NROW(cluster_pos)==0)
   {
@@ -117,7 +117,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   }
   ##extracting negative results
   #cluster level
-  cluster_neg=py_to_r(model$P[["clus"]][[2]])
+  cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]])
   cluster_neg=cluster_neg[cluster_neg$P<p,]
   if(NROW(cluster_neg)==0)
   {
@@ -230,7 +230,6 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
 ##CT image decoding
 decode_img=function(img,contrast="positive")
 {
-  library(reticulate)
   ##input checks
   if(length(img) != 20484)
   {
