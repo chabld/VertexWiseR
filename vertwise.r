@@ -10,6 +10,7 @@ brainstat.datasets=reticulate::import("brainstat.datasets")
 
 smooth=function(data,FWHM=10)
 {
+  library(reticulate)
   col0=which(colSums(CT_dat==0) == nrow(CT_dat))
   if(ncol(CT_dat)==20484)
     {
@@ -34,11 +35,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
 {
   list.of.packages <- "reticulate"
   new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+ 
   if(length(new.packages)) 
   {
     cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
     install.packages(new.packages)
-  }  
+  } 
+  library(reticulate)
   for (column in 1:NCOL(all_predictors))
   {
     if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
@@ -183,6 +186,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
     cat(paste("The following package are required and will be installed:\n",new.packages,"\n"))
     install.packages(new.packages)
   }  
+  library(reticulate)
   if(length(data) != 20484)
   {
     stop("Data has to be a numeric vector with 20484 values")
@@ -226,6 +230,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
 ##CT image decoding
 decode_img=function(img,contrast="positive")
 {
+  library(reticulate)
   ##input checks
   if(length(img) != 20484)
   {
