@@ -245,7 +245,7 @@ decode_img=function(img,contrast="positive")
   ##download neurosynth database if necessary 
   if(file.exists("neurosynth_dataset.pkl.gz")==F)
   {
-    cat("neurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
+    cat("\nneurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
     download.file(url="https://blogs.ntu.edu.sg/cogbrainhealthlab/files/2023/10/neurosynth_dataset.pkl_.gz",destfile = "neurosynth_dataset.pkl.gz")
   } 
   ##running the decoding process
