@@ -212,7 +212,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
       }
     else
       {
-      cmap="RdBu"
+      cmap="RdBu_r"
       range="sym"
       }  
   }
