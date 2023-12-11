@@ -1,62 +1,33 @@
 Vertex-wise R functions for analyzing and visualizing cortical thickness 
 ================
 Cognitive and Brain Health Laboratory
-2023-11-26
+2023-12-11
 
-### Analyzing and visualzing cortical thickness
+### Setting up for the first time
 
-#### 1. Install miniconda
-
-Do not start up RStudio just yet. Download and install the latest
-version of miniconda from
-<https://docs.conda.io/en/latest/miniconda.html> . Make sure the “Add
-Miniconda3 to my PATH environment variable” option is selected during
-the installation process. You can safely ignore the warning. Restart
-your computer after the installation.
-
-<img src="images/install.png"  width="50%" height="50%"/>
-
-Open up RStudio, click `Tools > Global Options`. Under the `Python` tab,
-click `Select` and choose the Conda environment that you have just
-installed. Then, click `Apply`.
-
-<img src="images/pythonsetup.png"/>
-
-#### 2. Install the BrainStat python module
-
-The [BrainStat](https://brainstat.readthedocs.io/en/master/index.html)
-python module is needed for the vertex-wise analysis. This is to be
-installed via the Terminal within RStudio, click on the Terminal tab
-below (next to Console) and enter `python -m pip install brainstat`  
-  
-
-#### 3. Install R packages
+The following code chunk installs the R package `reticulate`.
+`reticulate` is a package that allows R to borrow or translate python
+functions into R. Then it will install the latest version of `miniconda`
+— a lightweight version of python, specifically for use within RStudio.
+Finally,the `brainstat` python module will be installed. These
+installation procedures may take several minutes to complete.
 
 ``` r
-install.packages(c("fsbrain","reticulate"))
+install.packages("reticulate")
+reticulate::install_miniconda()
+reticulate::py_install("brainstat",pip=TRUE)
 ```
-
-  
-
-#### 4. Download the fsaverage5 template
-
-Download the `fsaverage5.zip` from the teams folder and unzip it and
-then put the `fsaverage5` folder somewhere convenient. Avoid creating
-another `fsaverage5` folder within the original `fsaverage5` folder as
-you unzip the zip file  
-  
 
 ### Start here when the above steps have been completed previously
 
 #### Load R packages and custom-made R functions for vertex-wise analysis and visualization
 
-Notice that the 3rd line is not a `library()` command, instead, we are
-using the `source()` command to load the custom-made R functions from
-the web
+Use the `source()` command to load the custom-made R functions from the
+cloud. Notice that we are not using the `library()` of `require()`
+functions to load the packages— this is because the packages will be
+loaded automatically by the custom-made R functions
 
 ``` r
-library(fsbrain)
-library(reticulate)
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
 ```
 
@@ -95,7 +66,9 @@ head(all_pred)
 
 #### The actual analysis
 
-The next code chunk runs the analysis. The second line displays the
+The next code chunk runs the analysis. There is an optional `p`
+parameter for the `vertex_analysis()` function to specify the p
+threshold; default p is set to 0.05. The second line displays the
 results
 
 ``` r
@@ -105,8 +78,7 @@ results$cluster_level_results
 
     ## $`Positive contrast`
     ##   clusid nverts     P    X    Y    Z tstat        region
-    ## 1      1     43 0.008 63.6 -7.7 32.7  3.13 rh-postcentral
-    ## 2      2     36 0.021 42.7 -0.7 47.3  3.86  rh-precentral
+    ## 1      1    282 <.001 41.9 -2.5 46.2  4.18 rh-precentral
     ## 
     ## $`Negative contrast`
     ## [1] "No significant clusters"
@@ -134,29 +106,31 @@ in the `Negative contrast`.
 #### Plotting
 
 ``` r
-plotCT(data = results$thresholded_tstat_map, fs_path = "../data/fsaverage5",filename = "sigcluster.png")
+plotCT(data = results$thresholded_tstat_map, filename = "sigcluster.png")
 ```
+
+    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\wholebrainCT\\sigcluster.png"
 
 - `data`: vector of 20484 values to visualize on the cortical surface
   map
 
-- `fs_path`: file path of your fsaverage5 folder
-
 - `filename`: filename of the output image
 
-![](images/sigcluster.png) Mac users may encounter some problems running the
-above code, in which case you can try the following code. The
-`plotCT2()` only requires 2 parameters; it does not require the
-`fs_path` parameter, because it accesses the fsaverage5 folder on the
-cloud. It has very limited functionality/customization for now. I might
-update this function when i figure a better way to render these cortical
-surface images on MacOS
+- `cmap` (optional) : colormaps to use. Refer to this [list of
+  colormaps](https://matplotlib.org/stable/gallery/color/colormap_reference.html).
+  Default cmap is set to `"Reds"` for positive values, `"Blues"` for
+  negative values and `"RdBu"` when both positive and negative values
+  exist. colormaps.
 
-``` r
-plotCT2(data = results$thresholded_tstat_map, filename = "sigcluster2.png")
-```
+- `title` (optional) : text label displayed on the left
 
-![](images/sigcluster2.png)
+- `surface` (optional) : type of cortical surface background rendered.
+  Possible options include `"white"`, `"smoothwm"`,`"pial"` and
+  `"inflated"` (default)
+
+Note. this `plotCT()` function has been updated to work on Mac
+
+![](images/sigcluster.png)
 
 #### Extracting the CT values for each subject
 
@@ -180,12 +154,12 @@ head(dat_beh$sig_avCT)
 ```
 
     ##          [,1]
-    ## [1,] 2.325544
-    ## [2,] 2.448439
-    ## [3,] 2.209792
-    ## [4,] 2.376455
-    ## [5,] 2.271535
-    ## [6,] 2.203959
+    ## [1,] 2.429615
+    ## [2,] 2.438523
+    ## [3,] 2.383243
+    ## [4,] 2.244013
+    ## [5,] 2.238137
+    ## [6,] 2.083839
 
 as a sanity check, these mean CT values should correlate with
 `RAVLT_TotLearn`
@@ -198,16 +172,17 @@ cor.test(dat_beh$sig_avCT,dat_beh$RAVLT_TotLearn)
     ##  Pearson's product-moment correlation
     ## 
     ## data:  dat_beh$sig_avCT and dat_beh$RAVLT_TotLearn
-    ## t = 6.3175, df = 265, p-value = 1.118e-09
+    ## t = 5.4287, df = 265, p-value = 1.283e-07
     ## alternative hypothesis: true correlation is not equal to 0
     ## 95 percent confidence interval:
-    ##  0.2527221 0.4617816
+    ##  0.2040581 0.4204333
     ## sample estimates:
     ##       cor 
-    ## 0.3617917
+    ## 0.3163544
 
+Image decoding
+================
 
-## Image decoding
 ### Introduction
 
 After running the whole-brain vertex-wise analyses, you may be able to
@@ -237,18 +212,16 @@ cortical surface maps obtained from this analysis will then be fed into
 an image-decoding procedure to identify keywords that are relevant to
 our results
 
-### Install the NiMARE python module
+### Source custom-made R functions from Github
 
 The [NiMARE](https://nimare.readthedocs.io/en/stable/index.html) python
-module is needed in order for the imaging decoding to work. This is to
-be installed via the Terminal within RStudio, click on the Terminal tab
-below (next to Console) and enter `python -m pip install nimare`
-
-### Load R packages
+module is needed in order for the imaging decoding to work. This should
+have already been installed if you have successfully completed the
+installation procedures described in `vertanalysis.html`, if not simply
+run `reticulate::py_install("nimare",pip=TRUE)`. You only need to source
+the `vertwise.r` R script for now.
 
 ``` r
-library(reticulate)
-library(fsbrain)
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
 ```
 
@@ -301,8 +274,12 @@ results$cluster_level_results
     ## 3      3     48 0.001 -19.7 -52.6 -1.8 -3.87 lh-lingual
 
 ``` r
-plotCT(data = results$thresholded_tstat_map, fs_path = "../data/fsaverage5",filename = "sexdiff.png")
+plotCT(data = results$thresholded_tstat_map,filename = "sexdiff.png")
 ```
+
+    ## Warning: package 'reticulate' was built under R version 4.3.2
+
+    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\wholebrainCT\\sexdiff.png"
 
 ![](images/sexdiff.png)
 
