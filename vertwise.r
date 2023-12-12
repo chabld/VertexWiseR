@@ -207,7 +207,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
 ############################################################################################################################
 ##CT surface plots
 
-plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path)
+plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL)
 {
   if(length(data) != 20484)
   {
