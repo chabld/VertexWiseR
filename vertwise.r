@@ -340,7 +340,7 @@ getClusters=function(data)
             edgelist.all=rbind(edgelist.all,edgelist)
           }
         }
-    {
+    }
   ##RH
   if(length(rh.vert.all)>1)
     {
