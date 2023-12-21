@@ -312,14 +312,32 @@ decode_img=function(img,contrast="positive")
 ##find clusters
 getClusters=function(data)
 {
+  ##checks
+  # length of data consistent with fsaverage5 template?
+  if(length(data) != 20484)
+  {
+    stop("data object has to be a numeric vector with 20484 values")
+  } 
+  # check require packages
+  list.of.packages = "igraph"
+  new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
+  
+  ##splitting up into left and right hemispheres for more efficient computation
   vert.all=which(abs(data)>0)
   lh.vert.all=vert.all[vert.all<10243]
   rh.vert.all=vert.all[vert.all>10242]
-  edgelist.all=matrix(NA,nrow=0,ncol=2)
   
-  ##LH
-  if(length(lh.vert.all)>1)
-  {
+  #LH
+  edgelist.all=matrix(NA,nrow=0,ncol=2)
+  if(length(lh.vert.all)>1) #skip matching process if not enough vertices (less than 2) are identified
+  {  
+    ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
     for (vert.no in 1:length(lh.vert.all))
     {
       vert.connected=lh.vert.all[match(fs5_adj[[lh.vert.all[vert.no]]],lh.vert.all)]
@@ -338,6 +356,7 @@ getClusters=function(data)
         edgelist.all=rbind(edgelist.all,edgelist)
       }
     }
+    ##extracting cluster mappings and size from edgelist matrix
     if(NROW(edgelist.all)>0)
     {
       idx= !duplicated(t(apply(edgelist.all,  1, sort)))
@@ -354,6 +373,7 @@ getClusters=function(data)
         LH.com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
         LH.clust.size=LH.com$csize
         LH.clust.map=rep(NA,20484)
+        #cluster mappings
         for(clust.no in 1:LH.com$no)
         {
           LH.clust.map[as.numeric(names(which(LH.com$membership==clust.no)))]=clust.no
@@ -363,15 +383,16 @@ getClusters=function(data)
     {
       LH.clust.size=NA
     }
-  } else 
+  } else #skip matching process if not enough vertices (less than 2) are identified
   {
     LH.clust.size=NA
   }
   remove(edgelist)
   edgelist.all=matrix(NA,nrow=0,ncol=2)
   ##RH
-  if(length(rh.vert.all)>1)
+  if(length(rh.vert.all)>1) #skip matching process if not enough vertices (less than 2) are identified
   {
+    ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
     for (vert.no in 1:length(rh.vert.all))
     {
       vert.connected=rh.vert.all[match(fs5_adj[[rh.vert.all[vert.no]]],rh.vert.all)]
@@ -390,6 +411,7 @@ getClusters=function(data)
         edgelist.all=rbind(edgelist.all,edgelist)
       }
     }
+    ##extracting cluster mappings and size from edgelist matrix
     if(NROW(edgelist.all)>0)
     {
       idx= !duplicated(t(apply(edgelist.all,  1, sort)))
@@ -406,12 +428,13 @@ getClusters=function(data)
         RH.com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
         RH.clust.size=RH.com$csize
         RH.clust.map=rep(NA,20484)
+        #cluster mappings
         for(clust.no in 1:RH.com$no)
         {
           RH.clust.map[as.numeric(names(which(RH.com$membership==clust.no)))]=clust.no
         } 
       }
-    } else
+    } else #skip matching process if not enough vertices (less than 2) are identified
     {
       RH.clust.size=NA
     } 
@@ -419,6 +442,7 @@ getClusters=function(data)
   {
     RH.clust.size=NA
   }
+  ##combining results from LH and RH
   if(!anyNA(LH.clust.size[1],RH.clust.size[1]))
   {
     RH.clust.map[which(RH.clust.map>0)]=RH.clust.map[which(RH.clust.map>0)]+max(LH.clust.map,na.rm = T)
