@@ -310,10 +310,6 @@ decode_img=function(img,contrast="positive")
 ##find clusters
 getClusters=function(data)
 {
-  if(!exists(x = "fs5_adj"))
-  {
-    load(url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5_adj.rdata?raw=TRUE"))
-  }
   vert.all=which(abs(data)>0)
   lh.vert.all=vert.all[vert.all<10243]
   rh.vert.all=vert.all[vert.all>10242]
