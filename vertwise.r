@@ -320,43 +320,49 @@ getClusters=function(data)
   edgelist.all=matrix(NA,nrow=0,ncol=2)
   
   ##LH
-  for (vert.no in 1:length(vert.all))
-  {
-    vert.connected=lh.vert.all[match(fs5_adj[[lh.vert.all[vert.no]]],lh.vert.all)]
-    if(anyNA(vert.connected))
+  if(length(lh.vert.all)>1)
     {
-      vert.connected=vert.connected[-which(is.na(vert.connected))] 
-    }
-    
-    if(length(vert.connected)>0)
+      for (vert.no in 1:length(lh.vert.all))
+        {
+          vert.connected=lh.vert.all[match(fs5_adj[[lh.vert.all[vert.no]]],lh.vert.all)]
+          if(anyNA(vert.connected))
+          {
+            vert.connected=vert.connected[-which(is.na(vert.connected))] 
+          }
+          if(length(vert.connected)>0)
+          {
+            edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
+            for (edge.idx in 1:length(vert.connected))
+            {
+              edgelist[edge.idx,1]=lh.vert.all[[vert.no]]
+              edgelist[edge.idx,2]=vert.connected[edge.idx]
+            }
+            edgelist.all=rbind(edgelist.all,edgelist)
+          }
+        }
     {
-      edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
-      for (edge.idx in 1:length(vert.connected))
-      {
-        edgelist[edge.idx,1]=lh.vert.all[[vert.no]]
-        edgelist[edge.idx,2]=vert.connected[edge.idx]
-      }
-      edgelist.all=rbind(edgelist.all,edgelist)
-    }
-  }
-  for (vert.no in 1:length(vert.all))
-  {
-    vert.connected=rh.vert.all[match(fs5_adj[[rh.vert.all[vert.no]]],rh.vert.all)]
-    if(anyNA(vert.connected))
+  ##RH
+  if(length(rh.vert.all)>1)
     {
-      vert.connected=vert.connected[-which(is.na(vert.connected))] 
+      for (vert.no in 1:length(rh.vert.all))
+        {
+          vert.connected=rh.vert.all[match(fs5_adj[[rh.vert.all[vert.no]]],rh.vert.all)]
+          if(anyNA(vert.connected))
+          {
+            vert.connected=vert.connected[-which(is.na(vert.connected))] 
+          }
+          if(length(vert.connected)>0)
+          {
+            edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
+            for (edge.idx in 1:length(vert.connected))
+            {
+              edgelist[edge.idx,1]=rh.vert.all[[vert.no]]
+              edgelist[edge.idx,2]=vert.connected[edge.idx]
+            }
+            edgelist.all=rbind(edgelist.all,edgelist)
+          }
+        }
     }
-    if(length(vert.connected)>0)
-    {
-      edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
-      for (edge.idx in 1:length(vert.connected))
-      {
-        edgelist[edge.idx,1]=rh.vert.all[[vert.no]]
-        edgelist[edge.idx,2]=vert.connected[edge.idx]
-      }
-      edgelist.all=rbind(edgelist.all,edgelist)
-    }
-  }
   if(NROW(edgelist.all)>0)
   {
     idx= !duplicated(t(apply(edgelist.all,  1, sort)))
