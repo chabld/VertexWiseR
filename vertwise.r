@@ -305,4 +305,75 @@ decode_img=function(img,contrast="positive")
   
   return(result)
 }  
+############################################################################################################################
+############################################################################################################################
+##find clusters
+getClusters=function(data)
+{
+  if(!exists(x = "fs5_adj"))
+  {
+    load(url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5_adj.rdata?raw=TRUE"))
+  }
+  vert.all=which(abs(data)>0)
+  lh.vert.all=vert.all[vert.all<10243]
+  rh.vert.all=vert.all[vert.all>10242]
+  edgelist.all=matrix(NA,nrow=0,ncol=2)
   
+  ##LH
+  for (vert.no in 1:length(vert.all))
+  {
+    vert.connected=lh.vert.all[match(fs5_adj[[lh.vert.all[vert.no]]],lh.vert.all)]
+    if(anyNA(vert.connected))
+    {
+      vert.connected=vert.connected[-which(is.na(vert.connected))] 
+    }
+    
+    if(length(vert.connected)>0)
+    {
+      edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
+      for (edge.idx in 1:length(vert.connected))
+      {
+        edgelist[edge.idx,1]=lh.vert.all[[vert.no]]
+        edgelist[edge.idx,2]=vert.connected[edge.idx]
+      }
+      edgelist.all=rbind(edgelist.all,edgelist)
+    }
+  }
+  for (vert.no in 1:length(vert.all))
+  {
+    vert.connected=rh.vert.all[match(fs5_adj[[rh.vert.all[vert.no]]],rh.vert.all)]
+    if(anyNA(vert.connected))
+    {
+      vert.connected=vert.connected[-which(is.na(vert.connected))] 
+    }
+    if(length(vert.connected)>0)
+    {
+      edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
+      for (edge.idx in 1:length(vert.connected))
+      {
+        edgelist[edge.idx,1]=rh.vert.all[[vert.no]]
+        edgelist[edge.idx,2]=vert.connected[edge.idx]
+      }
+      edgelist.all=rbind(edgelist.all,edgelist)
+    }
+  }
+  if(NROW(edgelist.all)>0)
+  {
+    idx= !duplicated(t(apply(edgelist.all,  1, sort)))
+    edgelist.all=edgelist.all[idx,]
+    names(edgelist.all)=c("N1","N2")
+    com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
+    clust.size=com$csize
+    clust.map=rep(NA,20484)
+    for(clust.no in 1:com$no)
+    {
+      clust.map[as.numeric(names(which(com$membership==clust.no)))]=clust.no
+    } 
+  } else
+  {
+    clust.map="noclusters"
+    clust.size="noclusters"
+  }
+  return(list(clust.map,clust.size))
+}
+
