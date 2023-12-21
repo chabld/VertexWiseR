@@ -6,7 +6,7 @@
 ## To extract atlas ROI values from fsaverage5 vertex-wise data
 fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
   nregions=max(ROImap[[1]][,atlas])
   if(length(data)%%20484!=0)
   {
@@ -34,7 +34,7 @@ fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefe
 
 atlas_to_fs5=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
   {
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
   nregions=max(ROImap[[1]][,atlas])
   fs5_dat=rep(NA,20484)
   for (region in 1:nregions)
@@ -136,7 +136,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       cluster_pos$tstat[clusno]=round(clus_tstat[which.max(clus_tstat)],2)
       cluster_pos[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
   
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
       idx_pos=ROImap[[1]][,atlas][which.max(clus_tstat)]
       cluster_pos$region[clusno]=ROImap[[2]][,atlas][idx_pos]
       
@@ -174,7 +174,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
       if(!exists("ROImap", inherit=F))
         {
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/ROImap.rdata?raw=TRUE"))
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
         } 
       idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
       cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_neg]
