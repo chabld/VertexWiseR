@@ -314,7 +314,7 @@ getClusters=function(data)
   {
     load(url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5_adj.rdata?raw=TRUE"))
   }
-  vert.all=which(abs(data)>0)
+  vert.all=which(abs(temp_data)>0)
   lh.vert.all=vert.all[vert.all<10243]
   rh.vert.all=vert.all[vert.all>10242]
   edgelist.all=matrix(NA,nrow=0,ncol=2)
@@ -362,13 +362,22 @@ getClusters=function(data)
     idx= !duplicated(t(apply(edgelist.all,  1, sort)))
     edgelist.all=edgelist.all[idx,]
     names(edgelist.all)=c("N1","N2")
-    com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
-    clust.size=com$csize
-    clust.map=rep(NA,20484)
-    for(clust.no in 1:com$no)
+    if(length(edgelist.all)==2)
     {
-      clust.map[as.numeric(names(which(com$membership==clust.no)))]=clust.no
-    } 
+      clust.map=clust.map=rep(NA,20484)
+      clust.map[edgelist.all[1]]=1
+      clust.map[edgelist.all[2]]=1
+      clust.size=2
+    } else
+    {
+      com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
+      clust.size=com$csize
+      clust.map=rep(NA,20484)
+      for(clust.no in 1:com$no)
+      {
+        clust.map[as.numeric(names(which(com$membership==clust.no)))]=clust.no
+      } 
+    }
   } else
   {
     clust.map="noclusters"
@@ -376,4 +385,3 @@ getClusters=function(data)
   }
   return(list(clust.map,clust.size))
 }
-
