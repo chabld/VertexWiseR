@@ -314,7 +314,7 @@ getClusters=function(data)
   {
     load(url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5_adj.rdata?raw=TRUE"))
   }
-  vert.all=which(abs(temp_data)>0)
+  vert.all=which(abs(data)>0)
   lh.vert.all=vert.all[vert.all<10243]
   rh.vert.all=vert.all[vert.all>10242]
   edgelist.all=matrix(NA,nrow=0,ncol=2)
