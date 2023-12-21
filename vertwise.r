@@ -308,6 +308,8 @@ decode_img=function(img,contrast="positive")
 ############################################################################################################################
 ############################################################################################################################
 ##find clusters
+
+##find clusters
 getClusters=function(data)
 {
   vert.all=which(abs(data)>0)
@@ -359,9 +361,11 @@ getClusters=function(data)
       }
     } else
     {
-      LH.clust.map="noclusters"
       LH.clust.size=NA
     }
+  } else 
+  {
+    LH.clust.size=NA
   }
   remove(edgelist)
   edgelist.all=matrix(NA,nrow=0,ncol=2)
@@ -409,19 +413,13 @@ getClusters=function(data)
       }
     } else
     {
-      RH.clust.map="noclusters"
       RH.clust.size=NA
-    }
+    } 
+  } else
+  {
+    RH.clust.size=NA
   }
-  if(!is.na(LH.clust.size[1]) & is.na(RH.clust.size[1]))
-  {
-    clust.map=LH.clust.map
-    clust.size=LH.clust.size
-  } else if(is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
-  {
-    clust.map=RH.clust.map
-    clust.size=RH.clust.size
-  } else if(!is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
+  if(!anyNA(LH.clust.size[1],RH.clust.size[1]))
   {
     RH.clust.map[which(RH.clust.map>0)]=RH.clust.map[which(RH.clust.map>0)]+max(LH.clust.map,na.rm = T)
     RH.clust.map[is.na(RH.clust.map)]=0
@@ -429,6 +427,15 @@ getClusters=function(data)
     clust.map=LH.clust.map+RH.clust.map
     clust.map[clust.map==0]=NA
     clust.size=c(LH.clust.size,RH.clust.size)
+  }
+   else if(is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
+  {
+    clust.map=RH.clust.map
+    clust.size=RH.clust.size
+  } else if(!is.na(LH.clust.size[1]) & is.na(RH.clust.size[1]))
+  {
+    clust.map=LH.clust.map
+    clust.size=LH.clust.size
   } else if(is.na(LH.clust.size[1]) & is.na(RH.clust.size[1]))
   {
     clust.map="noclusters"
