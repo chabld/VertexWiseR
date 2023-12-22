@@ -228,7 +228,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
       range=NULL
       }
     else if (range(data,na.rm = T)[2]<=0)
-      {cmap="Blues"
+      {cmap="Blues_r"
       range=NULL
       }
     else
