@@ -368,7 +368,7 @@ getClusters=function(data)
         LH.clust.map[edgelist.all[1]]=1
         LH.clust.map[edgelist.all[2]]=1
         LH.clust.size=2
-      } else
+      } else 
       {
         LH.com=igraph::components(igraph::graph.data.frame(edgelist.all, directed = F))
         LH.clust.size=LH.com$csize
@@ -443,7 +443,7 @@ getClusters=function(data)
     RH.clust.size=NA
   }
   ##combining results from LH and RH
-  if(!anyNA(LH.clust.size[1],RH.clust.size[1]))
+  if(is.na(LH.clust.size[1]) & is.na(RH.clust.size[1]))
   {
     RH.clust.map[which(RH.clust.map>0)]=RH.clust.map[which(RH.clust.map>0)]+max(LH.clust.map,na.rm = T)
     RH.clust.map[is.na(RH.clust.map)]=0
@@ -451,8 +451,7 @@ getClusters=function(data)
     clust.map=LH.clust.map+RH.clust.map
     clust.map[clust.map==0]=NA
     clust.size=c(LH.clust.size,RH.clust.size)
-  }
-   else if(is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
+  } else if(is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
   {
     clust.map=RH.clust.map
     clust.size=RH.clust.size
