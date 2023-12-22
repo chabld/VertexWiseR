@@ -338,9 +338,9 @@ getClusters=function(data)
   if(length(lh.vert.all)>1) #skip matching process if not enough vertices (less than 2) are identified
   {  
     ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
-    for (vert.no in 1:length(lh.vert.all))
+    for (vert in lh.vert.all)
     {
-      vert.connected=lh.vert.all[match(fs5_adj[[lh.vert.all[vert.no]]],lh.vert.all)]
+      vert.connected=lh.vert.all[match(fs5_adj[vert],lh.vert.all)]
       if(anyNA(vert.connected))
       {
         vert.connected=vert.connected[-which(is.na(vert.connected))] 
@@ -350,7 +350,7 @@ getClusters=function(data)
         edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
         for (edge.idx in 1:length(vert.connected))
         {
-          edgelist[edge.idx,1]=lh.vert.all[[vert.no]]
+          edgelist[edge.idx,1]=vert
           edgelist[edge.idx,2]=vert.connected[edge.idx]
         }
         edgelist.all=rbind(edgelist.all,edgelist)
@@ -393,9 +393,9 @@ getClusters=function(data)
   if(length(rh.vert.all)>1) #skip matching process if not enough vertices (less than 2) are identified
   {
     ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
-    for (vert.no in 1:length(rh.vert.all))
+    for (vert in rh.vert.all)
     {
-      vert.connected=rh.vert.all[match(fs5_adj[[rh.vert.all[vert.no]]],rh.vert.all)]
+      vert.connected=rh.vert.all[match(fs5_adj[vert],rh.vert.all)]
       if(anyNA(vert.connected))
       {
         vert.connected=vert.connected[-which(is.na(vert.connected))] 
@@ -405,7 +405,7 @@ getClusters=function(data)
         edgelist=matrix(NA,nrow=length(vert.connected),ncol=2)
         for (edge.idx in 1:length(vert.connected))
         {
-          edgelist[edge.idx,1]=rh.vert.all[[vert.no]]
+          edgelist[edge.idx,1]=vert
           edgelist[edge.idx,2]=vert.connected[edge.idx]
         }
         edgelist.all=rbind(edgelist.all,edgelist)
