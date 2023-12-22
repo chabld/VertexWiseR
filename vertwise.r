@@ -155,7 +155,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
     neg_clusterIDmap=rep(0, NCOL(CT_data))
   } else
   {
-    
     cluster_neg$P=round(cluster_neg$P,3)
     cluster_neg$P[cluster_neg$P==0]="<.001"
     cluster_neg=cluster_neg[ , !(names(cluster_neg) %in% "resels")]
@@ -309,7 +308,6 @@ decode_img=function(img,contrast="positive")
 ############################################################################################################################
 ##find clusters
 
-##find clusters
 getClusters=function(data)
 {
   ##checks
