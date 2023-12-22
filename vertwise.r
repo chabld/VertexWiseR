@@ -340,7 +340,7 @@ getClusters=function(data)
     ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
     for (vert in lh.vert.all)
     {
-      vert.connected=lh.vert.all[match(fs5_adj[vert],lh.vert.all)]
+      vert.connected=lh.vert.all[match(fs5_adj[[vert]],lh.vert.all)]
       if(anyNA(vert.connected))
       {
         vert.connected=vert.connected[-which(is.na(vert.connected))] 
@@ -395,7 +395,7 @@ getClusters=function(data)
     ##matching adjacent vertices with refence to fsaverage5 adjacency matrix (fs5_adj), and re-organizing them as an Nx2 edgelist matrix
     for (vert in rh.vert.all)
     {
-      vert.connected=rh.vert.all[match(fs5_adj[vert],rh.vert.all)]
+      vert.connected=rh.vert.all[match(fs5_adj[[vert]],rh.vert.all)]
       if(anyNA(vert.connected))
       {
         vert.connected=vert.connected[-which(is.na(vert.connected))] 
