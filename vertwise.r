@@ -443,7 +443,7 @@ getClusters=function(data)
     RH.clust.size=NA
   }
   ##combining results from LH and RH
-  if(is.na(LH.clust.size[1]) & is.na(RH.clust.size[1]))
+  if(!is.na(LH.clust.size[1]) & !is.na(RH.clust.size[1]))
   {
     RH.clust.map[which(RH.clust.map>0)]=RH.clust.map[which(RH.clust.map>0)]+max(LH.clust.map,na.rm = T)
     RH.clust.map[is.na(RH.clust.map)]=0
