@@ -5,7 +5,6 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis
-
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   for (column in 1:NCOL(all_predictors))
