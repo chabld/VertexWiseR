@@ -455,3 +455,10 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 ############################################################################################################################
 ############################################################################################################################
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+
+##example
+# source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
+# 
+#model=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$Sex, CT_data = dat_CT, tail=2, dh="auto" ,nperm=100, nthread = 10)
+#model.results=TFCE.threshold(model)
+#model.results$cluster_level_results
