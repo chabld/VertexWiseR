@@ -201,7 +201,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
 {
   ##checks
     # check require packages
-    list.of.packages = c("parallel", "doparallel","igraph","doSNOW","foreach")
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
     new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
     if(length(new.packages)) 
     {
