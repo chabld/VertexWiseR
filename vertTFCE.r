@@ -458,7 +458,7 @@ source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?r
 
 ##example
 # source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
-# 
+ 
 #model=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$Sex, CT_data = dat_CT, tail=2, dh="auto" ,nperm=100, nthread = 10)
 #model.results=TFCE.threshold(model)
 #model.results$cluster_level_results
