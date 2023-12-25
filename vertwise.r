@@ -73,7 +73,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
       idx_pos=ROImap[[1]][,atlas][which.max(clus_tstat)]
-      cluster_pos$region[clusno]=ROImap[[2]][,atlas][idx_pos]
+      if(idx_pos>0){cluster_pos$region[clusno]=ROImap[[2]][,atlas][idx_pos] } ##to deal with desikan atlas missing vertex mappings
+      else {cluster_pos$region[clusno]="unknown (use another atlas)"}
       
       remove(clus_tstat,idx_pos)
     }
@@ -111,7 +112,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
         } 
       idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
-      cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_neg]
+      if(idx_pos>0){cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_pos] } ##to deal with desikan atlas missing vertex mappings
+      else {cluster_neg$region[clusno]="unknown (use another atlas)"}
 
       remove(clus_tstat,idx_neg)
     }
