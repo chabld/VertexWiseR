@@ -142,3 +142,10 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
 ############################################################################################################################
 ############################################################################################################################
 source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+
+##example
+# source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
+# 
+# model=vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$Sex, CT_data = dat_CT)
+# model$cluster_level_results
+# 
