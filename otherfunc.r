@@ -3,58 +3,6 @@
 
 ############################################################################################################################
 ############################################################################################################################
-## Efficient way to extract t statistics from linear regression models
-extract.t=function(mod,row)
-{
-  p = mod$rank
-  rdf = mod$df.residual
-  Qr = mod$qr
-  p1 = 1L:p
-  r = mod$residuals
-  rss = colSums(r^2)
-  resvar = rss/rdf
-  R = chol2inv(Qr$qr[p1, p1, drop = FALSE])  
-  se = (sqrt(diag(R) %*% t(resvar)))[row,]
-  est = mod$coefficients[row,]
-  tval = est/se                          
-}
-############################################################################################################################
-############################################################################################################################
-##find clusters using edgelist
-getClusters=function(data)
-{ 
-  if(!exists(x = "fs5_edgelist"))
-  {
-    if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-  }
-  vert=which(data!=0)
-  
-  fs5_edgelist0=fs5_edgelist[which(!is.na(match(fs5_edgelist[,1],vert))),]
-  edgelist=fs5_edgelist0[which(!is.na(match(fs5_edgelist0[,2],vert))),]
-  if(length(edgelist)>2)
-  {
-    com=igraph::components(igraph::graph.data.frame(edgelist, directed = F))
-    clust.size=com$csize
-    clust.map=rep(NA,20484)
-    #cluster mappings
-    for(clust.no in 1:com$no)
-    {
-      clust.map[as.numeric(names(which(com$membership==clust.no)))]=clust.no
-    } 
-  } else if(length(edgelist)==2)
-  {
-    clust.size=2
-    clust.map=rep(NA,20484)
-    clust.map[edgelist]=1
-  } else 
-  {
-    clust.map="noclusters"
-    clust.size="noclusters"
-  }
-  return(list(clust.map,clust.size))
-}
-############################################################################################################################
-############################################################################################################################
 ## To extract atlas ROI values from fsaverage5 vertex-wise data
 fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
