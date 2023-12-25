@@ -1,4 +1,5 @@
-## WRAPPERS FOR VERTEX-WISE ANALYSIS
+## FUNCTION FOR VERTEX-WISE ANALYSIS
+## ADAPTED FROM brainstat python library (https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
 ############################################################################################################################
