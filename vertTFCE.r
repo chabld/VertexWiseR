@@ -182,8 +182,13 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   mod=lm(CT_data~data.matrix(all_predictors))
   
   #identify contrast
-  for(colno in 1:NCOL(all_predictors))
-  {if(identical(IV_of_interest,all_predictors[,colno])){break}}
+  for(colno in 1:(NCOL(all_predictors)+1))
+  {
+    if(colno==(NCOL(all_predictors)+1))
+    {stop("IV_of_interest is not contained within all_predictors")}
+    if(identical(IV_of_interest,all_predictors[,colno]))
+    {break}
+  }
   
   #extract tstat and calculate tfce image
   start=Sys.time()
