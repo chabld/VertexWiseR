@@ -29,6 +29,16 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
     IV_of_interest=IV_of_interest[-idxF]
     CT_data=CT_data[-idxF,]
   }
+
+  #check if IV_of_interest is contained within all_predictors
+  for(colno in 1:(NCOL(all_predictors)+1))
+  {
+    if(colno==(NCOL(all_predictors)+1))
+    {stop("IV_of_interest is not contained within all_predictors")}
+    if(identical(IV_of_interest,all_predictors[,colno]))
+    {break}
+  }
+  remove(colno)
   
   ##fitting model
   mask=array(rep(T,NCOL(CT_data)))
