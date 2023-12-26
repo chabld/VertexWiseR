@@ -27,8 +27,8 @@ getClusters=function(data)
   
   vert=which(data!=0)
   
-  fs5_edgelist0=fs5_edgelist[which(!is.na(match(fs5_edgelist[,1],vert))),]
-  edgelist=fs5_edgelist0[which(!is.na(match(fs5_edgelist0[,2],vert))),]
+  fs5_edgelist0=fs5_edgelist[which(!is.na(fastmatch::fmatch.hash(fs5_edgelist[,1],vert))),]
+  edgelist=fs5_edgelist0[which(!is.na(fastmatch::fmatch.hash(fs5_edgelist0[,2],vert))),]
   if(length(edgelist)>2)
   {
     com=igraph::components(igraph::graph.data.frame(edgelist, directed = F))
@@ -51,6 +51,7 @@ getClusters=function(data)
   }
   return(list(clust.map,clust.size))
 }
+
 
 ############################################################################################################################
 ############################################################################################################################
