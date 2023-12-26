@@ -97,7 +97,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     `%dopar%` = foreach::`%dopar%`
 
     #parallel loop across different score_threshs values for TFCE estimation
-    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"))  %dopar%
+    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"),.packages = "fastmatch")  %dopar%
       {
         temp_data[temp_data < score_threshs[thresh.no]] = 0
         if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
@@ -130,7 +130,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
 {
   ##checks
     # check required packages
-    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach","fastmatch")
     new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
     if(length(new.packages)) 
     {
@@ -197,7 +197,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     ##fitting permuted regression model and extracting t-stats in parallel streams
     start=Sys.time()
   
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"), .options.snow = opts)  %dopar%
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"),.packages = "fastmatch",.options.snow = opts)  %dopar%
       {
         all_predictors.permuted=all_predictors
         all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
