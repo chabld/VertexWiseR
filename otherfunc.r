@@ -23,10 +23,8 @@ extract.t=function(mod,row)
 ##find clusters using edgelist
 getClusters=function(data)
 { 
-  if(!exists(x = "fs5_edgelist"))
-  {
-    if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-  }
+  if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
+  
   vert=which(data!=0)
   
   fs5_edgelist0=fs5_edgelist[which(!is.na(match(fs5_edgelist[,1],vert))),]
