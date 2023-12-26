@@ -246,14 +246,16 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
 ############################################################################################################################
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
-  # TFCE.output=neg
-  # p=0.3
-  # atlas=1
-  # k=20
-  # 
   if(TFCE.output$tail==2)
   {p=p/2}
   nperm=length(TFCE.output$TFCE.max)
+
+  #check if number of permutations is adequate
+  if(nperm<1/p)
+  {
+    if(TFCE.output$tail==2){warning(paste("Not enough permutations were carried out to estimate the two-tailed p<",p*2," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))} 
+    else{warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting nperm to at least ",ceiling(1/p),sep=""))}
+  }
   
   ##loading vertex mapping data
   if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))} 
@@ -267,7 +269,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   {
   tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm
   }
-  
   
   ##generating thresholded t-stat map
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
