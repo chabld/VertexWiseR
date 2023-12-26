@@ -7,7 +7,7 @@
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE=function(data,tail=tail)
 {
-  if(!exists(x = "edgelist.all"))  {load("fs5edgelist.rdata")}
+  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
 
   #selecting tail type
   if (tail==2) 
@@ -64,8 +64,8 @@ TFCE=function(data,tail=tail)
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE.multicore=function(data,tail=tail,nthread)
 {
-  if(!exists(x = "edgelist.all"))  {load("fs5edgelist.rdata")}
-
+  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
+  
   #selecting tail type
   if (tail==2) 
   {
