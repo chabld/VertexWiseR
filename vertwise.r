@@ -65,7 +65,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   } else
   {
     cluster_pos$P=round(cluster_pos$P,3)
-    cluster_pos$P[cluster_pos$P==0]="<.001"
+    cluster_pos$P[cluster_pos$P==0]="<0.001"
     cluster_pos=cluster_pos[ , !(names(cluster_pos) %in% "resels")]
     cluster_pos$X=NA
     cluster_pos$Y=NA
@@ -102,7 +102,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   } else
   {
     cluster_neg$P=round(cluster_neg$P,3)
-    cluster_neg$P[cluster_neg$P==0]="<.001"
+    cluster_neg$P[cluster_neg$P==0]="<0.001"
     cluster_neg=cluster_neg[ , !(names(cluster_neg) %in% "resels")]
     cluster_neg$X=NA
     cluster_neg$Y=NA
