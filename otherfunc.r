@@ -65,8 +65,10 @@ smooth=function(data,FWHM=10)
   smooth[,col0]=0
   return(smooth)  
 }
+############################################################################################################################
+############################################################################################################################
+##smoothing fsaverage5 and fsaverage6 data
 ##CT surface plots
-
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL)
 {
   if(length(data) != 20484)
@@ -106,7 +108,6 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
   CTplot$screenshot(filename=filename,transparent_bg = F)
 
 }
-
 ############################################################################################################################
 ############################################################################################################################
 ##CT image decoding
