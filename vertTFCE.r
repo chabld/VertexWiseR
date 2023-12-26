@@ -3,14 +3,13 @@
 
 ############################################################################################################################
 ############################################################################################################################
-##TFCE single core— for estimating unpermuted TFCE statistics
+##TFCE single core— for estimating permuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
-TFCE=function(data,tail=tail,dh=dh)
+TFCE=function(data,tail=tail)
 {
-  if(!exists(x = "edgelist.all"))
-  {
-    load("fs5edgelist.rdata")
-  }
+  if(!exists(x = "edgelist.all"))  {load("fs5edgelist.rdata")}
+
+  #selecting tail type
   if (tail==2) 
   {
     signs = c(-1, 1)
@@ -24,60 +23,50 @@ TFCE=function(data,tail=tail,dh=dh)
     signs = -1
     max_score = max(-data,na.rm = T)
   }
-  if (dh == "auto") 
-  {
-    step=max_score / 100
-  } else {step=dh}
+    
+  #define TFCE parameters
+  step=max_score / 100 #calculating number of steps for TFCE estimation
+  score_threshs = seq(step, max_score, by = step) #Set based on determined step size
   
-  # Set based on determined step size
-  score_threshs = seq(step, max_score, by = step)
-  
-  # If we apply the sign first...
+  #loop across different signs(i.e., for two tailed test)
   for (sign.idx in 1:length(signs)) 
   {
     temp_data = data * signs[sign.idx]
-    
     tfce=rep(0,length(temp_data))
     
+    #loop across different score_threshs values for TFCE estimation
     for(thresh.no in 1:length(score_threshs))
     {
       temp_data[temp_data < score_threshs[thresh.no]] = 0
-      if(length(which(temp_data>0))>1)
+      if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
       {
         clust.dat=getClusters(temp_data)
-        if (clust.dat[[2]][1]!="noclusters")
+        if (clust.dat[[2]][1]!="noclusters") #if no clusters, skip the following steps
         {
           non_zero_inds = which(clust.dat[[1]] >0)
           labeled_non_zero = clust.dat[[1]][non_zero_inds]
-          cluster_tfces = signs[sign.idx] * clust.dat[[2]] * (score_threshs[thresh.no] ^ 2)
+          cluster_tfces = signs[sign.idx] * clust.dat[[2]] * (score_threshs[thresh.no] ^ 2) #using the E=1 , H=2 paramters for 2D (vertex-wise data)
           tfce_step_values = rep(0, length(clust.dat[[1]]))
           tfce_step_values[non_zero_inds] = cluster_tfces[labeled_non_zero]
-          tfce[non_zero_inds]=tfce_step_values[non_zero_inds]+tfce[non_zero_inds]
+          tfce[non_zero_inds]=tfce_step_values[non_zero_inds]+tfce[non_zero_inds] #cumulatively add up all TFCE values at each vertex
         }
       }
     }
+    #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=tfce}
-    else if (sign.idx==2){tfce_step_values.all=rbind(tfce_step_values.all,tfce)}
-  }
-  if(length(tfce_step_values.all)>20484)
-  {
-    tfce_step_values.all=colSums(tfce_step_values.all)
-  } else if(length(tfce_step_values.all)==0)
-  {
-    tfce_step_values.all=rep(0, 20484)
+    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+tfce)}
   }
   return(tfce_step_values.all)
 }
 ############################################################################################################################
 ############################################################################################################################
-##TFCE multicore— for estimating permuted TFCE statistics
+##TFCE multicore— for estimating unpermuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
-TFCE.multicore=function(data,tail=tail,dh=dh,nthread)
+TFCE.multicore=function(data,tail=tail,nthread)
 {
-  if(!exists(x = "edgelist.all"))
-  {
-    load("fs5edgelist.rdata")
-  }
+  if(!exists(x = "edgelist.all"))  {load("fs5edgelist.rdata")}
+
+  #selecting tail type
   if (tail==2) 
   {
     signs = c(-1, 1)
@@ -91,31 +80,30 @@ TFCE.multicore=function(data,tail=tail,dh=dh,nthread)
     signs = -1
     max_score = max(-data,na.rm = T)
   }
-  if (dh == "auto") 
-  {
-    step=max_score / 100
-  } else {step=dh}
+    
+  #define TFCE parameters
+  step=max_score / 100 #calculating number of steps for TFCE estimation
+  score_threshs = seq(step, max_score, by = step) #Set based on determined step size
   
-  # Set based on determined step size
-  score_threshs = seq(step, max_score, by = step)
-  
-  # If we apply the sign first...
+  #loop across different signs(i.e., for two tailed test)
   for (sign.idx in 1:length(signs)) 
   {
     temp_data = data * signs[sign.idx]
-    
     tfce=rep(0,length(temp_data))
-    
+
+    #activate parallel processing
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
+
+    #parallel loop across different score_threshs values for TFCE estimation
     tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"))  %dopar%
       {
         temp_data[temp_data < score_threshs[thresh.no]] = 0
-        if(length(which(temp_data>0))>1)
+        if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
         {
           clust.dat=getClusters(temp_data)
-          if (clust.dat[[2]][1]!="noclusters")
+          if (clust.dat[[2]][1]!="noclusters") #if no clusters, skip the following steps
           {
             non_zero_inds = which(clust.dat[[1]] >0)
             labeled_non_zero = clust.dat[[1]][non_zero_inds]
@@ -127,15 +115,9 @@ TFCE.multicore=function(data,tail=tail,dh=dh,nthread)
         }
       }
     suppressWarnings(closeAllConnections())
-    if(sign.idx==1){tfce_step_values.all=tfce}
-    else if (sign.idx==2){tfce_step_values.all=rbind(tfce_step_values.all,tfce)}
-  }
-  if(length(tfce_step_values.all)>20484)
-  {
-    tfce_step_values.all=colSums(tfce_step_values.all)
-  } else if(length(tfce_step_values.all)==0)
-  {
-    tfce_step_values.all=rep(0, 20484)
+    #combine results from positive and negative tails if necessary 
+    if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
+    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce))}
   }
   return(tfce_step_values.all)
   parallel::stopCluster(cl)
@@ -144,101 +126,96 @@ TFCE.multicore=function(data,tail=tail,dh=dh,nthread)
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, dh="auto",nthread=10)
+TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
 {
   ##checks
-  # check require packages
-  list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-  new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) 
-  {
-    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }  
-  #check categorical variable
-  for (column in 1:NCOL(all_predictors))
-  {
-    if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
+    # check required packages
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
     {
-      stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }  
+    #check categorical variable
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
     }
-  }
-  #incomplete data check
-  idxF=which(complete.cases(all_predictors)==F)
-  if(length(idxF)>0)
-  {
-    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-    all_predictors=all_predictors[-idxF,]
-    IV_of_interest=IV_of_interest[-idxF]
-    CT_data=CT_data[-idxF,]
-  }
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
   
   ##load edgelist data
-  if(!exists(x = "fs5_edgelist"))
-  {
-    load("fs5edgelist.rdata")
-  }
+  if(!exists(x = "fs5_edgelist"))  {load("fs5edgelist.rdata")}
+  
   ##unpermuted model
-  mod=lm(CT_data~data.matrix(all_predictors))
+    mod=lm(CT_data~data.matrix(all_predictors))
   
-  #identify contrast
-  for(colno in 1:(NCOL(all_predictors)+1))
-  {
-    if(colno==(NCOL(all_predictors)+1))
-    {stop("IV_of_interest is not contained within all_predictors")}
-    if(identical(IV_of_interest,all_predictors[,colno]))
-    {break}
-  }
-  
-  #extract tstat and calculate tfce image
-  start=Sys.time()
-  cat("\nEstimating unpermuted TFCE image...")
-  
-  tmap.orig=extract.t(mod,colno+1)
-  TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail, dh="auto", nthread=nthread)
-  
-  end=Sys.time()
-  cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
-  
-  ##permuted models
-  permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-  for (perm in 1:nperm)
-  {
-    permseq[,perm]=sample.int(NROW(all_predictors))
-  }
-  #activate parallel processing
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-  
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
-  
-  ##fitting permuted regression model and extracting t-stats in parallel streams
-  start=Sys.time()
-  
-  TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"), .options.snow = opts)  %dopar%
+    #identify contrast
+    for(colno in 1:(NCOL(all_predictors)+1))
     {
-      all_predictors.permuted=all_predictors
-      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
-      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
-      tmap=extract.t(mod.permuted,colno+1)
-      
-      return(max(abs(TFCE(data = tmap,tail = tail, dh="auto"))))
+      if(colno==(NCOL(all_predictors)+1))
+      {stop("IV_of_interest is not contained within all_predictors")}
+      if(identical(IV_of_interest,all_predictors[,colno]))
+      {break}
     }
   
-  end=Sys.time()
-  cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-  suppressWarnings(closeAllConnections())
+    #extract tstat and calculate tfce image
+    start=Sys.time()
+    cat("\nEstimating unpermuted TFCE image...")
+    
+    tmap.orig=extract.t(mod,colno+1)
+    TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
+    
+    end=Sys.time()
+    cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
-  ##saving list objects
-  returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
-  names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  ##permuted models
+    permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
+    for (perm in 1:nperm)
+    {
+      permseq[,perm]=sample.int(NROW(all_predictors))
+    }
+    #activate parallel processing
+    cl=parallel::makeCluster(nthread)
+    doParallel::registerDoParallel(cl)
+    `%dopar%` = foreach::`%dopar%`
   
-  return(returnobj)
+    #progress bar
+    doSNOW::registerDoSNOW(cl)
+    pb=txtProgressBar(max = nperm, style = 3)
+    progress=function(n) setTxtProgressBar(pb, n)
+    opts=list(progress = progress)
+    
+    ##fitting permuted regression model and extracting t-stats in parallel streams
+    start=Sys.time()
+  
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"), .options.snow = opts)  %dopar%
+      {
+        all_predictors.permuted=all_predictors
+        all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
+        mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
+        tmap=extract.t(mod.permuted,colno+1)
+        
+        return(max(abs(TFCE(data = tmap,tail = tail))))
+      }
+  
+    end=Sys.time()
+    cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+    suppressWarnings(closeAllConnections())
+    
+    ##saving list objects
+    returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
+    names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  
+    return(returnobj)
 }
 ############################################################################################################################
 ############################################################################################################################
