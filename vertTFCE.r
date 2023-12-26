@@ -7,8 +7,6 @@
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE=function(data,tail=tail)
 {
-  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-
   #selecting tail type
   if (tail==2) 
   {
@@ -64,8 +62,6 @@ TFCE=function(data,tail=tail)
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE.multicore=function(data,tail=tail,nthread)
 {
-  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-  
   #selecting tail type
   if (tail==2) 
   {
@@ -153,7 +149,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     }
   
   ##load edgelist data
-  if(!exists(x = "fs5_edgelist"))  {load("fs5edgelist.rdata")}
+    if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
   
   ##unpermuted model
     mod=lm(CT_data~data.matrix(all_predictors))
@@ -179,10 +175,8 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   
   ##permuted models
     permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-    for (perm in 1:nperm)
-    {
-      permseq[,perm]=sample.int(NROW(all_predictors))
-    }
+    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
+  
     #activate parallel processing
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
