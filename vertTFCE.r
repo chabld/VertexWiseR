@@ -299,8 +299,8 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(pos.clusters[[2]][1]!="noclusters")
     {
-      pos.clust.results=data.frame(matrix(NA,nrow=length(pos.clusters[[2]]), ncol=7))
-      colnames(pos.clust.results)=c("clusid","nverts","X","Y","Z","tstat","region")
+      pos.clust.results=data.frame(matrix(NA,nrow=length(pos.clusters[[2]]), ncol=8))
+      colnames(pos.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
       clust.idx=1
       
       for(clust.no in order(pos.clusters[[2]],decreasing = T))
@@ -311,12 +311,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
         pos.clust.results[clust.idx,1]=clust.idx
         pos.clust.results[clust.idx,2]=length(clust.vert.idx)
         max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
-        pos.clust.results[clust.idx,c(3,4,5)]=round(MNImap[,max.vert.idx],1)
-        pos.clust.results[clust.idx,6]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
+        pos.clust.results[clust.idx,3]=tfce.p[max.vert.idx]
+        pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+        pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
         
         atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-        if(atlas.idx>0){pos.clust.results[clust.idx,7]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
-        else {pos.clust.results[clust.idx,7]="unknown (use another atlas)"}
+        if(atlas.idx>0){pos.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+        else {pos.clust.results[clust.idx,8]="unknown (use another atlas)"}
         
         clust.idx=clust.idx+1
       }
@@ -356,24 +357,24 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(neg.clusters[[2]][1]!="noclusters")
     {
-      neg.clust.results=data.frame(matrix(NA,nrow=length(neg.clusters[[2]]), ncol=7))
-      colnames(neg.clust.results)=c("clusid","nverts","X","Y","Z","tstat","region")
+      neg.clust.results=data.frame(matrix(NA,nrow=length(neg.clusters[[2]]), ncol=8))
+      colnames(neg.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
       clust.idx=1
       for(clust.no in order(neg.clusters[[2]],decreasing = T))
       {
-        
         clust.vert.idx=which(neg.clusters[[1]]==clust.no)
         neg.clustermap[clust.vert.idx]=clust.idx
         
         neg.clust.results[clust.idx,1]=clust.idx
         neg.clust.results[clust.idx,2]=length(clust.vert.idx)
         max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
-        neg.clust.results[clust.idx,c(3,4,5)]=round(MNImap[,max.vert.idx],1)
-        neg.clust.results[clust.idx,6]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
+        neg.clust.results[clust.idx,3]=tfce.p[max.vert.idx]
+        neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+        neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
         
         atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-        if(atlas.idx>0){neg.clust.results[clust.idx,7]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
-        else {neg.clust.results[clust.idx,7]="unknown (use another atlas)"}
+        if(atlas.idx>0){neg.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+        else {neg.clust.results[clust.idx,8]="unknown (use another atlas)"}
         
         clust.idx=clust.idx+1
       }
