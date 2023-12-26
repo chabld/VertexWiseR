@@ -23,7 +23,7 @@ extract.t=function(mod,row)
 ##find clusters using edgelist
 getClusters=function(data)
 { 
-  if(!exists("fs5_edgelist", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
+  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
   
   vert=which(data!=0)
   
