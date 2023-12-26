@@ -54,7 +54,7 @@ TFCE=function(data,tail=tail)
     }
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=tfce}
-    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+tfce)}
+    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+tfce}
   }
   return(tfce_step_values.all)
 }
@@ -117,7 +117,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     suppressWarnings(closeAllConnections())
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
-    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce))}
+    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce)}
   }
   return(tfce_step_values.all)
   parallel::stopCluster(cl)
@@ -389,9 +389,9 @@ source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?r
 
 ##example
 
-#pos=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=1, dh="auto" ,nperm=100, nthread = 10)
-#neg=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=-1, dh="auto" ,nperm=100, nthread = 10)
-#two=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=2, dh="auto" ,nperm=100, nthread = 10)
+#pos=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=1, nperm=100, nthread = 10)
+#neg=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
+#two=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
 
 #pos.results=TFCE.threshold(pos)
 #pos.results$cluster_level_results
