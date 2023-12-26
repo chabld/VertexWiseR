@@ -3,7 +3,7 @@
 
 ############################################################################################################################
 ############################################################################################################################
-##TFCE single core— for estimating permuted TFCE statistics
+##TFCE single core— for estimating unpermuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE=function(data,tail=tail,dh=dh)
 {
@@ -70,7 +70,7 @@ TFCE=function(data,tail=tail,dh=dh)
 }
 ############################################################################################################################
 ############################################################################################################################
-##TFCE multicore— for estimating unpermuted TFCE statistics
+##TFCE multicore— for estimating permuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE.multicore=function(data,tail=tail,dh=dh,nthread)
 {
