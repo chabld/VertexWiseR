@@ -25,9 +25,6 @@ TFCE=function(data,tail=tail)
   #define TFCE parameters
   step=max_score / 100 #calculating number of steps for TFCE estimation
   score_threshs = seq(step, max_score, by = step) #Set based on determined step size
-
-  ##load edgelist data
-  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
   
   #loop across different signs(i.e., for two tailed test)
   for (sign.idx in 1:length(signs)) 
@@ -151,6 +148,8 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
     }
+  ##load edgelist data
+  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
   
   ##unpermuted model
     mod=lm(CT_data~data.matrix(all_predictors))
