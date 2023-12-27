@@ -96,7 +96,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     `%dopar%` = foreach::`%dopar%`
 
     #parallel loop across different score_threshs values for TFCE estimation
-    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"),.packages = "fastmatch")  %dopar%
+    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"))  %dopar%
       {
         temp_data[temp_data < score_threshs[thresh.no]] = 0
         if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
@@ -130,7 +130,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   all_predictors=data.matrix(all_predictors)
   ##checks
     # check required packages
-    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach","fastmatch")
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
     new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
     if(length(new.packages)) 
     {
@@ -196,7 +196,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     ##fitting permuted regression model and extracting t-stats in parallel streams
     start=Sys.time()
   
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"),.packages = "fastmatch",.options.snow = opts)  %dopar%
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"), .options.snow = opts)  %dopar%
       {
         all_predictors.permuted=all_predictors
         all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
@@ -250,7 +250,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   t_stat.thresholdedP=TFCE.output$t_stat
   t_stat.thresholdedP[tfce.p>p]=0
   
-  ##Cluster level results
+ ##Cluster level results
   ##positive cluster
   if(TFCE.output$tail==1 |TFCE.output$tail==2)
   {
@@ -258,116 +258,132 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     pos.t_stat.thresholdedP=t_stat.thresholdedP
     pos.t_stat.thresholdedP[pos.t_stat.thresholdedP<0]=0
     
-    #applying k thresholding
     pos.clusters0=getClusters(pos.t_stat.thresholdedP)
-    pos.clustID.remove=which(pos.clusters0[[2]]<k)
-    pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
-    
-    #generating mask
-    pos.clusters=getClusters(pos.clusters0[[1]])
-    pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
-    pos.mask=rep(0,20484)
-    
-    if(pos.clusters[[2]][1]!="noclusters") {pos.mask[pos.clusters[[1]]>0]=1}
-    
-    #results table
-    pos.clustermap=rep(NA,20484)
-    
-    if(pos.clusters[[2]][1]!="noclusters")
+    if(pos.clusters0[[2]][1]!="noclusters") #skip if no clusters detected
     {
-      pos.clust.results=data.frame(matrix(NA,nrow=length(pos.clusters[[2]]), ncol=8))
-      colnames(pos.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
-      clust.idx=1
+      #applying k thresholding
+      pos.clustID.remove=which(pos.clusters0[[2]]<k)
+      pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
       
-      for(clust.no in order(pos.clusters[[2]],decreasing = T))
+      #generating mask
+      pos.clusters=getClusters(pos.clusters0[[1]])
+      pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
+      pos.mask=rep(0,20484)
+      
+      if(pos.clusters[[2]][1]!="noclusters") {pos.mask[pos.clusters[[1]]>0]=1}
+      
+      #results table
+      pos.clustermap=rep(NA,20484)
+      
+      if(pos.clusters[[2]][1]!="noclusters")
       {
-        clust.vert.idx=which(pos.clusters[[1]]==clust.no)
-        pos.clustermap[clust.vert.idx]=clust.idx
+        pos.clust.results=data.frame(matrix(NA,nrow=length(pos.clusters[[2]]), ncol=8))
+        colnames(pos.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
+        clust.idx=1
         
-        pos.clust.results[clust.idx,1]=clust.idx
-        pos.clust.results[clust.idx,2]=length(clust.vert.idx)
-        max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
-        pos.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
-        if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]="<0.001"}
-        pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
-        pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
-        
-        atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-        if(atlas.idx>0){pos.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
-        else {pos.clust.results[clust.idx,8]="unknown (use another atlas)"}
-        
-        clust.idx=clust.idx+1
+        for(clust.no in order(pos.clusters[[2]],decreasing = T))
+        {
+          clust.vert.idx=which(pos.clusters[[1]]==clust.no)
+          pos.clustermap[clust.vert.idx]=clust.idx
+          
+          pos.clust.results[clust.idx,1]=clust.idx
+          pos.clust.results[clust.idx,2]=length(clust.vert.idx)
+          max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
+          pos.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
+          if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]="<0.001"}
+          pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+          pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
+          
+          atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
+          if(atlas.idx>0){pos.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+          else {pos.clust.results[clust.idx,8]="unknown (use another atlas)"}
+          
+          clust.idx=clust.idx+1
+        }
+      } else if(pos.clusters[[2]][1]=="noclusters")
+      { 
+        pos.clust.results="No significant clusters"
+        pos.clustermap="No significant clusters"
       }
-    } else if(pos.clusters[[2]][1]=="noclusters")
-    { 
+    } else 
+    {
       pos.clust.results="No significant clusters"
       pos.clustermap="No significant clusters"
+      pos.mask=rep(0,20484)
     }
   } else if(TFCE.output$tail==-1)
   {
     pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     pos.clustermap="No significant clusters"
     pos.mask=rep(0,20484)
-  }
+  } 
   
   ##negative cluster
-  if (TFCE.output$tail==-1 |TFCE.output$tail==2)
+  if(TFCE.output$tail==-1 |TFCE.output$tail==2)
   {
-    #applying k thresholding
+    #applying p thresholding
     neg.t_stat.thresholdedP=t_stat.thresholdedP
     neg.t_stat.thresholdedP[neg.t_stat.thresholdedP>0]=0
     
-    #applying k thresholding
     neg.clusters0=getClusters(neg.t_stat.thresholdedP)
-    neg.clustID.remove=which(neg.clusters0[[2]]<k)
-    neg.clusters0[[1]][which(!is.na(match(neg.clusters0[[1]],neg.clustID.remove)))]=NA
-    
-    #generating mask
-    neg.clusters=getClusters(neg.clusters0[[1]])
-    neg.mask=rep(0,20484)
-    neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
-    
-    if(neg.clusters[[2]][1]!="noclusters") {neg.mask[neg.clusters[[1]]>0]=1}
-    
-    #results table
-    neg.clustermap=rep(NA,20484)
-    
-    if(neg.clusters[[2]][1]!="noclusters")
+    if(neg.clusters0[[2]][1]!="noclusters") #skip if no clusters detected
     {
-      neg.clust.results=data.frame(matrix(NA,nrow=length(neg.clusters[[2]]), ncol=8))
-      colnames(neg.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
-      clust.idx=1
-      for(clust.no in order(neg.clusters[[2]],decreasing = T))
+      #applying k thresholding
+      neg.clustID.remove=which(neg.clusters0[[2]]<k)
+      neg.clusters0[[1]][which(!is.na(match(neg.clusters0[[1]],neg.clustID.remove)))]=NA
+      
+      #generating mask
+      neg.clusters=getClusters(neg.clusters0[[1]])
+      neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
+      neg.mask=rep(0,20484)
+      
+      if(neg.clusters[[2]][1]!="noclusters") {neg.mask[neg.clusters[[1]]>0]=1}
+      
+      #results table
+      neg.clustermap=rep(NA,20484)
+      
+      if(neg.clusters[[2]][1]!="noclusters")
       {
-        clust.vert.idx=which(neg.clusters[[1]]==clust.no)
-        neg.clustermap[clust.vert.idx]=clust.idx
+        neg.clust.results=data.frame(matrix(NA,nrow=length(neg.clusters[[2]]), ncol=8))
+        colnames(neg.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
+        clust.idx=1
         
-        neg.clust.results[clust.idx,1]=clust.idx
-        neg.clust.results[clust.idx,2]=length(clust.vert.idx)
-        max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
-        neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
-        if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]="<0.001"}
-        neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
-        neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
-        
-        atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-        if(atlas.idx>0){neg.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
-        else {neg.clust.results[clust.idx,8]="unknown (use another atlas)"}
-        
-        clust.idx=clust.idx+1
+        for(clust.no in order(neg.clusters[[2]],decreasing = T))
+        {
+          clust.vert.idx=which(neg.clusters[[1]]==clust.no)
+          neg.clustermap[clust.vert.idx]=clust.idx
+          
+          neg.clust.results[clust.idx,1]=clust.idx
+          neg.clust.results[clust.idx,2]=length(clust.vert.idx)
+          max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
+          neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
+          if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]="<0.001"}
+          neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+          neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
+          
+          atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
+          if(atlas.idx>0){neg.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+          else {neg.clust.results[clust.idx,8]="unknown (use another atlas)"}
+          
+          clust.idx=clust.idx+1
+        }
+      } else if(neg.clusters[[2]][1]=="noclusters")
+      { 
+        neg.clust.results="No significant clusters"
+        neg.clustermap="No significant clusters"
       }
-    } else if(neg.clusters[[2]][1]=="noclusters")
+    } else 
     {
       neg.clust.results="No significant clusters"
-      pos.clustermap="No significant clusters"
+      neg.clustermap="No significant clusters"
+      neg.mask=rep(0,20484)
     }
-  } else if(TFCE.output$tail==1)
+  } else if(TFCE.output$tail==-1)
   {
-    neg.clust.results="Negative contrast not analyzed, only positive one-tailed TFCE statistics were estimated"
+    neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     neg.clustermap="No significant clusters"
     neg.mask=rep(0,20484)
-  }
-  
+  } 
   ##saving list objects
   
   cluster_level_results=list(pos.clust.results,neg.clust.results)
