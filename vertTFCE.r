@@ -149,7 +149,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
       CT_data=CT_data[-idxF,]
     }
   ##load edgelist data
-  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
+  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())} 
   
   ##unpermuted model
     mod=lm(CT_data~data.matrix(all_predictors))
@@ -174,9 +174,6 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
   ##permuted models
-    ##load edgelist data
-    if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-
     ##generating permutation sequences  
     permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
     for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
