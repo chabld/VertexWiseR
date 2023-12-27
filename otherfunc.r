@@ -31,12 +31,11 @@ getClusters=function(data)
   {
     com=igraph::components(igraph::graph.data.frame(edgelist, directed = F))
     clust.size=com$csize
-    clust.map=rep(NA,20484)
+    
     #cluster mappings
-    for(clust.no in 1:com$no)
-    {
-      clust.map[as.numeric(names(which(com$membership==clust.no)))]=clust.no
-    } 
+    clust.map=rep(NA,20484)
+    clust.map[as.numeric(names(com$membership))]=com$membership
+  
   } else if(length(edgelist)==2)
   {
     clust.size=2
