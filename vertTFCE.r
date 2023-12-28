@@ -132,7 +132,9 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     {
       cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
       install.packages(new.packages)
-    }  
+    }
+    #check if nrow is consistent for all_predictors and FC_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
     #check categorical variable
     for (column in 1:NCOL(all_predictors))
     {
