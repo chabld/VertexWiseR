@@ -7,36 +7,31 @@
 ##vertex wise analysis
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
-  ##checks
+    ##checks
+    # check required packages
+    list.of.packages ="reticulate"
+    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }
     #check if nrow is consistent for all_predictors and FC_data
     if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-  
-    #categorical variable check
+    #check categorical variable
     for (column in 1:NCOL(all_predictors))
-    {  if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
-      {
-        stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))
-      }
+    {
+      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
     }
   
     #incomplete data check
     idxF=which(complete.cases(all_predictors)==F)
-  
     if(length(idxF)>0)
     {
       cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
       all_predictors=all_predictors[-idxF,]
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
-    }
-
-    #check if IV_of_interest is contained within all_predictors
-    for(colno in 1:(NCOL(all_predictors)+1))
-    {
-      if(colno==(NCOL(all_predictors)+1))
-      {stop("IV_of_interest is not contained within all_predictors")}
-      if(identical(IV_of_interest,all_predictors[,colno]))
-      {break}
     }
     remove(colno)
 
