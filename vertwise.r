@@ -55,6 +55,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
                                     correction=c("fdr", "rft"),
                                     cluster_threshold=p)
       model$fit(CT_data)
+      #extracting tstats
       tstat=model$t
   
   ##extracting positive results
