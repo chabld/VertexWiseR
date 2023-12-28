@@ -7,38 +7,43 @@
 ##vertex wise analysis
 vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
-  for (column in 1:NCOL(all_predictors))
-  {
-    if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
-    {
-      stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))
-    }
-  }
+  ##checks
+    #check if nrow is consistent for all_predictors and FC_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
   
+    #categorical variable check
+    for (column in 1:NCOL(all_predictors))
+    {  if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")
+      {
+        stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))
+      }
+    }
+  
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+  
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+
+    #check if IV_of_interest is contained within all_predictors
+    for(colno in 1:(NCOL(all_predictors)+1))
+    {
+      if(colno==(NCOL(all_predictors)+1))
+      {stop("IV_of_interest is not contained within all_predictors")}
+      if(identical(IV_of_interest,all_predictors[,colno]))
+      {break}
+    }
+    remove(colno)
+
+  ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
   brainstat.datasets=reticulate::import("brainstat.datasets")  
-  
-  ##incomplete data check
-  idxF=which(complete.cases(all_predictors)==F)
-
-  if(length(idxF)>0)
-  {
-    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-    all_predictors=all_predictors[-idxF,]
-    IV_of_interest=IV_of_interest[-idxF]
-    CT_data=CT_data[-idxF,]
-  }
-
-  #check if IV_of_interest is contained within all_predictors
-  for(colno in 1:(NCOL(all_predictors)+1))
-  {
-    if(colno==(NCOL(all_predictors)+1))
-    {stop("IV_of_interest is not contained within all_predictors")}
-    if(identical(IV_of_interest,all_predictors[,colno]))
-    {break}
-  }
-  remove(colno)
   
   ##fitting model
   mask=array(rep(T,NCOL(CT_data)))
@@ -55,7 +60,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
   
   tstat=model$t
   ##extracting positive results
-  #cluster level
   cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]])
   cluster_pos=cluster_pos[cluster_pos$P<p,]
   if(NROW(cluster_pos)==0)
@@ -92,7 +96,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
     pos_clusterIDmap[pos_clusterIDmap>max(cluster_pos$clusid)]=0
   }
   ##extracting negative results
-  #cluster level
   cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]])
   cluster_neg=cluster_neg[cluster_neg$P<p,]
   if(NROW(cluster_neg)==0)
