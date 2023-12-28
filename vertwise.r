@@ -20,10 +20,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
         #check categorical variable
         for (column in 1:NCOL(all_predictors))
-        {
-          if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
-        }
-      
+        {if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}}
+    
         #incomplete data check
         idxF=which(complete.cases(all_predictors)==F)
         if(length(idxF)>0)
@@ -59,8 +57,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       tstat=model$t
   
 ##extracting positive results
-    cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]])
-    cluster_pos=cluster_pos[cluster_pos$P<p,]
+    cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]]) #pulling out results from brainstat's output
+    cluster_pos=cluster_pos[cluster_pos$P<p,] #removing clusters that are not significant
   
     #extracting positive cluster map
     pos_clusterIDmap=model$P$clusid[[1]]
@@ -71,7 +69,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         pos_clusterIDmap=rep(0, NCOL(CT_data))
     } else
     {
-        #init results variables
+        #creating new result variables in the cluster_pos objects
         cluster_pos$P=round(cluster_pos$P,3)
         cluster_pos$P[cluster_pos$P==0]="<0.001"
         cluster_pos=cluster_pos[ , !(names(cluster_pos) %in% "resels")] #removing the 'resels' column from the original brainstat output
@@ -81,7 +79,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         cluster_pos$tstat=NA
         cluster_pos$region=NA
 
-    #entering results into a matrix
+    #entering results for each cluster
     for (clusno in cluster_pos$clusid)
     {
       clus_tstat=tstat
@@ -99,14 +97,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       
       remove(clus_tstat,idx_pos)
     }
-    
     #thresholding positive cluster map
     pos_clusterIDmap[pos_clusterIDmap>max(cluster_pos$clusid)]=0
   }
   
 ##extracting negative results
-    cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]])
-    cluster_neg=cluster_neg[cluster_neg$P<p,]
+    cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]]) #pulling out results from brainstat's output
+    cluster_neg=cluster_neg[cluster_neg$P<p,] #removing clusters that are not significant
     
     #extracting negative cluster map
     neg_clusterIDmap=model$P$clusid[[2]]
@@ -115,7 +112,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         cluster_neg="No significant clusters"
         neg_clusterIDmap=rep(0, NCOL(CT_data))
       } else
-      { #init results variables
+      { #creating new result variables in the cluster_pos objects
         cluster_neg$P=round(cluster_neg$P,3)
         cluster_neg$P[cluster_neg$P==0]="<0.001"
         cluster_neg=cluster_neg[ , !(names(cluster_neg) %in% "resels")] #removing the 'resels' column from the original brainstat output
@@ -125,7 +122,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         cluster_neg$tstat=NA
         cluster_neg$region=NA
         
-        #entering results into a matrix
+        #entering results for each cluster
         for (clusno in cluster_neg$clusid)
         {
           clus_tstat=tstat
