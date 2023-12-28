@@ -225,8 +225,6 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
 ############################################################################################################################
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
-  if(TFCE.output$tail==2)
-  {p=p/2}
   nperm=length(TFCE.output$TFCE.max)
 
   #check if number of permutations is adequate
@@ -295,7 +293,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           pos.clust.results[clust.idx,2]=length(clust.vert.idx)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           pos.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
-          if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]="<0.001"}
+          if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
           pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
           pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
