@@ -58,24 +58,28 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       #extracting tstats
       tstat=model$t
   
-  ##extracting positive results
-  cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]])
-  cluster_pos=cluster_pos[cluster_pos$P<p,]
-  if(NROW(cluster_pos)==0) #if no sig clusters emerged
-  {
-    cluster_pos="No significant clusters"
-    pos_clusterIDmap=rep(0, NCOL(CT_data))
-  } else
-  {
-    #init results variables
-    cluster_pos$P=round(cluster_pos$P,3)
-    cluster_pos$P[cluster_pos$P==0]="<0.001"
-    cluster_pos=cluster_pos[ , !(names(cluster_pos) %in% "resels")] #removing the 'resels' column from the original brainstat output
-    cluster_pos$X=NA
-    cluster_pos$Y=NA
-    cluster_pos$Z=NA
-    cluster_pos$tstat=NA
-    cluster_pos$region=NA
+##extracting positive results
+    cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]])
+    cluster_pos=cluster_pos[cluster_pos$P<p,]
+  
+    #extracting positive cluster map
+    pos_clusterIDmap=model$P$clusid[[1]]
+    
+    if(NROW(cluster_pos)==0) #if no sig clusters emerged
+    {
+        cluster_pos="No significant clusters"
+        pos_clusterIDmap=rep(0, NCOL(CT_data))
+    } else
+    {
+        #init results variables
+        cluster_pos$P=round(cluster_pos$P,3)
+        cluster_pos$P[cluster_pos$P==0]="<0.001"
+        cluster_pos=cluster_pos[ , !(names(cluster_pos) %in% "resels")] #removing the 'resels' column from the original brainstat output
+        cluster_pos$X=NA
+        cluster_pos$Y=NA
+        cluster_pos$Z=NA
+        cluster_pos$tstat=NA
+        cluster_pos$region=NA
 
     #entering results into a matrix
     for (clusno in cluster_pos$clusid)
@@ -96,51 +100,52 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       remove(clus_tstat,idx_pos)
     }
     
-    #positive cluster map
-    pos_clusterIDmap=model$P$clusid[[1]]
+    #thresholding positive cluster map
     pos_clusterIDmap[pos_clusterIDmap>max(cluster_pos$clusid)]=0
   }
   
-  ##extracting negative results
-  cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]])
-  cluster_neg=cluster_neg[cluster_neg$P<p,]
-  if(NROW(cluster_neg)==0) #if no sig clusters emerged
-  {
-    cluster_neg="No significant clusters"
-    neg_clusterIDmap=rep(0, NCOL(CT_data))
-  } else
-  { #init results variables
-    cluster_neg$P=round(cluster_neg$P,3)
-    cluster_neg$P[cluster_neg$P==0]="<0.001"
-    cluster_neg=cluster_neg[ , !(names(cluster_neg) %in% "resels")] #removing the 'resels' column from the original brainstat output
-    cluster_neg$X=NA
-    cluster_neg$Y=NA
-    cluster_neg$Z=NA
-    cluster_neg$tstat=NA
-    cluster_neg$region=NA
+##extracting negative results
+    cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]])
+    cluster_neg=cluster_neg[cluster_neg$P<p,]
     
-    #entering results into a matrix
-    for (clusno in cluster_neg$clusid)
-    {
-      clus_tstat=tstat
-      clus_tstat[neg_clusterIDmap!=clusno]=0
-      cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
-      cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
-      
-      #load atlas for identifying regions
-      if(!exists("ROImap", inherit=F)){load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))} 
-    
-      #identifying region by matching the indices
-      idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
-      if(idx_neg>0){cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_neg] } ##to deal with desikan atlas missing vertex mappings
-      else {cluster_neg$region[clusno]="unknown (use another atlas)"}
-
-      remove(clus_tstat,idx_neg)
-    }
-    #positive cluster map
+    #extracting negative cluster map
     neg_clusterIDmap=model$P$clusid[[2]]
-    neg_clusterIDmap[neg_clusterIDmap>max(cluster_neg$clusid)]=0
-  }
+    if(NROW(cluster_neg)==0) #if no sig clusters emerged
+      {
+        cluster_neg="No significant clusters"
+        neg_clusterIDmap=rep(0, NCOL(CT_data))
+      } else
+      { #init results variables
+        cluster_neg$P=round(cluster_neg$P,3)
+        cluster_neg$P[cluster_neg$P==0]="<0.001"
+        cluster_neg=cluster_neg[ , !(names(cluster_neg) %in% "resels")] #removing the 'resels' column from the original brainstat output
+        cluster_neg$X=NA
+        cluster_neg$Y=NA
+        cluster_neg$Z=NA
+        cluster_neg$tstat=NA
+        cluster_neg$region=NA
+        
+        #entering results into a matrix
+        for (clusno in cluster_neg$clusid)
+        {
+          clus_tstat=tstat
+          clus_tstat[neg_clusterIDmap!=clusno]=0
+          cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
+          cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
+          
+          #load atlas for identifying regions
+          if(!exists("ROImap", inherit=F)){load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))} 
+        
+          #identifying region by matching the indices
+          idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
+          if(idx_neg>0){cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_neg] } ##to deal with desikan atlas missing vertex mappings
+          else {cluster_neg$region[clusno]="unknown (use another atlas)"}
+    
+          remove(clus_tstat,idx_neg)
+        }
+        #thresholding negative cluster map
+        neg_clusterIDmap[neg_clusterIDmap>max(cluster_neg$clusid)]=0
+      }
   ##combining results from both clusters into a list object
   cluster_results=list(cluster_pos,cluster_neg)
   names(cluster_results)=c("Positive contrast","Negative contrast")
