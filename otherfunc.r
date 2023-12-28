@@ -112,7 +112,7 @@ smooth=function(data,FWHM=10)
     {
       surftemp=brainstat.datasets$fetch_template_surface("fsaverage5", join=T)
       vert_mm=3.5
-    } else if (ncol(CT_dat)==81924) ##fsaverage7 parameters
+    } else if (ncol(CT_dat)==81924) ##fsaverage6 parameters
     {
       surftemp=brainstat.datasets$fetch_template_surface("fsaverage6", join=T)
       vert_mm=2
@@ -128,7 +128,7 @@ smooth=function(data,FWHM=10)
 ############################################################################################################################
 ############################################################################################################################
 ##CT surface plots
-plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL)
+plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL , colorbar=T)
 {
   #check vector length
   if(length(data) != 20484)  {stop("Data has to be a numeric vector with 20484 values")} 
@@ -136,7 +136,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
   #legacy input message
   if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
 
-  #import pythong libraries
+  #import python libraries
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   brainspace.plotting=reticulate::import("brainspace.plotting")  
 
@@ -167,7 +167,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
   CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
                                               size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(c(0.7, 0.7, 0.7, 1)),
                                               return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=range,
-                                              label_text=list('left'=list(title)),interactive=F, color_bar=T,  transparent_bg=FALSE)
+                                              label_text=list('left'=list(title)),interactive=F, color_bar=colorbar,  transparent_bg=FALSE)
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
 }
