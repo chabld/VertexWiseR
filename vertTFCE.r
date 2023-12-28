@@ -147,15 +147,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
     }
-    #check complete cases
-    if(length(idxF)>0)
-    {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-
+  
   ##load edgelist data
   if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())} 
   
