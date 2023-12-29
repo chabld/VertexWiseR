@@ -28,24 +28,24 @@ getClusters=function(data)
   vert=which(data!=0)
 
   #matching non-zero vertices with adjacency matrices to obtain list of edges connecting between the non-zero vertices
-  fs5_edgelist0=fs5_edgelist[!is.na(match(fs5_edgelist[,1],vert)),]
-  edgelist=fs5_edgelist0[!is.na(match(fs5_edgelist0[,2],vert)),]
+  edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
+  edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]
   
   if(length(edgelist)>2) #if at least 2 edges are identified
   {
     #extracting cluster-related info from list of non-zero edges
-    com=igraph::components(igraph::graph.data.frame(edgelist, directed = F))
+    com=igraph::components(igraph::graph.data.frame(edgelist1, directed = F))
     clust.size=com$csize
     
     #cluster mappings
     clust.map=rep(NA,20484)
     clust.map[as.numeric(names(com$membership))]=com$membership
   
-  } else if(length(edgelist)==2) #bypass cluster extraction procedure if only 1 edge is identified
+  } else if(length(edgelist1)==2) #bypass cluster extraction procedure if only 1 edge is identified
   {
     clust.size=2
     clust.map=rep(NA,20484)
-    clust.map[edgelist]=1
+    clust.map[edgelist1]=1
   } else #bypass cluster extraction procedure if no edges are identified
   {
     clust.map="noclusters"
