@@ -229,7 +229,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   }
   
   ##loading vertex mapping data
-  if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))} 
+  if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))} 
   if(!exists("MNImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap.rdata?raw=TRUE"))} 
   if(!exists("fs5_edgelist", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
   
