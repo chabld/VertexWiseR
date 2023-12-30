@@ -381,13 +381,12 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       { 
         neg.clust.results="No significant clusters"
         neg.clustermap="No significant clusters"
+      } else 
+      {
+        neg.clust.results="No significant clusters"
+        neg.clustermap="No significant clusters"
+        neg.mask=rep(0,n_vert)
       }
-    } else 
-    {
-      neg.clust.results="No significant clusters"
-      neg.clustermap="No significant clusters"
-      neg.mask=rep(0,n_vert)
-    }
   } else if(TFCE.output$tail==-1)
   {
     neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
