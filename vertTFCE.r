@@ -111,12 +111,12 @@ TFCE.multicore=function(data,tail=tail,nthread)
         }
       }
     suppressWarnings(closeAllConnections())
+    parallel::stopCluster(cl)
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
     else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce)}
   }
   return(tfce_step_values.all)
-  parallel::stopCluster(cl)
 }
 ############################################################################################################################
 ############################################################################################################################
@@ -232,7 +232,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   
   #check which template is used and load appropriate tempalte files
   n_vert=length(TFCE.output$t_stat)
-  if(n_vert==n_vert) 
+  if(n_vert==20484) 
   {    
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
@@ -244,7 +244,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
   } 
-  
+
   
   ##generating p map
   tfce.p=rep(NA,n_vert)
@@ -381,12 +381,12 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
         neg.clustermap="No significant clusters"
       } 
     } else  ## 2nd getClusters()
-      {
-        neg.clust.results="No significant clusters"
-        neg.clustermap="No significant clusters"
-        neg.mask=rep(0,n_vert)
-      }
+    {
+      neg.clust.results="No significant clusters"
+      neg.clustermap="No significant clusters"
+      neg.mask=rep(0,n_vert)
     }
+  }
   else if(TFCE.output$tail==1)
   {
     neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
