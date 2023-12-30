@@ -111,11 +111,12 @@ TFCE.multicore=function(data,tail=tail,nthread)
         }
       }
     suppressWarnings(closeAllConnections())
-    parallel::stopCluster(cl)
+    
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
     else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce)}
   }
+  parallel::stopCluster(cl)
   return(tfce_step_values.all)
 }
 ############################################################################################################################
