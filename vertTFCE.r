@@ -59,6 +59,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   
   tmap.orig=extract.t(mod,colno+1)
   TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
+  remove(tmap.orig,mod)
   
   end=Sys.time()
   cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
@@ -90,11 +91,10 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
-      all_predictors.permuted=all_predictors
-      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
-      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
+      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted)[permseq[,perm],colno])
       tmap=extract.t(mod.permuted,colno+1)
       
+      remove(mod)      
       return(max(abs(TFCE(data = tmap,tail = tail))))
     }
   
