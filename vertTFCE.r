@@ -3,6 +3,113 @@
 
 ############################################################################################################################
 ############################################################################################################################
+##Main function
+
+TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
+{
+  ##checks
+    # check required packages
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }
+    #check if nrow is consistent for all_predictors and FC_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    #check categorical variable
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
+    }
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+    #check length of CT data
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    #collinearity check
+    collinear.check(all_predictors)
+  
+  ##unpermuted model
+  all_predictors=data.matrix(all_predictors)
+  mod=lm(CT_data~data.matrix(all_predictors))
+  
+  #identify contrast
+  for(colno in 1:(NCOL(all_predictors)+1))
+  {
+    if(colno==(NCOL(all_predictors)+1))
+    {stop("IV_of_interest is not contained within all_predictors")}
+    if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))
+    {break}
+  }
+  
+  #extract tstat and calculate tfce image
+  start=Sys.time()
+  cat("\nEstimating unpermuted TFCE image...")
+  
+  tmap.orig=extract.t(mod,colno+1)
+  TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
+  
+  end=Sys.time()
+  cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
+  
+  ##permuted models
+  ##generating permutation sequences  
+  permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
+  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
+  
+  #activate parallel processing
+  unregister_dopar = function() {
+  env = foreach:::.foreachGlobals
+  rm(list=ls(name=env), pos=env)
+  }
+  unregister_dopar()
+  
+  cl=parallel::makeCluster(nthread)
+  doParallel::registerDoParallel(cl)
+  `%dopar%` = foreach::`%dopar%`
+  
+  #progress bar
+  doSNOW::registerDoSNOW(cl)
+  pb=txtProgressBar(max = nperm, style = 3)
+  progress=function(n) setTxtProgressBar(pb, n)
+  opts=list(progress = progress)
+  
+  ##fitting permuted regression model and extracting t-stats in parallel streams
+  start=Sys.time()
+  
+  TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
+    {
+      all_predictors.permuted=all_predictors
+      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
+      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
+      tmap=extract.t(mod.permuted,colno+1)
+      
+      return(max(abs(TFCE(data = tmap,tail = tail))))
+    }
+  
+  end=Sys.time()
+  cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+  suppressWarnings(closeAllConnections())
+  
+  ##saving list objects
+  returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
+  names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  
+  return(returnobj)
+}
+############################################################################################################################
+############################################################################################################################
 ##TFCE single core— for estimating permuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE=function(data,tail=tail)
@@ -125,107 +232,6 @@ TFCE.multicore=function(data,tail=tail,nthread)
   }
   parallel::stopCluster(cl)
   return(tfce_step_values.all)
-}
-############################################################################################################################
-############################################################################################################################
-##Main function
-
-TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
-{
-  ##checks
-    # check required packages
-    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }
-    #check if nrow is consistent for all_predictors and FC_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-    #check categorical variable
-    for (column in 1:NCOL(all_predictors))
-    {
-      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
-    }
-    #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
-    if(length(idxF)>0)
-    {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-    #check length of CT data
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
-    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-    #collinearity check
-    collinear.check(all_predictors)
-  
-  ##unpermuted model
-  all_predictors=data.matrix(all_predictors)
-  mod=lm(CT_data~data.matrix(all_predictors))
-  
-  #identify contrast
-  for(colno in 1:(NCOL(all_predictors)+1))
-  {
-    if(colno==(NCOL(all_predictors)+1))
-    {stop("IV_of_interest is not contained within all_predictors")}
-    if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))
-    {break}
-  }
-  
-  #extract tstat and calculate tfce image
-  start=Sys.time()
-  cat("\nEstimating unpermuted TFCE image...")
-  
-  tmap.orig=extract.t(mod,colno+1)
-  TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
-  
-  end=Sys.time()
-  cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
-  
-  ##permuted models
-  ##generating permutation sequences  
-  permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
-  
-  #activate parallel processing
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-  
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
-  
-  ##fitting permuted regression model and extracting t-stats in parallel streams
-  start=Sys.time()
-  
-  TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
-    {
-      all_predictors.permuted=all_predictors
-      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
-      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
-      tmap=extract.t(mod.permuted,colno+1)
-      
-      return(max(abs(TFCE(data = tmap,tail = tail))))
-    }
-  
-  end=Sys.time()
-  cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-  suppressWarnings(closeAllConnections())
-  
-  ##saving list objects
-  returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
-  names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
-  
-  return(returnobj)
 }
 ############################################################################################################################
 ############################################################################################################################
