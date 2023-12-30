@@ -321,12 +321,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       pos.clustermap="No significant clusters"
       pos.mask=rep(0,n_vert)
     }
-  } else if(TFCE.output$tail==-1)
-  {
-    pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
-    pos.clustermap="No significant clusters"
-    pos.mask=rep(0,n_vert)
-  } 
+  }
+} else if(TFCE.output$tail==-1)
+{
+  pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
+  pos.clustermap="No significant clusters"
+  pos.mask=rep(0,n_vert)
+} 
   
   ##negative cluster
   if(TFCE.output$tail==-1 |TFCE.output$tail==2)
@@ -367,7 +368,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           neg.clust.results[clust.idx,2]=length(clust.vert.idx)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
-          if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}}
+          if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
           neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
           neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
@@ -387,14 +388,14 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
         neg.clustermap="No significant clusters"
         neg.mask=rep(0,n_vert)
       }
-  } else if(TFCE.output$tail==-1)
+    }
+  }  else if(TFCE.output$tail==-1)
   {
     neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     neg.clustermap="No significant clusters"
     neg.mask=rep(0,n_vert)
   } 
   ##saving list objects
-  
   cluster_level_results=list(pos.clust.results,neg.clust.results)
   names(cluster_level_results)=c("Positive contrast", "Negative contrasts")
   
