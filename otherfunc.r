@@ -205,14 +205,14 @@ decode_img=function(img,contrast="positive")
     img[is.na(img)]=0
     img[img<0]=0
     img[img>0]=1
-    stat_labels=r_to_py(img)
+    stat_labels=reticulate::r_to_py(img)
     stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
   } else if (contrast=="negative")
   {
     img[is.na(img)]=0
     img[img>0]=0
     img[img<0]=1
-    stat_labels=r_to_py(img)
+    stat_labels=reticulate::r_to_py(img)
     stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
   }
   
