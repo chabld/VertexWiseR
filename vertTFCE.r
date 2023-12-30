@@ -151,7 +151,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     }
     #check length of CT data
     n_vert=ncol(CT_data)
-    if(n_vert==n_vert) 
+    if(n_vert==20484) 
     {    
         template="fsaverage5"
         load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())
