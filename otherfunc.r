@@ -24,6 +24,8 @@ extract.t=function(mod,row)
 ##find clusters using edgelist
 getClusters=function(data)
 { 
+  n_vert=length(data)
+  
   #listing out non-zero vertices
   vert=which(data!=0)
 
@@ -38,13 +40,13 @@ getClusters=function(data)
     clust.size=com$csize
     
     #cluster mappings
-    clust.map=rep(NA,20484)
+    clust.map=rep(NA,n_vert)
     clust.map[as.numeric(names(com$membership))]=com$membership
   
   } else if(length(edgelist1)==2) #bypass cluster extraction procedure if only 1 edge is identified
   {
     clust.size=2
-    clust.map=rep(NA,20484)
+    clust.map=rep(NA,n_vert)
     clust.map[edgelist1]=1
   } else #bypass cluster extraction procedure if no edges are identified
   {
@@ -116,7 +118,8 @@ smooth=function(data,FWHM=10)
     {
       surftemp=brainstat.datasets$fetch_template_surface("fsaverage6", join=T)
       vert_mm=2
-    }
+    } 
+    else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
   smooth=brainstat.mesh.data$mesh_smooth(Y=CT_dat,surf=surftemp, FWHM = FWHM/vert_mm)
@@ -130,8 +133,11 @@ smooth=function(data,FWHM=10)
 ##CT surface plots
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL , colorbar=T)
 {
-  #check vector length
-  if(length(data) != 20484)  {stop("Data has to be a numeric vector with 20484 values")} 
+  #check length of vector
+  n_vert=length(CT_data)
+  if(n_vert==20484) {template="fsaverage5"}
+  else if (n_vert==81924) {template="fsaverage6"} 
+  else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   #legacy input message
   if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
@@ -140,9 +146,9 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   brainspace.plotting=reticulate::import("brainspace.plotting")  
 
-  #loading fs5average surface
-  left=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[1]
-  right=brainstat.datasets$fetch_template_surface("fsaverage5", join=F, layer=surface)[2]
+  #loading fsaverage surface
+  left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
+  right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
 
   #setting color maps
   if(missing("cmap"))
@@ -176,9 +182,15 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=N
 ##CT image decoding
 decode_img=function(img,contrast="positive")
 {
-  ##input checks
-  if(length(img) != 20484)  {stop("img object has to be a numeric vector with 20484 values")} 
-  if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
+  ##checks
+    #check length of vector
+    n_vert=length(CT_data)
+    if(n_vert==20484) {template="fsaverage5"}
+    else if (n_vert==81924) {template="fsaverage6"} 
+    else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+
+    #check contrast
+    if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
   
   ##import python libraries
   tflow=reticulate::import("templateflow.api")
@@ -194,14 +206,14 @@ decode_img=function(img,contrast="positive")
     img[img<0]=0
     img[img>0]=1
     stat_labels=r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`("fsaverage5", stat_labels$flatten())
+    stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
   } else if (contrast=="negative")
   {
     img[is.na(img)]=0
     img[img>0]=0
     img[img<0]=1
     stat_labels=r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`("fsaverage5", stat_labels$flatten())
+    stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
   }
   
   ##download neurosynth database if necessary 
