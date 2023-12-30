@@ -184,7 +184,7 @@ decode_img=function(img,contrast="positive")
 {
   ##checks
     #check length of vector
-    n_vert=length(CT_data)
+    n_vert=length(img)
     if(n_vert==20484) {template="fsaverage5"}
     else if (n_vert==81924) {template="fsaverage6"} 
     else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
