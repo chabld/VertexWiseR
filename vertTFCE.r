@@ -21,7 +21,7 @@ TFCE=function(data,tail=tail)
     signs = -1
     max_score = max(-data,na.rm = T)
   }
-    
+  
   #define TFCE parameters
   step=max_score / 100 #calculating number of steps for TFCE estimation
   score_threshs = seq(step, max_score, by = step) #Set based on determined step size
@@ -76,7 +76,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     signs = -1
     max_score = max(-data,na.rm = T)
   }
-    
+  
   #define TFCE parameters
   step=max_score / 100 #calculating number of steps for TFCE estimation
   score_threshs = seq(step, max_score, by = step) #Set based on determined step size
@@ -86,12 +86,12 @@ TFCE.multicore=function(data,tail=tail,nthread)
   {
     temp_data = data * signs[sign.idx]
     tfce=rep(0,length(temp_data))
-
+    
     #activate parallel processing
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
-
+    
     #parallel loop across different score_threshs values for TFCE estimation
     tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","edgelist"))  %dopar%
       {
@@ -125,133 +125,133 @@ TFCE.multicore=function(data,tail=tail,nthread)
 TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
 {
   ##checks
-    # check required packages
-    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }
-    #check if nrow is consistent for all_predictors and FC_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-    #check categorical variable
-    for (column in 1:NCOL(all_predictors))
-    {
-      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
-    }
-    #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
-    if(length(idxF)>0)
-    {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-    #check length of CT data
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
-    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+  # check required packages
+  list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+  new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }
+  #check if nrow is consistent for all_predictors and FC_data
+  if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+  #check categorical variable
+  for (column in 1:NCOL(all_predictors))
+  {
+    if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
+  }
+  #incomplete data check
+  idxF=which(complete.cases(all_predictors)==F)
+  if(length(idxF)>0)
+  {
+    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+    all_predictors=all_predictors[-idxF,]
+    IV_of_interest=IV_of_interest[-idxF]
+    CT_data=CT_data[-idxF,]
+  }
+  #check length of CT data
+  n_vert=ncol(CT_data)
+  if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
+  else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
+  else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
   
   ##unpermuted model
-    all_predictors=data.matrix(all_predictors)
-    mod=lm(CT_data~data.matrix(all_predictors))
+  all_predictors=data.matrix(all_predictors)
+  mod=lm(CT_data~data.matrix(all_predictors))
   
-    #identify contrast
-    for(colno in 1:(NCOL(all_predictors)+1))
-    {
-      if(colno==(NCOL(all_predictors)+1))
-      {stop("IV_of_interest is not contained within all_predictors")}
-      if(identical(IV_of_interest,all_predictors[,colno]))
-      {break}
-    }
+  #identify contrast
+  for(colno in 1:(NCOL(all_predictors)+1))
+  {
+    if(colno==(NCOL(all_predictors)+1))
+    {stop("IV_of_interest is not contained within all_predictors")}
+    if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))
+    {break}
+  }
   
-    #extract tstat and calculate tfce image
-    start=Sys.time()
-    cat("\nEstimating unpermuted TFCE image...")
-    
-    tmap.orig=extract.t(mod,colno+1)
-    TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
-    
-    end=Sys.time()
-    cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
+  #extract tstat and calculate tfce image
+  start=Sys.time()
+  cat("\nEstimating unpermuted TFCE image...")
+  
+  tmap.orig=extract.t(mod,colno+1)
+  TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
+  
+  end=Sys.time()
+  cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
   ##permuted models
-    ##generating permutation sequences  
-    permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
+  ##generating permutation sequences  
+  permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
+  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
   
-    #activate parallel processing
-    cl=parallel::makeCluster(nthread)
-    doParallel::registerDoParallel(cl)
-    `%dopar%` = foreach::`%dopar%`
+  #activate parallel processing
+  cl=parallel::makeCluster(nthread)
+  doParallel::registerDoParallel(cl)
+  `%dopar%` = foreach::`%dopar%`
   
-    #progress bar
-    doSNOW::registerDoSNOW(cl)
-    pb=txtProgressBar(max = nperm, style = 3)
-    progress=function(n) setTxtProgressBar(pb, n)
-    opts=list(progress = progress)
-    
-    ##fitting permuted regression model and extracting t-stats in parallel streams
-    start=Sys.time()
+  #progress bar
+  doSNOW::registerDoSNOW(cl)
+  pb=txtProgressBar(max = nperm, style = 3)
+  progress=function(n) setTxtProgressBar(pb, n)
+  opts=list(progress = progress)
   
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
-      {
-        all_predictors.permuted=all_predictors
-        all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
-        mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
-        tmap=extract.t(mod.permuted,colno+1)
-        
-        return(max(abs(TFCE(data = tmap,tail = tail))))
-      }
+  ##fitting permuted regression model and extracting t-stats in parallel streams
+  start=Sys.time()
   
-    end=Sys.time()
-    cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-    suppressWarnings(closeAllConnections())
-    
-    ##saving list objects
-    returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
-    names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
+    {
+      all_predictors.permuted=all_predictors
+      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
+      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
+      tmap=extract.t(mod.permuted,colno+1)
+      
+      return(max(abs(TFCE(data = tmap,tail = tail))))
+    }
   
-    return(returnobj)
+  end=Sys.time()
+  cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+  suppressWarnings(closeAllConnections())
+  
+  ##saving list objects
+  returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
+  names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  
+  return(returnobj)
 }
 ############################################################################################################################
 ############################################################################################################################
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
   nperm=length(TFCE.output$TFCE.max)
-
+  
   #check if number of permutations is adequate
   if(nperm<1/p)
   {
     if(TFCE.output$tail==2){warning(paste("Not enough permutations were carried out to estimate the two-tailed p<",p*2," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))} 
     else{warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting nperm to at least ",ceiling(1/p),sep=""))}
   }
-
-  #check which template is used and load appropriate tempalte files
-    n_vert=length(TFCE.output$t_stat)
-    if(n_vert==n_vert) 
-    {    
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
-    }
-    else if (n_vert==81924) 
-    {
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"))
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
-        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
-    } 
   
-
+  #check which template is used and load appropriate tempalte files
+  n_vert=length(TFCE.output$t_stat)
+  if(n_vert==n_vert) 
+  {    
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+  }
+  else if (n_vert==81924) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
+  } 
+  
+  
   ##generating p map
   tfce.p=rep(NA,n_vert)
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
   for (vert in 1:n_vert)
   {
-  tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm
+    tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm
   }
   
   ##generating thresholded t-stat map
@@ -260,7 +260,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   t_stat.thresholdedP=TFCE.output$t_stat
   t_stat.thresholdedP[tfce.p>p]=0
   
- ##Cluster level results
+  ##Cluster level results
   ##positive cluster
   if(TFCE.output$tail==1 |TFCE.output$tail==2)
   {
@@ -276,17 +276,16 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
       
       #generating mask
-      pos.clusters=getClusters(pos.clusters0[[1]])
+      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getClusters()
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
       pos.mask=rep(0,n_vert)
-      
-      if(pos.clusters[[2]][1]!="noclusters") {pos.mask[pos.clusters[[1]]>0]=1}
       
       #results table
       pos.clustermap=rep(NA,n_vert)
       
       if(pos.clusters[[2]][1]!="noclusters")
       {
+        pos.mask[pos.clusters[[1]]>0]=1
         pos.clust.results=data.frame(matrix(NA,nrow=length(pos.clusters[[2]]), ncol=8))
         colnames(pos.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
         clust.idx=1
@@ -305,7 +304,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-          if(atlas.idx>0){pos.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+          if(atlas.idx>0) {pos.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
           else {pos.clust.results[clust.idx,8]="unknown (use another atlas)"}
           
           clust.idx=clust.idx+1
@@ -315,19 +314,18 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
         pos.clust.results="No significant clusters"
         pos.clustermap="No significant clusters"
       }
-    } else 
+    } else ## 2nd getClusters()
     {
       pos.clust.results="No significant clusters"
       pos.clustermap="No significant clusters"
       pos.mask=rep(0,n_vert)
     }
-  }
-} else if(TFCE.output$tail==-1)
-{
-  pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
-  pos.clustermap="No significant clusters"
-  pos.mask=rep(0,n_vert)
-} 
+  } else if(TFCE.output$tail==-1)
+  {
+    pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
+    pos.clustermap="No significant clusters"
+    pos.mask=rep(0,n_vert)
+  } 
   
   ##negative cluster
   if(TFCE.output$tail==-1 |TFCE.output$tail==2)
@@ -344,17 +342,16 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       neg.clusters0[[1]][which(!is.na(match(neg.clusters0[[1]],neg.clustID.remove)))]=NA
       
       #generating mask
-      neg.clusters=getClusters(neg.clusters0[[1]])
+      neg.clusters=getClusters(neg.clusters0[[1]]) ## 2nd getClusters()
       neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
       neg.mask=rep(0,n_vert)
-      
-      if(neg.clusters[[2]][1]!="noclusters") {neg.mask[neg.clusters[[1]]>0]=1}
       
       #results table
       neg.clustermap=rep(NA,n_vert)
       
       if(neg.clusters[[2]][1]!="noclusters")
       {
+        neg.mask[neg.clusters[[1]]>0]=1
         neg.clust.results=data.frame(matrix(NA,nrow=length(neg.clusters[[2]]), ncol=8))
         colnames(neg.clust.results)=c("clusid","nverts","P","X","Y","Z","tstat","region")
         clust.idx=1
@@ -373,7 +370,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
-          if(atlas.idx>0){neg.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
+          if(atlas.idx>0) {neg.clust.results[clust.idx,8]=ROImap[[2]][,atlas][atlas.idx] } ##to deal with desikan atlas missing vertex mappings
           else {neg.clust.results[clust.idx,8]="unknown (use another atlas)"}
           
           clust.idx=clust.idx+1
@@ -382,14 +379,15 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       { 
         neg.clust.results="No significant clusters"
         neg.clustermap="No significant clusters"
-      } else 
+      } 
+    } else  ## 2nd getClusters()
       {
         neg.clust.results="No significant clusters"
         neg.clustermap="No significant clusters"
         neg.mask=rep(0,n_vert)
       }
     }
-  }  else if(TFCE.output$tail==-1)
+  else if(TFCE.output$tail==1)
   {
     neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     neg.clustermap="No significant clusters"
