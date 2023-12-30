@@ -93,7 +93,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     `%dopar%` = foreach::`%dopar%`
 
     #parallel loop across different score_threshs values for TFCE estimation
-    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","fs5_edgelist"))  %dopar%
+    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","edgelist"))  %dopar%
       {
         temp_data[temp_data < score_threshs[thresh.no]] = 0
         if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
