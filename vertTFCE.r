@@ -133,35 +133,37 @@ TFCE.multicore=function(data,tail=tail,nthread)
 TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
 {
   ##checks
-  # check required packages
-  list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-  new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) 
-  {
-    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }
-  #check if nrow is consistent for all_predictors and FC_data
-  if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-  #check categorical variable
-  for (column in 1:NCOL(all_predictors))
-  {
-    if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
-  }
-  #incomplete data check
-  idxF=which(complete.cases(all_predictors)==F)
-  if(length(idxF)>0)
-  {
-    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-    all_predictors=all_predictors[-idxF,]
-    IV_of_interest=IV_of_interest[-idxF]
-    CT_data=CT_data[-idxF,]
-  }
-  #check length of CT data
-  n_vert=ncol(CT_data)
-  if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
-  else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
-  else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    # check required packages
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }
+    #check if nrow is consistent for all_predictors and FC_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    #check categorical variable
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
+    }
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+    #check length of CT data
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    #collinearity check
+    collinear.check(all_predictors)
   
   ##unpermuted model
   all_predictors=data.matrix(all_predictors)
