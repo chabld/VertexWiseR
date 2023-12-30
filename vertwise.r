@@ -46,6 +46,9 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
         } 
         else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+
+        #collinearity check
+        collinear.check(all_predictors)
     
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
