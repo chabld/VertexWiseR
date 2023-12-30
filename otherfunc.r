@@ -108,13 +108,13 @@ smooth=function(data,FWHM=10)
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   
   ##identify NA vertices
-  col0=which(colSums(CT_dat==0) == nrow(CT_dat))
+  col0=which(colSums(data==0) == nrow(data))
   
-  if(ncol(CT_dat)==20484) ##fsaverage5 parameters
+  if(ncol(data)==20484) ##fsaverage5 parameters
     {
       surftemp=brainstat.datasets$fetch_template_surface("fsaverage5", join=T)
       vert_mm=3.5
-    } else if (ncol(CT_dat)==81924) ##fsaverage6 parameters
+    } else if (ncol(data)==81924) ##fsaverage6 parameters
     {
       surftemp=brainstat.datasets$fetch_template_surface("fsaverage6", join=T)
       vert_mm=2
