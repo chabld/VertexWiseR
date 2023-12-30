@@ -89,11 +89,11 @@ TFCE.multicore=function(data,tail=tail,nthread)
     tfce=rep(0,length(temp_data))
     
     #activate parallel processing
-    unregister_dopar <- function() {
-      env <- foreach:::.foreachGlobals
+    unregister_dopar = function() {
+      env = foreach:::.foreachGlobals
       rm(list=ls(name=env), pos=env)
     }
-    unregister_dopar
+    unregister_dopar()
     
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
