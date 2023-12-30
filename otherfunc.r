@@ -100,6 +100,52 @@ atlas_to_fs5=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefe
   }
 ############################################################################################################################
 ############################################################################################################################
+#convert between fsaverage5 and fsaverage6 spacing
+fs5_to_fs6=function(data)
+{
+  #check length of vector
+  if(length(data)%%20484!=0) {stop("Length of data is not a multiple of 20484")}
+  
+  #load atlas mapping data
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
+  
+  if(length(data)==20484) #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
+  {
+    data=matrix(data,ncol=20484,nrow=1)  
+    data.fs6=matrix(NA,ncol=81924,nrow=1)
+    
+    for (vert in 1:20484)  {data.fs6[fs6_to_fs5==vert]=data[vert]} 
+    } else #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
+    {
+      data.fs6=matrix(NA,ncol=81924,nrow=NROW(data))
+      for (vert in 1:20484)  {data.fs6[,fs6_to_fs5==vert]=data[,vert]} 
+    }
+  return(data.fs6)
+}
+
+fs6_to_fs5=function(data)
+{
+  #check length of vector
+  if(length(data)%%81924!=0) {stop("Length of data is not a multiple of 81924")}
+  
+  #load atlas mapping data
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
+  
+  if(length(data)==81924) #mapping fsaverage6 to fsaverage5 space if data is a Nx20484 matrix
+  {
+    data=matrix(data,ncol=81924,nrow=1)  
+    data.fs5=matrix(NA,ncol=20484,nrow=1)
+    
+    for (vert in 1:20484)  {data.fs5[vert]=mean(data[fs6_to_fs5==vert],na.rm = T)} 
+  } else #mapping fsaverage6 to fsaverage5 space if data is a Nx20484 matrix
+  {
+    data.fs5=matrix(NA,ncol=20484,nrow=NROW(data))
+    for (vert in 1:20484)  {data.fs5[,vert]=rowMeans(data[,fs6_to_fs5==vert],na.rm = T)} 
+  }
+  return(data.fs5)
+}
+############################################################################################################################
+############################################################################################################################
 ##smoothing fsaverage5 and fsaverage6 data
 smooth=function(data,FWHM=10)
 {
