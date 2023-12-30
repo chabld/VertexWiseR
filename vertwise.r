@@ -35,11 +35,18 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         
         #check length of CT data
         n_vert=ncol(CT_data)
-        if(n_vert==20484) {template="fsaverage5"} 
-        else if (n_vert==81924) {template="fsaverage6"} 
+        if(n_vert==20484) 
+        {    
+            template="fsaverage5"
+            load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+        }
+        else if (n_vert==81924) 
+        {
+            template="fsaverage6"
+            load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+        } 
         else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
     
-        
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
@@ -55,7 +62,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
       model0 = brainstat.stats.terms$FixedEffect(all_predictors, "_check_categorical" = F)
       model=brainstat.stats.SLM$SLM(model = model0,
                                     contrast=IV_of_interest,
-                                    surf = "fsaverage5", 
+                                    surf = template, 
                                     mask=mask,
                                     correction=c("fdr", "rft"),
                                     cluster_threshold=p)
@@ -89,19 +96,16 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
     #entering results for each cluster
     for (clusno in cluster_pos$clusid)
     {
-      clus_tstat=tstat
-      clus_tstat[pos_clusterIDmap!=clusno]=0
-      cluster_pos$tstat[clusno]=round(clus_tstat[which.max(clus_tstat)],2)
-      cluster_pos[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
-
-      #load atlas for identifying regions
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))
+        clus_tstat=tstat
+        clus_tstat[pos_clusterIDmap!=clusno]=0
+        cluster_pos$tstat[clusno]=round(clus_tstat[which.max(clus_tstat)],2)
+        cluster_pos[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
       
-      #identifying region by matching the indices
-      idx_pos=ROImap[[1]][,atlas][which.max(clus_tstat)]
-      if(idx_pos>0){cluster_pos$region[clusno]=ROImap[[2]][,atlas][idx_pos] } ##to deal with desikan atlas missing vertex mappings
-      else {cluster_pos$region[clusno]="unknown (use another atlas)"}
-      
+        #identifying region by matching the indices
+        idx_pos=ROImap[[1]][,atlas][which.max(clus_tstat)]
+        if(idx_pos>0){cluster_pos$region[clusno]=ROImap[[2]][,atlas][idx_pos] } ##to deal with desikan atlas missing vertex mappings
+        else {cluster_pos$region[clusno]="unknown (use another atlas)"}
+          
       remove(clus_tstat,idx_pos)
     }
     #thresholding positive cluster map
@@ -137,9 +141,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
           cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
           cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
           
-          #load atlas for identifying regions
-          if(!exists("ROImap", inherit=F)){load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap.rdata?raw=TRUE"))} 
-        
           #identifying region by matching the indices
           idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
           if(idx_neg>0){cluster_neg$region[clusno]=ROImap[[2]][,atlas][idx_neg] } ##to deal with desikan atlas missing vertex mappings
