@@ -53,6 +53,7 @@ TFCE=function(data,tail=tail)
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=tfce}
     else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+tfce}
+    remove(tfce, clust.dat,non_zero_inds,cluster_tfces,tfce_step_values, labeled_non_zero)
   }
   return(tfce_step_values.all)
 }
@@ -88,6 +89,12 @@ TFCE.multicore=function(data,tail=tail,nthread)
     tfce=rep(0,length(temp_data))
     
     #activate parallel processing
+    unregister_dopar <- function() {
+      env <- foreach:::.foreachGlobals
+      rm(list=ls(name=env), pos=env)
+    }
+    unregister_dopar
+    
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
@@ -110,7 +117,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
           }
         }
       }
-    suppressWarnings(closeAllConnections())
+    #suppressWarnings(closeAllConnections())
     
     #combine results from positive and negative tails if necessary 
     if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
@@ -245,7 +252,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
   } 
-
+  
   
   ##generating p map
   tfce.p=rep(NA,n_vert)
