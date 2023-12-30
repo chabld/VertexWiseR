@@ -6,7 +6,7 @@
 
 collinear.check=function(all_predictors)
   {
-    cormat=cor(all_predictors)
+    cormat=cor(all_predictors,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = T) >0.5)
@@ -16,7 +16,7 @@ collinear.check=function(all_predictors)
   }
 ############################################################################################################################
 ############################################################################################################################
-## Efficient way to extract t statistics from linear regression models
+## Efficient way to extract t statistics from linear regression models to speed up the permutation process
 ## adapted from https://stackoverflow.com/questions/15820623/obtain-t-statistic-for-regression-coefficients-of-an-mlm-object-returned-by-l
 extract.t=function(mod,row)
 {
