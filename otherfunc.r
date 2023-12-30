@@ -134,7 +134,7 @@ smooth=function(data,FWHM=10)
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL , colorbar=T)
 {
   #check length of vector
-  n_vert=length(CT_data)
+  n_vert=length(data)
   if(n_vert==20484) {template="fsaverage5"}
   else if (n_vert==81924) {template="fsaverage6"} 
   else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
