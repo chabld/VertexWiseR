@@ -149,9 +149,19 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
     }
-  
-  ##load edgelist data
-  if(!exists("fs5_edgelist"))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())} 
+    #check length of CT data
+    n_vert=ncol(CT_data)
+    if(n_vert==n_vert) 
+    {    
+        template="fsaverage5"
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())
+    }
+    else if (n_vert==81924) 
+    {
+        template="fsaverage6"
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())
+    } 
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
   
   ##unpermuted model
     all_predictors=data.matrix(all_predictors)
@@ -195,7 +205,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
     ##fitting permuted regression model and extracting t-stats in parallel streams
     start=Sys.time()
   
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","fs5_edgelist"), .options.snow = opts)  %dopar%
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
       {
         all_predictors.permuted=all_predictors
         all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno]
@@ -227,16 +237,29 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     if(TFCE.output$tail==2){warning(paste("Not enough permutations were carried out to estimate the two-tailed p<",p*2," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))} 
     else{warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting nperm to at least ",ceiling(1/p),sep=""))}
   }
+
+  #check which template is used and load appropriate tempalte files
+    n_vert=length(TFCE.output$t_stat)
+    if(n_vert==n_vert) 
+    {    
+        template="fsaverage5"
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+    }
+    else if (n_vert==81924) 
+    {
+        template="fsaverage6"
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+        load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+    } 
   
-  ##loading vertex mapping data
-  if(!exists("ROImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))} 
-  if(!exists("MNImap", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))} 
-  if(!exists("fs5_edgelist", inherit=F))  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))} 
-  
+
   ##generating p map
-  tfce.p=rep(NA,20484)
+  tfce.p=rep(NA,n_vert)
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
-  for (vert in 1:20484)
+  for (vert in 1:n_vert)
   {
   tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm
   }
@@ -265,12 +288,12 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       #generating mask
       pos.clusters=getClusters(pos.clusters0[[1]])
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
-      pos.mask=rep(0,20484)
+      pos.mask=rep(0,n_vert)
       
       if(pos.clusters[[2]][1]!="noclusters") {pos.mask[pos.clusters[[1]]>0]=1}
       
       #results table
-      pos.clustermap=rep(NA,20484)
+      pos.clustermap=rep(NA,n_vert)
       
       if(pos.clusters[[2]][1]!="noclusters")
       {
@@ -306,13 +329,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     {
       pos.clust.results="No significant clusters"
       pos.clustermap="No significant clusters"
-      pos.mask=rep(0,20484)
+      pos.mask=rep(0,n_vert)
     }
   } else if(TFCE.output$tail==-1)
   {
     pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     pos.clustermap="No significant clusters"
-    pos.mask=rep(0,20484)
+    pos.mask=rep(0,n_vert)
   } 
   
   ##negative cluster
@@ -332,12 +355,12 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       #generating mask
       neg.clusters=getClusters(neg.clusters0[[1]])
       neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
-      neg.mask=rep(0,20484)
+      neg.mask=rep(0,n_vert)
       
       if(neg.clusters[[2]][1]!="noclusters") {neg.mask[neg.clusters[[1]]>0]=1}
       
       #results table
-      neg.clustermap=rep(NA,20484)
+      neg.clustermap=rep(NA,n_vert)
       
       if(neg.clusters[[2]][1]!="noclusters")
       {
@@ -373,13 +396,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     {
       neg.clust.results="No significant clusters"
       neg.clustermap="No significant clusters"
-      neg.mask=rep(0,20484)
+      neg.mask=rep(0,n_vert)
     }
   } else if(TFCE.output$tail==-1)
   {
     neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
     neg.clustermap="No significant clusters"
-    neg.mask=rep(0,20484)
+    neg.mask=rep(0,n_vert)
   } 
   ##saving list objects
   
