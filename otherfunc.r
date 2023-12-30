@@ -1,6 +1,19 @@
 ## OTHER VERTEX-WISE FUNCTIONS
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
+############################################################################################################################
+############################################################################################################################
+## collinearity check
 
+collinear.check=function(all_predictors)
+  {
+    cormat=cor(all_predictors)
+    cormat.0=cormat
+    cormat.0[cormat.0==1]=NA
+    if(max(abs(cormat.0),na.rm = T) >0.5)
+    {
+      warning(paste("correlations among variables in all_predictors are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+    }
+  }
 ############################################################################################################################
 ############################################################################################################################
 ## Efficient way to extract t statistics from linear regression models
