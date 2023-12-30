@@ -33,7 +33,7 @@ getClusters=function(data)
   edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
   edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]
   
-  if(length(edgelist)>2) #if at least 2 edges are identified
+  if(length(edgelist1)>2) #if at least 2 edges are identified
   {
     #extracting cluster-related info from list of non-zero edges
     com=igraph::components(igraph::graph.data.frame(edgelist1, directed = F))
