@@ -367,7 +367,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           neg.clust.results[clust.idx,2]=length(clust.vert.idx)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
-          if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]="<0.001"}
+          if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}}
           neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
           neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
