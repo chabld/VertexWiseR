@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
+TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100, tail=2, nthread=10)
 {
   # check required packages
   list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
