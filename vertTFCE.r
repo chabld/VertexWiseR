@@ -240,11 +240,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   nperm=length(TFCE.output$TFCE.max)
   
   #check if number of permutations is adequate
-  if(nperm<1/p)
-  {
-    if(TFCE.output$tail==2){warning(paste("Not enough permutations were carried out to estimate the two-tailed p<",p*2," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))} 
-    else{warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting nperm to at least ",ceiling(1/p),sep=""))}
-  }
+  if(nperm<1/p)  {warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))}
   
   #check which template is used and load appropriate tempalte files
   n_vert=length(TFCE.output$t_stat)
@@ -264,10 +260,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   ##generating p map
   tfce.p=rep(NA,n_vert)
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
-  for (vert in 1:n_vert)
-  {
-    tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm
-  }
+  for (vert in 1:n_vert)  {tfce.p[vert]=length(which(TFCE.output$TFCE.max>abs(TFCE.output$TFCE.orig[vert])))/nperm}
   
   ##generating thresholded t-stat map
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
