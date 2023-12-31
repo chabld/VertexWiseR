@@ -275,7 +275,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     pos.t_stat.thresholdedP=t_stat.thresholdedP
     pos.t_stat.thresholdedP[pos.t_stat.thresholdedP<0]=0
     
-    
     if(length(pos.t_stat.thresholdedP!=0)<3) #skip if no clusters detected
     {
       pos.clusters0=getClusters(pos.t_stat.thresholdedP) ##first getCluster()
@@ -397,7 +396,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   }
   else if(TFCE.output$tail==1)
   {
-    neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
+    neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated"
     neg.clustermap="No significant clusters"
     neg.mask=rep(0,n_vert)
   } 
