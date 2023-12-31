@@ -57,7 +57,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   cat("\nEstimating unpermuted TFCE image...")
   
   tmap.orig=extract.t(mod,colno+1)
-  TFCE.orig=TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread)
+  TFCE.orig=suppressWarnings(TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread))
   remove(mod)
   
   end=Sys.time()
