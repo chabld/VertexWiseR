@@ -7,7 +7,6 @@
 
 TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, tail=2, nthread=10)
 {
-  ##checks
   # check required packages
   list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
   new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -34,8 +33,8 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   }
   #check length of CT data
   n_vert=ncol(CT_data)
-  if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"),envir = globalenv())}
-  else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"),envir = globalenv())} 
+  if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
+  else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
   else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
   #collinearity check
   collinear.check(all_predictors)
@@ -66,6 +65,7 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   
   ##permuted models
   ##generating permutation sequences  
+  set.seed(123)
   permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
   for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
   
@@ -91,13 +91,12 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
   
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
-      mod.permuted=lm(CT_data~data.matrix(all_predictors)[permseq[,perm],colno])
+      mod.permuted=lm(CT_data~data.matrix(all_predictors)[permseq[,perm],])
       tmap=extract.t(mod.permuted,colno+1)
       
-      remove(mod)      
+      remove(mod.permuted)
       return(max(abs(TFCE(data = tmap,tail = tail))))
     }
-  
   end=Sys.time()
   cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
   suppressWarnings(closeAllConnections())
@@ -251,13 +250,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   n_vert=length(TFCE.output$t_stat)
   if(n_vert==20484) 
   {    
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs5edgelist.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
   }
   else if (n_vert==81924) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6edgelist.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
   } 
