@@ -338,7 +338,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     }
   } else if(TFCE.output$tail==-1)
   {
-    pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
+    pos.clust.results="Positive contrast not analyzed, only negative one-tailed TFCE statistics were estimated"
     pos.clustermap="No significant clusters"
     pos.mask=rep(0,n_vert)
   } 
@@ -405,7 +405,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   }
   else if(TFCE.output$tail==1)
   {
-    neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated)"
+    neg.clust.results="Negative contrast not analyzed, only negative one-tailed TFCE statistics were estimated"
     neg.clustermap="No significant clusters"
     neg.mask=rep(0,n_vert)
   } 
