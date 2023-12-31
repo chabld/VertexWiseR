@@ -95,11 +95,10 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=5, t
       tmap=extract.t(mod.permuted,colno+1)
       
       remove(mod.permuted)
-      return(max(abs(TFCE(data = tmap,tail = tail))))
+      return(max(abs(suppressWarnings(TFCE(data = tmap,tail = tail)))))
     }
   end=Sys.time()
   cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-  suppressWarnings(closeAllConnections())
   
   ##saving list objects
   returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
