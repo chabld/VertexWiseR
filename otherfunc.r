@@ -45,6 +45,7 @@ getClusters=function(data)
   #matching non-zero vertices with adjacency matrices to obtain list of edges connecting between the non-zero vertices
   edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
   edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]
+  remove(edgelist0,vert)
   
   if(length(edgelist1)>2) #if at least 2 edges are identified
   {
