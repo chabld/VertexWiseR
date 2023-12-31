@@ -261,7 +261,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
   } 
   
-  
   ##generating p map
   tfce.p=rep(NA,n_vert)
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
