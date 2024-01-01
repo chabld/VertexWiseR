@@ -7,38 +7,47 @@
 
 TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100, tail=2, nthread=10)
 {
-  # check required packages
-  list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-  new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) 
-  {
-    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }
-  #check if nrow is consistent for all_predictors and FC_data
-  if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-  #check categorical variable
-  for (column in 1:NCOL(all_predictors))
-  {
-    if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
-  }
-  #incomplete data check
-  idxF=which(complete.cases(all_predictors)==F)
-  if(length(idxF)>0)
-  {
-    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-    all_predictors=all_predictors[-idxF,]
-    IV_of_interest=IV_of_interest[-idxF]
-    CT_data=CT_data[-idxF,]
-  }
-  #check length of CT data
-  n_vert=ncol(CT_data)
-  if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
-  else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
-  else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-  #collinearity check
-  collinear.check(all_predictors)
+  ##checks
+    # check required packages
+    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
+    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }
   
+    #check if nrow is consistent for all_predictors and FC_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+  
+    #check categorical variable
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column])  != "integer" & class(all_predictors[,column])  != "numeric")  {stop(paste(colnames(all_predictors)[column],"is not a numeric variable, please recode it into a numeric variable"))}
+    }
+  
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+
+    #check tail
+    if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
+  
+    #check length of CT data
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    
+    #collinearity check
+    collinear.check(all_predictors)
+    
   ##unpermuted model
   all_predictors=data.matrix(all_predictors)
   mod=lm(CT_data~data.matrix(all_predictors))
@@ -64,27 +73,27 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
   cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
   ##permuted models
-  ##generating permutation sequences  
-  set.seed(123)
-  permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
+    #generating permutation sequences  
+    set.seed(123)
+    permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
+    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
   
-  #activate parallel processing
-  unregister_dopar = function() {
-    env = foreach:::.foreachGlobals
-    rm(list=ls(name=env), pos=env)
-  }
-  unregister_dopar()
-  
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-  
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
+    #activate parallel processing
+    unregister_dopar = function() {
+      env = foreach:::.foreachGlobals
+      rm(list=ls(name=env), pos=env)
+    }
+    unregister_dopar()
+    
+    cl=parallel::makeCluster(nthread)
+    doParallel::registerDoParallel(cl)
+    `%dopar%` = foreach::`%dopar%`
+    
+    #progress bar
+    doSNOW::registerDoSNOW(cl)
+    pb=txtProgressBar(max = nperm, style = 3)
+    progress=function(n) setTxtProgressBar(pb, n)
+    opts=list(progress = progress)
   
   ##fitting permuted regression model and extracting t-stats in parallel streams
   start=Sys.time()
