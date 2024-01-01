@@ -251,8 +251,8 @@ decode_img=function(img,contrast="positive")
     #check length of vector
     n_vert=length(img)
     if(n_vert==20484) {template="fsaverage5"}
-    else if (n_vert==81924) {template="fsaverage6"} 
-    else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    else if (n_vert==81924) {stop("decoding of fsaverage6-space image is current not implemented, please resample the image to fsaverage5 space")} 
+    else {stop("data vector should only contain 20484 (fsaverage5)")}
 
     #check contrast
     if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
@@ -271,21 +271,21 @@ decode_img=function(img,contrast="positive")
     img[img<0]=0
     img[img>0]=1
     stat_labels=reticulate::r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
+    stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   } else if (contrast=="negative")
   {
     img[is.na(img)]=0
     img[img>0]=0
     img[img<0]=1
     stat_labels=reticulate::r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`(template, stat_labels$flatten())
+    stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   }
   
   ##download neurosynth database if necessary 
   if(file.exists("neurosynth_dataset.pkl.gz")==F)
   {
     cat("\nneurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
-    download.file(url="https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/neurosynth_dataset.pkl.gz?raw=TRUE",destfile = "neurosynth_dataset.pkl.gz")
+    download.file(url="https://blogs.ntu.edu.sg/cogbrainhealthlab/files/2023/10/neurosynth_dataset.pkl_.gz",destfile = "neurosynth_dataset.pkl.gz")
   } 
   ##running the decoding procedure
   neurosynth_dset = nimare.dataset$Dataset$load("neurosynth_dataset.pkl.gz")
