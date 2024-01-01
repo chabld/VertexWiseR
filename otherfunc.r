@@ -127,18 +127,10 @@ fs5_to_fs6=function(data)
   
   #load atlas mapping data
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
-  
-  if(length(data)==20484) #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
-  {
-    data=matrix(data,ncol=20484,nrow=1)  
-    data.fs6=matrix(NA,ncol=81924,nrow=1)
-    
-    for (vert in 1:20484)  {data.fs6[fs6_to_fs5==vert]=data[vert]} 
-    } else #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
-    {
-      data.fs6=matrix(NA,ncol=81924,nrow=NROW(data))
-      for (vert in 1:20484)  {data.fs6[,fs6_to_fs5==vert]=data[,vert]} 
-    }
+  #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
+  if(length(data)==20484) {data.fs6=data[fs6_to_fs5]} 
+  #mapping fsaverage5 to fsaverage6 space if data is a Nx20484 matrix
+  else {data.fs6=data[,fs6_to_fs5]}
   return(data.fs6)
 }
 
@@ -252,7 +244,7 @@ decode_img=function(img,contrast="positive")
     n_vert=length(img)
     if(n_vert==20484) {template="fsaverage5"}
     else if (n_vert==81924) {stop("decoding of fsaverage6-space image is current not implemented, please resample the image to fsaverage5 space")} 
-    else {stop("data vector should only contain 20484 (fsaverage5)")}
+    else {stop("img vector should only contain 20484 (fsaverage5)")}
 
     #check contrast
     if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
@@ -268,16 +260,16 @@ decode_img=function(img,contrast="positive")
     img[is.na(img)]=0
     img[img<0]=0
     img[img>0]=1
-    stat_labels=reticulate::r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   } else if (contrast=="negative")
   {
     img[is.na(img)]=0
     img[img>0]=0
     img[img<0]=1
-    stat_labels=reticulate::r_to_py(img)
-    stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   }
+
+  ##convert img vector to nii image
+  stat_labels=reticulate::r_to_py(img)
+  stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   
   ##download neurosynth database if necessary 
   if(file.exists("neurosynth_dataset.pkl.gz")==F)
