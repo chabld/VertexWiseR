@@ -91,10 +91,13 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
   
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
-      mod.permuted=lm(CT_data~data.matrix(all_predictors)[permseq[,perm],])
+      all_predictors.permuted=all_predictors
+      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno] ##permute only the IV_of_interest
+      
+      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
       tmap=extract.t(mod.permuted,colno+1)
       
-      remove(mod.permuted)
+      remove(mod.permuted,all_predictors.permuted)
       return(max(abs(suppressWarnings(TFCE(data = tmap,tail = tail)))))
     }
   end=Sys.time()
@@ -277,13 +280,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(pos.t_stat.thresholdedP!=0)<3) #skip if no clusters detected
     {
-      pos.clusters0=getClusters(pos.t_stat.thresholdedP) ##first getCluster()
+      pos.clusters0=getClusters(pos.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
       #applying k thresholding
       pos.clustID.remove=which(pos.clusters0[[2]]<k)
       pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
       
       #generating mask
-      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getClusters()
+      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
       pos.mask=rep(0,n_vert)
       
@@ -343,13 +346,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(neg.t_stat.thresholdedP!=0)<3) #skip if no clusters detected
     {
-      neg.clusters0=getClusters(neg.t_stat.thresholdedP) ## 1st getClusters()
+      neg.clusters0=getClusters(neg.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
       #applying k thresholding
       neg.clustID.remove=which(neg.clusters0[[2]]<k)
       neg.clusters0[[1]][which(!is.na(match(neg.clusters0[[1]],neg.clustID.remove)))]=NA
       
       #generating mask
-      neg.clusters=getClusters(neg.clusters0[[1]]) ## 2nd getClusters()
+      neg.clusters=getClusters(neg.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
       neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
       neg.mask=rep(0,n_vert)
       
