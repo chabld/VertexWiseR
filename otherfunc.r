@@ -258,7 +258,6 @@ decode_img=function(img,contrast="positive")
     if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
   
   ##import python libraries
-  np=reticulate::import("numpy")
   interpolate=reticulate::import("brainstat.mesh.interpolate")
   discrete=reticulate::import("nimare.decode")
   nimare.dataset=reticulate::import("nimare.dataset")
