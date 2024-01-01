@@ -278,7 +278,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     pos.t_stat.thresholdedP=t_stat.thresholdedP
     pos.t_stat.thresholdedP[pos.t_stat.thresholdedP<0]=0
     
-    if(length(pos.t_stat.thresholdedP!=0)>3) #skip if no clusters detected
+    if(length(pos.t_stat.thresholdedP!=0)>1) #skip if no clusters detected
     {
       pos.clusters0=getClusters(pos.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
       #applying k thresholding
@@ -344,7 +344,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     neg.t_stat.thresholdedP=t_stat.thresholdedP
     neg.t_stat.thresholdedP[neg.t_stat.thresholdedP>0]=0
     
-    if(length(neg.t_stat.thresholdedP!=0)>3) #skip if no clusters detected
+    if(length(neg.t_stat.thresholdedP!=0)>1) #skip if no clusters detected
     {
       neg.clusters0=getClusters(neg.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
       #applying k thresholding
