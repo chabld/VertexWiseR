@@ -28,8 +28,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             IV_of_interest=IV_of_interest[-idxF]
             CT_data=CT_data[-idxF,]
         }
-        remove(colno)
-
+    
         #check categorical variable
         for (column in 1:NCOL(all_predictors))
         {
