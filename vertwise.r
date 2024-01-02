@@ -28,22 +28,36 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             IV_of_interest=IV_of_interest[-idxF]
             CT_data=CT_data[-idxF,]
         }
+        #identify contrast
+        for(colno in 1:(NCOL(all_predictors)+1))
+          {
+            if(colno==(NCOL(all_predictors)+1))
+            {stop("IV_of_interest is not contained within all_predictors")}
+            if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+            {
+              if(identical(IV_of_interest,all_predictors[,colno]))  {break}
+            } else
+            {
+              if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+            }
+          }
     
         #check categorical variable
         for (column in 1:NCOL(all_predictors))
-        {
-          if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
           {
-            if(length(unique(all_predictors[,column]))==2)
+            if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
             {
-              cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis",sep=""))
-        
-              recode=rep(0,NROW(all_predictors))
-              recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-              all_predictors[,column]=recode
-            } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+              if(length(unique(all_predictors[,column]))==2)
+              {
+                cat(paste("\nThe binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis",sep=""))
+                
+                recode=rep(0,NROW(all_predictors))
+                recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+                all_predictors[,column]=recode
+                IV_of_interest=all_predictors[,colno]
+              } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+            }
           }
-        }
         
         #check length of CT data
         n_vert=ncol(CT_data)
