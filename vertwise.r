@@ -18,7 +18,18 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         }
         #check if nrow is consistent for all_predictors and FC_data
         if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-       
+
+        #incomplete data check
+        idxF=which(complete.cases(all_predictors)==F)
+        if(length(idxF)>0)
+        {
+            cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+            all_predictors=all_predictors[-idxF,]
+            IV_of_interest=IV_of_interest[-idxF]
+            CT_data=CT_data[-idxF,]
+        }
+        remove(colno)
+
         #check categorical variable
         for (column in 1:NCOL(all_predictors))
         {
@@ -34,17 +45,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
           }
         }
-
-        #incomplete data check
-        idxF=which(complete.cases(all_predictors)==F)
-        if(length(idxF)>0)
-        {
-            cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-            all_predictors=all_predictors[-idxF,]
-            IV_of_interest=IV_of_interest[-idxF]
-            CT_data=CT_data[-idxF,]
-        }
-        remove(colno)
         
         #check length of CT data
         n_vert=ncol(CT_data)
