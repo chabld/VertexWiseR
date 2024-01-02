@@ -49,7 +49,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             {
               if(length(unique(all_predictors[,column]))==2)
               {
-                cat(paste("\nThe binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis",sep=""))
+                cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis",sep=""))
                 
                 recode=rep(0,NROW(all_predictors))
                 recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
