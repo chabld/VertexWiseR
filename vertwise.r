@@ -28,7 +28,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
             IV_of_interest=IV_of_interest[-idxF]
             CT_data=CT_data[-idxF,]
         }
-        #identify contrast
+        
+        #check IV_of_interest
         for(colno in 1:(NCOL(all_predictors)+1))
           {
             if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
