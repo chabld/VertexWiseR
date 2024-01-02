@@ -32,12 +32,17 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
 
     #identify contrast
     for(colno in 1:(NCOL(all_predictors)+1))
+    {
+      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      
+      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
       {
-        if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
-        
-        if(class(all_predictors[,colno]) != "integer" & class(all_predictors[,colno]) != "numeric")  {if(identical(IV_of_interest,all_predictors[,colno]))  {break}} 
-        else  {if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}}
+        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+      } else 
+      {
+        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
       }
+    }
   
     #check categorical variable
     for (column in 1:NCOL(all_predictors))
