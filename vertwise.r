@@ -78,7 +78,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
         collinear.check(all_predictors)
 
   ##Smoothing 
-      if(!missing("smooth"))    {CT_data=smooth(CT_data)}
+  if(!missing("smooth"))    {CT_data=smooth(CT_data, FWMH=smooth)}
     
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
