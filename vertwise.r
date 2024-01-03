@@ -229,7 +229,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
 ############################################################################################################################
 ############################################################################################################################
 ##load other vertex-wise functions
-source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
+source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
 
 ##example
 # source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise_mixed.r?raw=TRUE")
