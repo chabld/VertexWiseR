@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100, tail=2, nthread=10)
+TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100, tail=2, nthread=10, smooth)
 {
   ##checks
     # check required packages
@@ -71,6 +71,9 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
     
     #collinearity check
     collinear.check(all_predictors)
+
+  ##Smoothing 
+  if(!missing("smooth"))    {CT_data=smooth(CT_data, FWMH=smooth)}
     
   ##unpermuted model
   all_predictors=data.matrix(all_predictors)
