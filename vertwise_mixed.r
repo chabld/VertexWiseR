@@ -89,6 +89,9 @@ vertex_analysis.mixed=function(all_predictors,IV_of_interest, random_effect, CT_
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
   } 
   else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+
+  ##Smoothing 
+      if(!missing("smooth"))    {CT_data=smooth(CT_data)}
   
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
