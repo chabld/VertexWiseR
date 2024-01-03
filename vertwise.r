@@ -5,7 +5,7 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis
-vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1, smooth)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
     ##checks
         # check required packages
@@ -76,6 +76,9 @@ vertex_analysis=function(all_predictors,IV_of_interest, CT_data, p=0.05, atlas=1
 
         #collinearity check
         collinear.check(all_predictors)
+
+  ##Smoothing 
+      if(!missing("smooth"))    {CT_data=smooth(CT_data)}
     
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
