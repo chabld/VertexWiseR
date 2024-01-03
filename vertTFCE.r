@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100, tail=2, nthread=10, smooth)
+TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth)
 {
   ##checks
     # check required packages
@@ -17,46 +17,46 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
       install.packages(new.packages)
     }
   
-    #check if nrow is consistent for all_predictors and FC_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    #check if nrow is consistent for model and FC_data
+    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
   
     #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
+    idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
     {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
+      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      model=model[-idxF,]
+      contrast=contrast[-idxF]
       CT_data=CT_data[-idxF,]
     }
 
-    #check IV_of_interest
-    for(colno in 1:(NCOL(all_predictors)+1))
+    #check contrast
+    for(colno in 1:(NCOL(model)+1))
     {
-      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
       
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      if(class(contrast) != "integer" & class(contrast) != "numeric") 
       {
-        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+        if(identical(contrast,model[,colno]))  {break} 
       } else 
       {
-        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
       }
     }
   
     #check categorical variable
-    for (column in 1:NCOL(all_predictors))
+    for (column in 1:NCOL(model))
     {
-      if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
       {
-        if(length(unique(all_predictors[,column]))==2)
+        if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
         
-          recode=rep(0,NROW(all_predictors))
-          recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-          all_predictors[,column]=recode
-        } else if(length(unique(all_predictors[,column]))>2)  {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode=rep(0,NROW(model))
+          recode[model[,column]==unique(model[,column])[2]]=1
+          model[,column]=recode
+        } else if(length(unique(model[,column]))>2)  {cat(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }
     }
 
@@ -70,21 +70,25 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
     
     #collinearity check
-    collinear.check(all_predictors)
+    collinear.check(model)
 
-  ##Smoothing 
-  if(!missing("smooth"))    {CT_data=smooth(CT_data, FWMH=smooth)}
-    
+  ##smoothing
+  if(missing("smooth"))
+  {
+    if(n_vert==20484) {CT_data=smooth(CT_data, FWMH=10)}
+    else if(n_vert==81924) {CT_data=smooth(CT_data, FWMH=5)}
+  } else if(smooth>0) {CT_data=smooth(CT_data, FWMH=smooth)}
+     
   ##unpermuted model
-  all_predictors=data.matrix(all_predictors)
-  mod=lm(CT_data~data.matrix(all_predictors))
+  model=data.matrix(model)
+  mod=lm(CT_data~data.matrix(model))
   
   #identify contrast
-  for(colno in 1:(NCOL(all_predictors)+1))
+  for(colno in 1:(NCOL(model)+1))
   {
-    if(colno==(NCOL(all_predictors)+1))
-    {stop("IV_of_interest is not contained within all_predictors")}
-    if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))
+    if(colno==(NCOL(model)+1))
+    {stop("contrast is not contained within model")}
+    if(identical(as.numeric(contrast),as.numeric(model[,colno])))
     {break}
   }
   
@@ -102,8 +106,8 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
   ##permuted models
     #generating permutation sequences  
     set.seed(123)
-    permseq=matrix(NA, nrow=NROW(all_predictors), ncol=nperm)
-    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(all_predictors))}
+    permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
+    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}
   
     #activate parallel processing
     unregister_dopar = function() {
@@ -127,13 +131,13 @@ TFCE.vertex_analysis=function(all_predictors,IV_of_interest, CT_data, nperm=100,
   
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
-      all_predictors.permuted=all_predictors
-      all_predictors.permuted[,colno]=all_predictors.permuted[permseq[,perm],colno] ##permute only the IV_of_interest
+      model.permuted=model
+      model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
       
-      mod.permuted=lm(CT_data~data.matrix(all_predictors.permuted))
+      mod.permuted=lm(CT_data~data.matrix(model.permuted))
       tmap=extract.t(mod.permuted,colno+1)
       
-      remove(mod.permuted,all_predictors.permuted)
+      remove(mod.permuted,model.permuted)
       return(max(abs(suppressWarnings(TFCE(data = tmap,tail = tail)))))
     }
   end=Sys.time()
@@ -458,9 +462,9 @@ source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?r
 
 ##example
 
-#pos=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=1, nperm=100, nthread = 10)
-#neg=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-#two=TFCE.vertex_analysis(all_predictors =all_pred, IV_of_interest = dat_beh$age, CT_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+#pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, CT_data = dat_CT, tail=1, nperm=100, nthread = 10)
+#neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, CT_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
+#two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, CT_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
 
 #pos.results=TFCE.threshold(pos)
 #pos.results$cluster_level_results
