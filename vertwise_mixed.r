@@ -5,7 +5,7 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis with mixed effects
-vertex_analysis.mixed=function(fixed_predictors,IV_of_interest, random_predictor, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis.mixed=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   ##checks
   # check required packages
@@ -42,22 +42,38 @@ vertex_analysis.mixed=function(fixed_predictors,IV_of_interest, random_predictor
       if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
     }
   }
+  #check random predictor
+  for(ran_colno in 1:(NCOL(all_predictors)+1))
+  {
+    if(ran_colno==(NCOL(all_predictors)+1))  {stop("random_effect is not contained within all_predictors")}
+    
+    if(class(random_effect) != "integer" & class(random_effect) != "numeric") 
+    {
+      if(identical(random_effect,all_predictors[,ran_colno]))  {break} 
+    } else 
+    {
+      if(identical(as.numeric(random_effect),as.numeric(all_predictors[,ran_colno])))  {break}
+    }
+  }
   
   #check categorical variable
   for (column in 1:NCOL(all_predictors))
   {
-    if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
-    {
-      if(length(unique(all_predictors[,column]))==2)
+    if(column!=ran_colno) #skip check for random effect
       {
-        cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
-        
-        recode=rep(0,NROW(all_predictors))
-        recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-        all_predictors[,column]=recode
-        IV_of_interest=all_predictors[,colno]
-      } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-    }
+       if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+          {
+            if(length(unique(all_predictors[,column]))==2)
+            {
+              cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+              
+              recode=rep(0,NROW(all_predictors))
+              recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+              all_predictors[,column]=recode
+              IV_of_interest=all_predictors[,colno]
+            } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          }      
+      } 
   }
   
   #check length of CT data
@@ -74,7 +90,6 @@ vertex_analysis.mixed=function(fixed_predictors,IV_of_interest, random_predictor
   } 
   else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
   
-  
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
@@ -87,7 +102,7 @@ vertex_analysis.mixed=function(fixed_predictors,IV_of_interest, random_predictor
   mask[which(colSums(CT_data != 0) == 0)]=F
   
   #fit model
-  model0=brainstat.stats.terms$MixedEffect(ran = random_predictor,fix = fixed_predictors,"_check_categorical" = F)
+  model0=brainstat.stats.terms$MixedEffect(ran = random_effect,fix = all_predictors[,-ran_colno],"_check_categorical" = F)
   model=brainstat.stats.SLM$SLM(model = model0,
                                 contrast=IV_of_interest,
                                 surf = template, 
