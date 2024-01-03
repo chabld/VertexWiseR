@@ -5,7 +5,7 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis with mixed effects
-vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis=function(model,contrast, random_effect, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   ##checks
     #check required packages
@@ -16,48 +16,48 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
       cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
       install.packages(new.packages)
     }
-    #check if nrow is consistent for all_predictors and FC_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    #check if nrow is consistent for model and FC_data
+    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
     
     #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
+    idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
     {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
+      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      model=model[-idxF,]
+      contrast=contrast[-idxF]
       CT_data=CT_data[-idxF,]
     }
     
     #check random predictor
     if(!missing("random_effect"))
       {
-      for(ran_colno in 1:(NCOL(all_predictors)+1))
+      for(ran_colno in 1:(NCOL(model)+1))
         {
-        if(ran_colno==(NCOL(all_predictors)+1))  {stop("random_effect is not contained within all_predictors")}
+        if(ran_colno==(NCOL(model)+1))  {stop("random_effect is not contained within model")}
         
         if(class(random_effect) != "integer" & class(random_effect) != "numeric") 
           {
-            if(identical(random_effect,all_predictors[,ran_colno]))  {break} 
+            if(identical(random_effect,model[,ran_colno]))  {break} 
           } else 
           {
-            if(identical(as.numeric(random_effect),as.numeric(all_predictors[,ran_colno])))  {break}
+            if(identical(as.numeric(random_effect),as.numeric(model[,ran_colno])))  {break}
           }
         }
-      fix_predictors=all_predictors[,-ran_colno]
-      } else {fix_predictors=all_predictors}
+      fix_predictors=model[,-ran_colno]
+      } else {fix_predictors=model}
   
-    #check IV_of_interest
+    #check contrast
     for(colno in 1:(NCOL(fix_predictors)+1))
     {
-      if(colno==(NCOL(fix_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      if(colno==(NCOL(fix_predictors)+1))  {stop("contrast is not contained within model")}
       
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      if(class(contrast) != "integer" & class(contrast) != "numeric") 
       {
-        if(identical(IV_of_interest,fix_predictors[,colno]))  {break} 
+        if(identical(contrast,fix_predictors[,colno]))  {break} 
       } else 
       {
-        if(identical(as.numeric(IV_of_interest),as.numeric(fix_predictors[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(fix_predictors[,colno])))  {break}
       }
     }
   
@@ -73,7 +73,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
           recode=rep(0,NROW(fix_predictors))
           recode[fix_predictors[,column]==unique(fix_predictors[,column])[2]]=1
           fix_predictors[,column]=recode
-          IV_of_interest=fix_predictors[,colno]
+          contrast=fix_predictors[,colno]
         } else if(length(unique(fix_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(fix_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
@@ -113,23 +113,23 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   #fit model
   if(missing("random_effect")) {model0=brainstat.stats.terms$FixedEffect(fix_predictors, "_check_categorical" = F)}
   else {model0=brainstat.stats.terms$MixedEffect(ran = random_effect,fix = fix_predictors,"_check_categorical" = F)}
-  model=brainstat.stats.SLM$SLM(model = model0,
-                                contrast=IV_of_interest,
+  model.fit=brainstat.stats.SLM$SLM(model = model0,
+                                contrast=contrast,
                                 surf = template, 
                                 mask=mask,
                                 correction=c("fdr", "rft"),
                                 cluster_threshold=p)
-  model$fit(CT_data)
+  model.fit$fit(CT_data)
   
   #extracting tstats
-  tstat=model$t
+  tstat=model.fit$t
   
   ##extracting positive results
-  cluster_pos=reticulate::py_to_r(model$P[["clus"]][[1]]) #pulling out results from brainstat's output
+  cluster_pos=reticulate::py_to_r(model.fit$P[["clus"]][[1]]) #pulling out results from brainstat's output
   cluster_pos=cluster_pos[cluster_pos$P<p,] #removing clusters that are not significant
   
   #extracting positive cluster map
-  pos_clusterIDmap=model$P$clusid[[1]]
+  pos_clusterIDmap=model.fit$P$clusid[[1]]
   
   if(NROW(cluster_pos)==0) #if no sig clusters emerged
   {
@@ -153,7 +153,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
       clus_tstat=tstat
       clus_tstat[pos_clusterIDmap!=clusno]=0
       cluster_pos$tstat[clusno]=round(clus_tstat[which.max(clus_tstat)],2)
-      cluster_pos[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
+      cluster_pos[clusno,4:6]=round(model.fit$coord[,which.max(abs(clus_tstat))],1)
       
       #identifying region by matching the indices
       idx_pos=ROImap[[1]][,atlas][which.max(clus_tstat)]
@@ -167,11 +167,11 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   }
   
   ##extracting negative results
-  cluster_neg=reticulate::py_to_r(model$P[["clus"]][[2]]) #pulling out results from brainstat's output
+  cluster_neg=reticulate::py_to_r(model.fit$P[["clus"]][[2]]) #pulling out results from brainstat's output
   cluster_neg=cluster_neg[cluster_neg$P<p,] #removing clusters that are not significant
   
   #extracting negative cluster map
-  neg_clusterIDmap=model$P$clusid[[2]]
+  neg_clusterIDmap=model.fit$P$clusid[[2]]
   if(NROW(cluster_neg)==0) #if no sig clusters emerged
   {
     cluster_neg="No significant clusters"
@@ -193,7 +193,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
       clus_tstat=tstat
       clus_tstat[neg_clusterIDmap!=clusno]=0
       cluster_neg$tstat[clusno]=round(clus_tstat[which.min(clus_tstat)],2)
-      cluster_neg[clusno,4:6]=round(model$coord[,which.max(abs(clus_tstat))],1)
+      cluster_neg[clusno,4:6]=round(model.fit$coord[,which.max(abs(clus_tstat))],1)
       
       #identifying region by matching the indices
       idx_neg=ROImap[[1]][,atlas][which.min(clus_tstat)]
@@ -234,5 +234,5 @@ source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?r
 ##example
 # source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise_mixed.r?raw=TRUE")
 # 
-# model=vertex_analysis(fixed_predictors = dat_beh[,c(2:4)], IV_of_interest = dat_beh$AGE_AT_SCAN = dat_beh$SUB_ID,CT_data = dat_CT,p = 0.01, atlas=1)
-# model$cluster_level_results
+# model=vertex_analysis(fixed_predictors = dat_beh[,c(2:4)], contrast = dat_beh$AGE_AT_SCAN = dat_beh$SUB_ID,CT_data = dat_CT,p = 0.01, atlas=1)
+# model.fit$cluster_level_results
