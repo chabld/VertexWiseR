@@ -11,23 +11,22 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
   
   ##smoothing
-  n_vert=ncol(CT_data)
   if(missing("smooth_FWHM"))
   {
     if(n_vert==20484) 
     {
-      CT_data=smooth(CT_data, FWMH=10)
-      cat("CT_data will be smoothed using the default 10mm FWMH kernel for fsaverage5 images")
+      CT_data=smooth(CT_data, FWHM=10)
+      cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images")
     }
     else if(n_vert==81924) 
     {
-      CT_data=smooth(CT_data, FWMH=5)
-      cat("CT_data will be smoothed using the default 5mm FWMH kernel for fsaverage6 images")
+      CT_data=smooth(CT_data, FWHM=5)
+      cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
     }
   } else if(smooth>0) 
   {
-    CT_data=smooth(CT_data, FWMH=smooth_FWHM)
-    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
+    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
+    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
   }
       
   ##import python libaries
