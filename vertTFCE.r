@@ -16,47 +16,47 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
       install.packages(new.packages)
     }  
-    #check if nrow is consistent for all_predictors and CT_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    #check if nrow is consistent for model and CT_data
+    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
     
     #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
+    idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
     {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
+      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      model=model[-idxF,]
+      contrast=contrast[-idxF]
       CT_data=CT_data[-idxF,]
     }
     
-    #check IV_of_interest
-    for(colno in 1:(NCOL(all_predictors)+1))
+    #check contrast
+    for(colno in 1:(NCOL(model)+1))
     {
-      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
       
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      if(class(contrast) != "integer" & class(contrast) != "numeric") 
       {
-        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+        if(identical(contrast,model[,colno]))  {break} 
       } else 
       {
-        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
       }
     }
   
     #check categorical variable
-    for (column in 1:NCOL(all_predictors))
+    for (column in 1:NCOL(model))
     {
-      if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
       {
-        if(length(unique(all_predictors[,column]))==2)
+        if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
           
-          recode=rep(0,NROW(all_predictors))
-          recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-          all_predictors[,column]=recode
-          IV_of_interest=all_predictors[,colno]
-        } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode=rep(0,NROW(model))
+          recode[model[,column]==unique(model[,column])[2]]=1
+          model[,column]=recode
+          contrast=model[,colno]
+        } else if(length(unique(model[,column]))>2)    {cat(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
     
@@ -77,12 +77,12 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
     
     #check for collinearity
-    cormat=cor(all_predictors,use = "pairwise.complete.obs")
+    cormat=cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = T) >0.5)
     {
-      warning(paste("correlations among variables in all_predictors are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
     }
       
    ##smoothing
