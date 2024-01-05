@@ -16,18 +16,21 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   {
     if(n_vert==20484) 
     {
+      cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
       CT_data=smooth(CT_data, FWHM=10)
-      cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images")
+      cat("\nSmoothing completed")
     }
     else if(n_vert==81924) 
     {
-      CT_data=smooth(CT_data, FWHM=5)
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
+      CT_data=smooth(CT_data, FWHM=5)
+      cat("\nSmoothing completed")
     }
   } else if(smooth>0) 
   {
-    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
+    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
+    cat("\nSmoothing completed")
   }
       
   ##import python libaries
