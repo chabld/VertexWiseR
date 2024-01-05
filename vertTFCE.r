@@ -8,9 +8,9 @@
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth)
 {
   ##checks
-   check.inputs=function(CT_data=CT_data, all_predictors=model, IV_of_interest=contrast)
+    check.inputs=function(CT_data=CT_data, all_predictors=model, IV_of_interest=contrast)
     #check tail
-   if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
+    if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
 
   ##load edgelists
     n_vert=ncol(CT_data)
