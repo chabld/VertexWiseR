@@ -7,8 +7,81 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
-  localenv = environment() 
-  check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
+  ##checks
+    #check if required packages are installed
+    packages=as.character(packages)
+    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }  
+    #check if nrow is consistent for all_predictors and CT_data
+    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+    
+    #incomplete data check
+    idxF=which(complete.cases(all_predictors)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      all_predictors=all_predictors[-idxF,]
+      IV_of_interest=IV_of_interest[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+    
+    #check IV_of_interest
+    for(colno in 1:(NCOL(all_predictors)+1))
+    {
+      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      
+      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      {
+        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+      } else 
+      {
+        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+      }
+    }
+  
+    #check categorical variable
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+      {
+        if(length(unique(all_predictors[,column]))==2)
+        {
+          cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+          
+          recode=rep(0,NROW(all_predictors))
+          recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+          all_predictors[,column]=recode
+          IV_of_interest=all_predictors[,colno]
+        } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+      }      
+    }
+    
+    #check length of CT data and load the appropriate fsaverage files
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)
+    {
+      template="fsaverage5"
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    }
+    else if (n_vert==81924)
+    {
+      template="fsaverage6"
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    }
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+    
+    #check for collinearity
+    cormat=cor(all_predictors,use = "pairwise.complete.obs")
+    cormat.0=cormat
+    cormat.0[cormat.0==1]=NA
+    if(max(abs(cormat.0),na.rm = T) >0.5)
+    {
+      warning(paste("correlations among variables in all_predictors are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+    }
   
   ##smoothing
   n_vert=NCOL(CT_data)
