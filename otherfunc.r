@@ -232,7 +232,7 @@ fs6_to_fs5=function(data)
 ############################################################################################################################
 ############################################################################################################################
 ##smoothing fsaverage5 and fsaverage6 data
-smooth=function(data)
+smooth=function(data, FWHM)
 {
   ##import python libraries
   brainstat.mesh.data=reticulate::import("brainstat.mesh.data")
