@@ -23,13 +23,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     else if(n_vert==81924) 
     {
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=suppressMessages(smooth(smooth(CT_data, FWHM=5))
+      CT_data=suppressMessages(smooth(CT_data, FWHM=5))
       cat("\nSmoothing completed")
     }
   } else if(smooth>0) 
   {
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
-    CT_data=suppressMessages(smooth(smooth(CT_data, FWHM=smooth_FWHM))
+    CT_data=suppressMessages(smooth(CT_data, FWHM=smooth_FWHM))
     cat("\nSmoothing completed")
   }
       
