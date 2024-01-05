@@ -19,25 +19,24 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
    ##smoothing
-  n_vert=ncol(CT_data)
   if(missing("smooth_FWHM"))
   {
     if(n_vert==20484) 
     {
       cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      CT_data=smooth(CT_data, FWHM=10)
+      CT_data=suppressMessages(smooth(CT_data, FWHM=10))
       cat("\nSmoothing completed")
     }
     else if(n_vert==81924) 
     {
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=smooth(CT_data, FWHM=5)
+      CT_data=suppressMessages(smooth(smooth(CT_data, FWHM=5))
       cat("\nSmoothing completed")
     }
   } else if(smooth>0) 
   {
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
-    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
+    CT_data=suppressMessages(smooth(smooth(CT_data, FWHM=smooth_FWHM))
     cat("\nSmoothing completed")
   }
     
