@@ -8,76 +8,16 @@
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth)
 {
   ##checks
-    # check required packages
-    list.of.packages = c("parallel", "doParallel","igraph","doSNOW","foreach")
-    new.packages = list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }
-  
-    #check if nrow is consistent for model and FC_data
-    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
-  
-    #incomplete data check
-    idxF=which(complete.cases(model)==F)
-    if(length(idxF)>0)
-    {
-      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      model=model[-idxF,]
-      contrast=contrast[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-
-    #check contrast
-    for(colno in 1:(NCOL(model)+1))
-    {
-      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-      
-      if(class(contrast) != "integer" & class(contrast) != "numeric") 
-      {
-        if(identical(contrast,model[,colno]))  {break} 
-      } else 
-      {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
-      }
-    }
-  
-    #check categorical variable
-    for (column in 1:NCOL(model))
-    {
-      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
-      {
-        if(length(unique(model[,column]))==2)
-        {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
-        
-          recode=rep(0,NROW(model))
-          recode[model[,column]==unique(model[,column])[2]]=1
-          model[,column]=recode
-        } else if(length(unique(model[,column]))>2)  {cat(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-      }
-    }
-
+   check.inputs=function("",CT_data, all_predictors, IV_of_interest)
     #check tail
     if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
-  
-    #check length of CT data
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
-    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-    
-    #collinearity check
-    collinear.check(model)
 
   ##smoothing
-  if(missing("smooth"))
-  {
-    if(n_vert==20484) {CT_data=smooth(CT_data, FWMH=10)}
-    else if(n_vert==81924) {CT_data=smooth(CT_data, FWMH=5)}
-  } else if(smooth>0) {CT_data=smooth(CT_data, FWMH=smooth)}
+#  if(missing("smooth"))
+#  {
+#    if(n_vert==20484) {CT_data=smooth(CT_data, FWMH=10)}
+#    else if(n_vert==81924) {CT_data=smooth(CT_data, FWMH=5)}
+#  } else if(smooth>0) {CT_data=smooth(CT_data, FWMH=smooth)}
      
   ##unpermuted model
   model=data.matrix(model)
