@@ -90,27 +90,23 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     if(n_vert==20484) 
     {
       cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      CT_data=suppressMessages(smooth(CT_data, FWHM=10))
-      cat("\nSmoothing completed")
+      CT_data=smooth(CT_data, FWHM=10)
     }
     else if(n_vert==81924) 
     {
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=suppressMessages(smooth(CT_data, FWHM=5))
-      cat("\nSmoothing completed")
+      CT_data=smooth(CT_data, FWHM=5)
     }
   } else if(smooth>0) 
   {
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
-    CT_data=suppressMessages(smooth(CT_data, FWHM=smooth_FWHM))
-    cat("\nSmoothing completed")
+    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
   }
-      
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
   brainstat.datasets=reticulate::import("brainstat.datasets")  
-  
+
   ##fitting model
   #preparing mask for model
   mask=array(rep(T,NCOL(CT_data)))
