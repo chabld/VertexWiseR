@@ -5,14 +5,14 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis with mixed effects
-vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   localenv = environment() 
   check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
   
   ##smoothing
   n_vert=ncol(CT_data)
-  if(missing("smooth"))
+  if(missing("smooth_FWHM"))
   {
     if(n_vert==20484) 
     {
@@ -26,7 +26,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     }
   } else if(smooth>0) 
   {
-    CT_data=smooth(CT_data, FWMH=smooth)
+    CT_data=smooth(CT_data, FWMH=smooth_FWHM)
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
   }
       
