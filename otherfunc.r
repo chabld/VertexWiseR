@@ -253,7 +253,7 @@ smooth=function(data,FWHM=10)
     else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
-  smooth=brainstat.mesh.data$mesh_smooth(Y=CT_dat,surf=surftemp, FWHM = FWHM/vert_mm)
+  smooth=brainstat.mesh.data$mesh_smooth(Y=data,surf=surftemp, FWHM = FWHM/vert_mm)
   
   ##the smoothing process might eat into previously identified NA vertices, hence we need to recode the previously identified NA vertices to NA; 
   smooth[,col0]=NA
