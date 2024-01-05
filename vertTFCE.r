@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth)
+TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
   ##checks
     check.inputs=function(CT_data=CT_data, all_predictors=model, IV_of_interest=contrast)
@@ -19,7 +19,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
-  if(missing("smooth"))
+  if(missing("smooth_FWHM"))
   {
     if(n_vert==20484) 
     {
@@ -33,7 +33,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   } else if(smooth>0) 
   {
-    CT_data=smooth(CT_data, FWMH=smooth)
+    CT_data=smooth(CT_data, FWMH=smooth_FWHM)
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
   }
     
