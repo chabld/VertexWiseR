@@ -5,7 +5,7 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis with mixed effects
-vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   localenv = environment() 
   check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
