@@ -123,7 +123,7 @@ getClusters=function(data)
     { 
     edgelist0=matrix(edgelist0,ncol=2,nrow=1)
     edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]
-    }
+    } else {edgelist1=0}
   remove(data,vert,edgelist0)
   
   if(length(edgelist1)>2) #if at least 2 edges are identified
