@@ -255,8 +255,8 @@ smooth=function(data)
   ##smoothing
   smooth=brainstat.mesh.data$mesh_smooth(Y=data,surf=surftemp, FWHM = FWHM/vert_mm)
   
-  ##the smoothing process might eat into previously identified NA vertices, hence we need to recode the previously identified NA vertices to NA; 
-  smooth[,col0]=NA
+  ##the smoothing process might eat into previously identified NA vertices, hence we need to recode the previously identified 0 vertices to 0; 
+  smooth[,col0]=0
   return(smooth)  
 }
 ############################################################################################################################
