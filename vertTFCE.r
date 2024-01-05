@@ -392,8 +392,9 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   returnobj=list(cluster_level_results, t_stat.thresholdedPK, pos.clustermap, neg.clustermap)  
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_clustermap","neg_clustermap")
   returnobj$cluster_level_results
-  
+ 
   return(returnobj)
+  remove(template,ROImap,envir = globalenv())
 }  
 ############################################################################################################################
 ############################################################################################################################
