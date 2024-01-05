@@ -91,7 +91,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       if(n_vert==20484) 
       {
         cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-        CT_data=invisible(capture.output(smooth(CT_data, FWHM=10)))
+        CT_data=smooth(CT_data, FWHM=10))
       }
       else if(n_vert==81924) 
       {
