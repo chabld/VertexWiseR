@@ -143,6 +143,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   returnobj=list(cluster_results,tstat,posmask,negmask,pos_clusterIDmap,neg_clusterIDmap)
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
   return(returnobj)
+  remove(template,ROImap,envir = globalenv())
 }
 ############################################################################################################################
 ############################################################################################################################
