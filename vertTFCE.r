@@ -8,6 +8,14 @@
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
   ##checks
+    #check if required packages are installed
+    packages=c("foreach","doParallel","parallel","doSNOW")
+    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
+    {
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }  
     #check if nrow is consistent for all_predictors and CT_data
     if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
     
