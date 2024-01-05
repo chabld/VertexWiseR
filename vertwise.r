@@ -9,7 +9,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
 {
   ##checks
     #check if required packages are installed
-    packages=as.character(packages)
+    packages="reticulate"
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
     if(length(new.packages)) 
     {
