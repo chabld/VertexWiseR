@@ -11,6 +11,12 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     check.inputs=function(CT_data=CT_data, all_predictors=model, IV_of_interest=contrast)
     #check tail
     if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
+      
+  ##load edgelists
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
+    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
   if(missing("smooth"))
@@ -30,13 +36,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     CT_data=smooth(CT_data, FWMH=smooth)
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
   }
-      
-  ##load edgelists
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
-    else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-     
+    
   ##unpermuted model
   model=data.matrix(model)
   mod=lm(CT_data~data.matrix(model))
