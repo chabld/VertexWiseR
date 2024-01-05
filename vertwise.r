@@ -10,13 +10,25 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   localenv = environment() 
   check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
   
-  #smoothing; to be implemented
-  #if(missing("smooth"))
-  #{
-  #  if(n_vert==20484) {CT_data=smooth(CT_data, FWMH=10)}
-  #  else if(n_vert==81924) {CT_data=smooth(CT_data, FWMH=5)}
-  #} else if(smooth>0) {CT_data=smooth(CT_data, FWMH=smooth)}
-  
+  ##smoothing
+  if(missing("smooth"))
+  {
+    if(n_vert==20484) 
+    {
+      CT_data=smooth(CT_data, FWMH=10)
+      cat("CT_data will be smoothed using the default 10mm FWMH kernel for fsaverage5 images")
+    }
+    else if(n_vert==81924) 
+    {
+      CT_data=smooth(CT_data, FWMH=5)
+      cat("CT_data will be smoothed using the default 5mm FWMH kernel for fsaverage6 images")
+    }
+  } else if(smooth>0) 
+  {
+    CT_data=smooth(CT_data, FWMH=smooth)
+    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
+  }
+      
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
