@@ -12,6 +12,25 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     #check tail
     if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
 
+  ##smoothing
+  if(missing("smooth"))
+  {
+    if(n_vert==20484) 
+    {
+      CT_data=smooth(CT_data, FWMH=10)
+      cat("CT_data will be smoothed using the default 10mm FWMH kernel for fsaverage5 images")
+    }
+    else if(n_vert==81924) 
+    {
+      CT_data=smooth(CT_data, FWMH=5)
+      cat("CT_data will be smoothed using the default 5mm FWMH kernel for fsaverage6 images")
+    }
+  } else if(smooth>0) 
+  {
+    CT_data=smooth(CT_data, FWMH=smooth)
+    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWMH kernel", sep=""))
+  }
+      
   ##load edgelists
     n_vert=ncol(CT_data)
     if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
