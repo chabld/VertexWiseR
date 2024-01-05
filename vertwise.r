@@ -29,8 +29,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   mask[which(colSums(CT_data != 0) == 0)]=F
   
   #fit model
-  if(missing("random_effect")) {model0=brainstat.stats.terms$FixedEffect(fix_predictors, "_check_categorical" = F)}
-  else {model0=brainstat.stats.terms$MixedEffect(ran = random_effect,fix = fix_predictors,"_check_categorical" = F)}
+  if(missing("random_effect")) {model0=brainstat.stats.terms$FixedEffect(all_predictors, "_check_categorical" = F)}
+  else {model0=brainstat.stats.terms$MixedEffect(ran = random_effect,fix = all_predictors,"_check_categorical" = F)}
   model=brainstat.stats.SLM$SLM(model = model0,
                                 contrast=IV_of_interest,
                                 surf = template, 
