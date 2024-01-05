@@ -13,7 +13,6 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     if(is.na(match(tail,c(-1,1,2))))  {stop("tail should be set to 1 (one-tailed positive test only), -1 (one-tailed negative test only) or 2 (two-tailed test)")}
       
   ##load edgelists
-    n_vert=ncol(CT_data)
     if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
     else if (n_vert==81924) {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())} 
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
