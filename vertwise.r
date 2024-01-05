@@ -11,6 +11,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   check.inputs(packages = "reticulate", CT_data = CT_data,all_predictors = all_predictors,IV_of_interest = IV_of_interest)
   
   ##smoothing
+  n_vert=ncol(CT_data)
   if(missing("smooth_FWHM"))
   {
     if(n_vert==20484) 
