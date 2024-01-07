@@ -1,4 +1,10 @@
-"""Operations on data on a mesh. Modified from BrainStat toolbox https://github.com/MICA-MNI/BrainStat/blob/master/brainstat/mesh/data.py"""
+"""Python function to smooth surface images
+   Modified from BrainStat toolbox https://github.com/MICA-MNI/BrainStat/blob/master/brainstat/mesh/data.py 
+   -removed third dimension
+   -removed printing of messages (messes up the R console)
+   -replace surface input with edgelist
+   -remove edges in the medial wall
+"""
 import numpy as np
 
 def mesh_smooth(
