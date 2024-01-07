@@ -110,7 +110,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   
   #extract tstat and calculate tfce image
   start=Sys.time()
-  cat("\nEstimating unpermuted TFCE image...")
+  cat("Estimating unpermuted TFCE image...")
   
   tmap.orig=extract.t(mod,colno+1)
   TFCE.orig=suppressWarnings(TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread))
