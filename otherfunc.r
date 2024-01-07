@@ -251,7 +251,7 @@ smooth=function(data, FWHM)
 
   ##smoothing
   smooth=mesh_smooth(Y=data, edg=edgelist, FWHM = FWHM/vert_mm)
-  
+  smooth[is.na(smooth)]=0
   return(smooth)  
 }
 ############################################################################################################################
