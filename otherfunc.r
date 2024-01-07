@@ -236,7 +236,8 @@ smooth=function(data, FWHM)
 {
   ##import python libraries
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-  
+
+  ##fsaverage space specific parameters
   if(ncol(data)==20484) ##fsaverage5 parameters
     {
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
@@ -249,7 +250,7 @@ smooth=function(data, FWHM)
     else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
-  smooth=mesh_smooth(Y=data,surf=surftemp, FWHM = FWHM/vert_mm)
+  smooth=mesh_smooth(Y=data, edg=edgelist, FWHM = FWHM/vert_mm)
   
   return(smooth)  
 }
