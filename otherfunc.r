@@ -235,28 +235,22 @@ fs6_to_fs5=function(data)
 smooth=function(data, FWHM)
 {
   ##import python libraries
-  brainstat.mesh.data=reticulate::import("brainstat.mesh.data")
-  brainstat.datasets=reticulate::import("brainstat.datasets")  
-  
-  ##identify NA vertices
-  col0=which(colSums(data==0) == nrow(data))
+  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
   
   if(ncol(data)==20484) ##fsaverage5 parameters
     {
-      surftemp=brainstat.datasets$fetch_template_surface("fsaverage5", join=T)
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
       vert_mm=3.5
     } else if (ncol(data)==81924) ##fsaverage6 parameters
     {
-      surftemp=brainstat.datasets$fetch_template_surface("fsaverage6", join=T)
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
       vert_mm=2
     } 
     else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
 
   ##smoothing
-  smooth=brainstat.mesh.data$mesh_smooth(Y=data,surf=surftemp, FWHM = FWHM/vert_mm)
+  smooth=mesh_smooth(Y=data,surf=surftemp, FWHM = FWHM/vert_mm)
   
-  ##the smoothing process might eat into previously identified NA vertices, hence we need to recode the previously identified 0 vertices to 0; 
-  smooth[,col0]=0
   return(smooth)  
 }
 ############################################################################################################################
