@@ -75,15 +75,6 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
     }
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-    
-    #check for collinearity
-    cormat=cor(model,use = "pairwise.complete.obs")
-    cormat.0=cormat
-    cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.5)
-    {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
-    }
       
    ##smoothing
     if(missing("smooth_FWHM"))
@@ -103,19 +94,19 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
       CT_data=smooth(CT_data, FWHM=smooth_FWHM)
     }
-    
+  
+  #check for collinearity
+    cormat=cor(model,use = "pairwise.complete.obs")
+    cormat.0=cormat
+    cormat.0[cormat.0==1]=NA
+    if(max(abs(cormat.0),na.rm = T) >0.5)
+    {
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+    }
+      
   ##unpermuted model
   model=data.matrix(model)
   mod=lm(CT_data~data.matrix(model))
-  
-  #identify contrast
-  for(colno in 1:(NCOL(model)+1))
-  {
-    if(colno==(NCOL(model)+1))
-    {stop("contrast is not contained within model")}
-    if(identical(as.numeric(contrast),as.numeric(model[,colno])))
-    {break}
-  }
   
   #extract tstat and calculate tfce image
   start=Sys.time()
