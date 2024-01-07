@@ -77,6 +77,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
       
    ##smoothing
+    start=Sys.time()
     if(missing("smooth_FWHM"))
     {
       if(n_vert==20484) 
@@ -94,6 +95,8 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
       CT_data=smooth(CT_data, FWHM=smooth_FWHM)
     }
+    end=Sys.time()
+    cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
   #check for collinearity
     cormat=cor(model,use = "pairwise.complete.obs")
