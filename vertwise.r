@@ -96,12 +96,15 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
     
     #check for collinearity
-    cormat=cor(all_predictors,use = "pairwise.complete.obs")
-    cormat.0=cormat
-    cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.5)
+    if(NCOL(all_predictors)>1)
     {
-      warning(paste("correlations among variables in all_predictors are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+      cormat=cor(model,use = "pairwise.complete.obs")
+      cormat.0=cormat
+      cormat.0[cormat.0==1]=NA
+      if(max(abs(cormat.0),na.rm = T) >0.5)
+      {
+        warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
+      }
     }
   
   ##smoothing
