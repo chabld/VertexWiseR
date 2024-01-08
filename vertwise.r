@@ -7,8 +7,20 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
-  all_predictors=data.matrix(all_predictors)
   ##checks
+    #check IV_of_interest
+    for(colno in 1:(NCOL(all_predictors)+1))
+    {
+      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+      
+      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      {
+        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+      } else 
+      {
+        if(identical(as.numeric(IV_of_interest),as.numeric(data.matrix(all_predictors)[,colno])))  {break}
+      }
+    }
     #check if required packages are installed
     packages="reticulate"
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
@@ -66,20 +78,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
         }      
       }
     }
-    #check IV_of_interest
-    for(colno in 1:(NCOL(all_predictors)+1))
-    {
-      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
-      
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
-      {
-        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
-      } else 
-      {
-        if(identical(as.numeric(IV_of_interest),as.numeric(data.matrix(all_predictors)[,colno])))  {break}
-      }
-    }
-
   
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(CT_data)
