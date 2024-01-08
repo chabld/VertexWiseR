@@ -7,6 +7,7 @@
 
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
+  model=data.matrix(model)
   ##checks
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW")
@@ -56,7 +57,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
           recode[model[,column]==unique(model[,column])[2]]=1
           model[,column]=recode
           contrast=model[,colno]
-        } else if(length(unique(model[,column]))>2)    {cat(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
     
@@ -82,7 +83,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = T) >0.5)
     {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
     }
   
   ##smoothing
