@@ -96,7 +96,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     #check for collinearity
     if(NCOL(all_predictors)>1)
     {
-      cormat=cor(model,use = "pairwise.complete.obs")
+      cormat=cor(all_predictors,use = "pairwise.complete.obs")
       cormat.0=cormat
       cormat.0[cormat.0==1]=NA
       if(max(abs(cormat.0),na.rm = T) >0.5)
