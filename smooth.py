@@ -35,7 +35,7 @@ def mesh_smooth(
         FWHM=FWHM/3.5
         
     elif Y.shape[1]==81924:
-        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy'))
+        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy')
         edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/2
    
