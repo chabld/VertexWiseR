@@ -8,6 +8,8 @@
 """
 
 import numpy as np
+import requests
+import io
 
 def mesh_smooth(
     Y: np.ndarray,  FWHM: float
@@ -28,11 +30,15 @@ def mesh_smooth(
         Smoothed surface data of shape (n,v).
     """
     if Y.shape[1]==20484:
-        edg=np.load("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.npy?raw=TRUE")
+        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs5.npy')
+        url.raise_for_status()
+        edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/3.5
         
     elif Y.shape[1]==81924:
-        edg=np.load("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.npy?raw=TRUE")
+        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy')
+        url.raise_for_status()
+        edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/2
    
     niter = int(np.ceil(pow(FWHM, 2) / (2 * np.log(2))))
