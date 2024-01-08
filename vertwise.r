@@ -43,22 +43,42 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
         if(identical(as.numeric(IV_of_interest),as.numeric(data.matrix(all_predictors)[,colno])))  {break}
       }
     }
-  
+
     #check categorical variable
-    for (column in 1:NCOL(all_predictors))
+    if(NCOL(all_predictors)>1)
     {
-      if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+      for (column in 1:NCOL(all_predictors))
       {
-        if(length(unique(all_predictors[,column]))==2)
+        if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
         {
-          cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
-          
-          recode=rep(0,NROW(all_predictors))
-          recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-          all_predictors[,column]=recode
-          IV_of_interest=all_predictors[,colno]
-        } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-      }      
+          if(length(unique(all_predictors[,column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(all_predictors))
+            recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+            all_predictors[,column]=recode
+            IV_of_interest=all_predictors[,colno]
+          } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
+    } else
+    {
+      for (column in 1:NCOL(all_predictors))
+      {
+        if(class(all_predictors[column]) != "integer" & class(all_predictors[column]) != "numeric")
+        {
+          if(length(unique(all_predictors[column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[column])[1],"=0 and ",unique(all_predictors[column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(all_predictors))
+            recode[all_predictors[column]==unique(all_predictors[column])[2]]=1
+            all_predictors[,column]=recode
+            IV_of_interest=all_predictors[,colno]
+          } else if(length(unique(all_predictors[column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
     }
     
     #check length of CT data and load the appropriate fsaverage files
