@@ -2,13 +2,15 @@
    Modified from BrainStat toolbox https://github.com/MICA-MNI/BrainStat/blob/master/brainstat/mesh/data.py 
    -removed third dimension
    -removed printing of messages (messes up the R console)
-   -replace surf(dict, BSPolyData) input with edgelist
+   -replace surf(dict, BSPolyData) input with ndarray edgelists that are loaded automatically depending on the number of columns in the CT data
    -remove edges in the medial wall
+   -converted mesh units to mm
 """
+
 import numpy as np
 
 def mesh_smooth(
-    Y: np.ndarray, edg, FWHM: float
+    Y: np.ndarray,  FWHM: float
 ) -> np.ndarray:
     """Smooths surface data by repeatedly averaging over edges.
 
@@ -17,7 +19,6 @@ def mesh_smooth(
     Y : numpy.ndarray
         Surface data of shape (n,v). v is the number of vertices,
         n is the number of observations.
-    edg : numpy.ndarray
     FWHM : float
        Gaussian smoothing filter in mesh units.
 
@@ -26,14 +27,21 @@ def mesh_smooth(
     numpy.ndarray
         Smoothed surface data of shape (n,v).
     """
-
+    if Y.shape[1]==20484:
+        edg=np.load("edgelistfs5.npy")
+        FWHM=FWHM/3.5
+        
+    elif Y.shape[1]==81924:
+        edg=np.load("edgelistfs6.npy") 
+        FWHM=FWHM/2
+        
+    edg=np.array(edg, dtype="int")
     niter = int(np.ceil(pow(FWHM, 2) / (2 * np.log(2))))
     if isinstance(Y, np.ndarray):
         Y = np.array(Y, dtype="float")
         n, v = np.shape(Y)
         isnum = True
-
-    edg=np.array(edg, dtype="int")
+    
     agg_1 = np.bincount(edg[:, 0], minlength=(v + 1)) * 2
     agg_2 = np.bincount(edg[:, 1], minlength=(v + 1)) * 2
     Y1 = (agg_1 + agg_2)[1:]
@@ -55,3 +63,5 @@ def mesh_smooth(
               Y[i, :] = Ys
                 
     return Y
+
+
