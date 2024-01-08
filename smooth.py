@@ -31,13 +31,11 @@ def mesh_smooth(
     """
     if Y.shape[1]==20484:
         url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs5.npy')
-        url.raise_for_status()
         edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/3.5
         
     elif Y.shape[1]==81924:
-        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy')
-        url.raise_for_status()
+        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy'))
         edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/2
    
