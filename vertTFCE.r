@@ -7,7 +7,6 @@
 
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
-  model=data.matrix(model)
   ##checks
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW")
