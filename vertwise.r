@@ -7,6 +7,7 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
+  all_predictors=data.matrix(all_predictors)
   ##checks
     #check if required packages are installed
     packages="reticulate"
