@@ -28,14 +28,13 @@ def mesh_smooth(
         Smoothed surface data of shape (n,v).
     """
     if Y.shape[1]==20484:
-        edg=np.load("edgelistfs5.npy")
+        edg=np.load("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.npy?raw=TRUE")
         FWHM=FWHM/3.5
         
     elif Y.shape[1]==81924:
-        edg=np.load("edgelistfs6.npy") 
+        edg=np.load("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.npy?raw=TRUE")
         FWHM=FWHM/2
-        
-    edg=np.array(edg, dtype="int")
+   
     niter = int(np.ceil(pow(FWHM, 2) / (2 * np.log(2))))
     if isinstance(Y, np.ndarray):
         Y = np.array(Y, dtype="float")
