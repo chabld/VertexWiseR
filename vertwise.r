@@ -113,19 +113,23 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   {
     if(n_vert==20484) 
     {
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      CT_data=smooth(CT_data, FWHM=10)
+      CT_data=mesh_smooth(CT_data, FWHM=10)
     }
     else if(n_vert==81924) 
     {
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=smooth(CT_data, FWHM=5)
+      CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
     }
   } else if(smooth>0) 
   {
+    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
-    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
+    CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
+    
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
