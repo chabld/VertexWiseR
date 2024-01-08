@@ -45,20 +45,40 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   
     #check categorical variable
-    for (column in 1:NCOL(model))
+    if(NCOL(all_predictors)>1)
     {
-      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+      for (column in 1:NCOL(all_predictors))
       {
-        if(length(unique(model[,column]))==2)
+        if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
-          
-          recode=rep(0,NROW(model))
-          recode[model[,column]==unique(model[,column])[2]]=1
-          model[,column]=recode
-          contrast=model[,colno]
-        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-      }      
+          if(length(unique(all_predictors[,column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(all_predictors))
+            recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+            all_predictors[,column]=recode
+            IV_of_interest=all_predictors[,colno]
+          } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
+    } else
+    {
+      for (column in 1:NCOL(all_predictors))
+      {
+        if(class(all_predictors[column]) != "integer" & class(all_predictors[column]) != "numeric")
+        {
+          if(length(unique(all_predictors[column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[column])[1],"=0 and ",unique(all_predictors[column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(all_predictors))
+            recode[all_predictors[column]==unique(all_predictors[column])[2]]=1
+            all_predictors[,column]=recode
+            IV_of_interest=all_predictors[,colno]
+          } else if(length(unique(all_predictors[column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
     }
     
     #check length of CT data and load the appropriate fsaverage files
