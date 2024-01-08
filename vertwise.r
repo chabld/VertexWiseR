@@ -39,7 +39,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
         if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
       } else 
       {
-        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+        if(identical(as.numeric(IV_of_interest),as.numeric(data.matrix(all_predictors)[,colno])))  {break}
       }
     }
   
