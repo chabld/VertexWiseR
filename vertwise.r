@@ -24,7 +24,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
     idxF=which(complete.cases(all_predictors)==F)
     if(length(idxF)>0)
     {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
       all_predictors=all_predictors[-idxF,]
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
@@ -57,7 +57,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
           recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
           all_predictors[,column]=recode
           IV_of_interest=all_predictors[,colno]
-        } else if(length(unique(all_predictors[,column]))>2)    {cat(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
     
