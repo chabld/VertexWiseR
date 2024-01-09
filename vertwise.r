@@ -7,6 +7,9 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
+  ##load other vertex-wise functions
+  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+  
   ##checks
     #check IV_of_interest
     for(colno in 1:(NCOL(all_predictors)+1))
@@ -258,8 +261,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
 }
 ############################################################################################################################
 ############################################################################################################################
-##load other vertex-wise functions
-source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
 
 ##example
 # source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise_mixed.r?raw=TRUE")
