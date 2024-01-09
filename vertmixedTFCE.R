@@ -12,7 +12,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
   
   ##checks
     #check random variable and recode to numeric
-    if(missing("random"))  {stop("random variable is missing"}
+    if(missing("random"))  {stop("random variable is missing")}
     else 
       { #recoding subject variable
         random=dat_beh$SUB_ID
