@@ -42,7 +42,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
       CT_data=CT_data[-idxF,]
     }
 
-    #check categorical variable
+    #check and recode categorical variable
     if(NCOL(all_predictors)>1)
     {
       for (column in 1:NCOL(all_predictors))
