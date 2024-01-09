@@ -9,6 +9,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
 {
   ##load other vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+  
   ##checks
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW")
@@ -503,8 +504,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 }  
 ############################################################################################################################
 ############################################################################################################################
-
-
 ##example
 
 #pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, CT_data = dat_CT, tail=1, nperm=100, nthread = 10)
