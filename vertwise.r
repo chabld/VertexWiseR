@@ -5,7 +5,7 @@
 ############################################################################################################################
 ############################################################################################################################
 ##vertex wise analysis with mixed effects
-vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
   ##checks
     #check IV_of_interest
@@ -140,8 +140,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, random_effect, CT_data, 
   mask[which(colSums(CT_data != 0) == 0)]=F
   
   #fit model
-  if(missing("random_effect")) {model0=brainstat.stats.terms$FixedEffect(all_predictors, "_check_categorical" = F)}
-  else {model0=brainstat.stats.terms$MixedEffect(ran = random_effect,fix = all_predictors,"_check_categorical" = F)}
+  if(missing("random")) {model0=brainstat.stats.terms$FixedEffect(all_predictors, "_check_categorical" = F)}
+  else {model0=brainstat.stats.terms$MixedEffect(ran = random,fix = all_predictors,"_check_categorical" = F)}
   model=brainstat.stats.SLM$SLM(model = model0,
                                 contrast=IV_of_interest,
                                 surf = template, 
