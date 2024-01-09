@@ -11,6 +11,14 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
   
   ##checks
+    #check random variable and recode to numeric
+    if(missing("random"))  {stop("random variable is missing"}
+    else 
+      { #recoding subject variable
+        random=dat_beh$SUB_ID
+        random=match(random,unique(random))
+      }
+                                 
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW","reticulate")
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
@@ -135,10 +143,6 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
   }
 
 ##unpermuted model
-  #recoding subject variable
-  random=dat_beh$SUB_ID
-  random=match(random,unique(random))
-
   #preparing mask for model
   mask=array(rep(T,NCOL(CT_data)))
   maskNA=which(colSums(CT_data != 0) == 0)
