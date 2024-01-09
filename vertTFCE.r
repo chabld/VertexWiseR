@@ -124,7 +124,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
         cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
         CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
       }
-    } else if(smooth>0) 
+    } else if(smooth_FWHM>0) 
     {
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
       cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
