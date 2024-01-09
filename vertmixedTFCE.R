@@ -10,7 +10,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
   ##checks
     #check if required packages are installed
-    packages=c("foreach","doParallel","parallel","doSNOW")
+    packages=c("foreach","doParallel","parallel","doSNOW","reticulate")
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
     if(length(new.packages)) 
     {
