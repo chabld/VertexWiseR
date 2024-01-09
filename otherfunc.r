@@ -231,31 +231,6 @@ fs6_to_fs5=function(data)
 }
 ############################################################################################################################
 ############################################################################################################################
-##smoothing fsaverage5 and fsaverage6 data
-smooth=function(data, FWHM)
-{
-  ##import python libraries
-  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-
-  ##fsaverage space specific parameters
-  if(ncol(data)==20484) ##fsaverage5 parameters
-    {
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
-      vert_mm=3.5
-    } else if (ncol(data)==81924) ##fsaverage6 parameters
-    {
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
-      vert_mm=2
-    } 
-    else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-
-  ##smoothing
-  smooth=mesh_smooth(Y=data, edg=edgelist, FWHM = FWHM/vert_mm)
-  smooth[is.na(smooth)]=0
-  return(smooth)  
-}
-############################################################################################################################
-############################################################################################################################
 ##CT surface plots
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL , colorbar=T)
 {
