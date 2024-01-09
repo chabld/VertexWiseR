@@ -1,4 +1,4 @@
-## FUNCTIONS FOR MIXED-EFFECT VERTEX-WISE TFCE ANALYSIS
+## FUNCTION FOR MIXED-EFFECT VERTEX-WISE TFCE ANALYSIS
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
 ############################################################################################################################
@@ -7,7 +7,9 @@
 
 TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
+  ##load other TFCE and vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
+  
   ##checks
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW","reticulate")
