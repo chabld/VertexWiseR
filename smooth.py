@@ -6,7 +6,6 @@
    -remove edges in the medial wall
    -converted mesh units to mm
 """
-
 import numpy as np
 import requests
 import io
