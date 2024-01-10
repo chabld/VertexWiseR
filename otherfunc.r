@@ -51,7 +51,7 @@ smooth=function(data, FWHM)
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
   
   ##setting default FWHM values for fsaverage5/6 space
-  if(missing("smooth_FWHM")) 
+  if(missing("FWHM")) 
     {
     if(NCOL(data)==20484) {FWHM=10}
     else if(NCOL(data)==81924) {FWHM=5}
