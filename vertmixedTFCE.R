@@ -5,7 +5,7 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=T)
+TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=F)
 {
   ##load other TFCE and vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
