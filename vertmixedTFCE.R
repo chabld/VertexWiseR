@@ -5,20 +5,21 @@
 ############################################################################################################################
 ##Main function
 
-TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM)
+TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=T)
 {
   ##load other TFCE and vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
+  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
     #check random variable and recode to numeric
     if(missing("random"))  {stop("random variable is missing")}
     else 
-      { #recoding subject variable
-        random=dat_beh$SUB_ID
-        random=match(random,unique(random))
-      }
-                                 
+    { #recoding subject variable
+      random=dat_beh$SUB_ID
+      random=match(random,unique(random))
+    }
+    
     #check if required packages are installed
     packages=c("foreach","doParallel","parallel","doSNOW","reticulate")
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
@@ -29,7 +30,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     }  
     #check if nrow is consistent for model and CT_data
     if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
-  
+    
     #incomplete data check
     idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
@@ -39,7 +40,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
       contrast=contrast[-idxF]
       CT_data=CT_data[-idxF,]
     }
-  
+    
     #check contrast
     for(colno in 1:(NCOL(model)+1))
     {
@@ -53,7 +54,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
         if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
       }
     }
-  
+    
     #check and recode categorical variables
     if(NCOL(model)>1)
     {
@@ -63,7 +64,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
         {
           if(length(unique(model[,column]))==2)
           {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded such that ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
             
             recode=rep(0,NROW(model))
             recode[model[,column]==unique(model[,column])[2]]=1
@@ -90,7 +91,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
         }      
       }
     }
-  
+    
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(CT_data)
     if(n_vert==20484)
@@ -141,84 +142,86 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
-
-##unpermuted model
-  #preparing mask for model
-  mask=array(rep(T,NCOL(CT_data)))
-  maskNA=which(colSums(CT_data != 0) == 0)
-  mask[which(colSums(CT_data != 0) == 0)]=F
-
-  #construct model
-  start=Sys.time()
-  cat("Estimating unpermuted TFCE image...")
-  brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-  brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
-  terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
-  model.fit=brainstat.stats.SLM$SLM(model = terms,
-                                contrast=contrast,
-                                surf = template, 
-                                mask=mask,
-                                correction="None",
-                                cluster_threshold=1)
-  #fit model
-  model.fit$fit(CT_data)
-
-  #save output from model
-  tmap.orig=as.numeric(model.fit$t)
-  TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=10)
   
-  end=Sys.time()
+  ##unpermuted model
+    #preparing mask for model
+    mask=array(rep(T,NCOL(CT_data)))
+    maskNA=which(colSums(CT_data != 0) == 0)
+    mask[which(colSums(CT_data != 0) == 0)]=F
+    
+    #construct model
+    start=Sys.time()
+    cat("Estimating unpermuted TFCE image...")
+    brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
+    brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+    terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
+    model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                      contrast=contrast,
+                                      surf = template, 
+                                      mask=mask,
+                                      correction="None",
+                                      cluster_threshold=1)
+    #fit model
+    model.fit$fit(CT_data)
+    
+    #save output from model
+    tmap.orig=as.numeric(model.fit$t)
+    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=10)
+    
+    end=Sys.time()
+    
+    cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
-  cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
-
-##permuted model
-  #generating permutation sequences  
-  set.seed(123)
-  permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
-  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}
-
-  #activate parallel processing
-  unregister_dopar = function() {
-    env = foreach:::.foreachGlobals
-    rm(list=ls(name=env), pos=env)
-  }
-  unregister_dopar()
-  
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-  
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
-
-  #fitting permuted model and extracting max-TFCE values in parallel streams
-  start=Sys.time()
-  TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","edgelist","getClusters"), .options.snow = opts)  %dopar%
-    {
-      brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-      brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
-      terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
-      model.fit=brainstat.stats.SLM$SLM(model = terms,
-                                        contrast=contrast,
-                                        surf = template, 
-                                        mask=mask,
-                                        correction="None",
-                                        cluster_threshold=1)
-      model.fit$fit(CT_data[permseq[,perm],])
-      
-      return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+  ##permuted model
+    #generating permutation sequences  
+    set.seed(123)
+    permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
+    
+    if(perm_within_between==T) {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(random)}} 
+    else if(perm_within_between==F) {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
+    
+    #activate parallel processing
+    unregister_dopar = function() {
+      env = foreach:::.foreachGlobals
+      rm(list=ls(name=env), pos=env)
     }
-  end=Sys.time()
-  cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-
-##saving list objects
-returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
-names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
-
-return(returnobj)
+    unregister_dopar()
+    
+    cl=parallel::makeCluster(nthread)
+    doParallel::registerDoParallel(cl)
+    `%dopar%` = foreach::`%dopar%`
+    
+    #progress bar
+    doSNOW::registerDoSNOW(cl)
+    pb=txtProgressBar(max = nperm, style = 3)
+    progress=function(n) setTxtProgressBar(pb, n)
+    opts=list(progress = progress)
+    
+    #fitting permuted model and extracting max-TFCE values in parallel streams
+    start=Sys.time()
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","edgelist","getClusters"), .options.snow = opts)  %dopar%
+      {
+        brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
+        brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+        terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
+        model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                          contrast=contrast,
+                                          surf = template, 
+                                          mask=mask,
+                                          correction="None",
+                                          cluster_threshold=1)
+        model.fit$fit(CT_data[permseq[,perm],])
+        
+        return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+      }
+    end=Sys.time()
+    cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+    
+  ##saving list objects
+  returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
+  names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
+  
+  return(returnobj)
 }
 
 ############################################################################################################################
