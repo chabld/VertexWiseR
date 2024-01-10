@@ -177,10 +177,10 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
-      ##commented out alternative method of permutation
-      #model.permuted=model
-      #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
-      #mod.permuted=lm(CT_data~data.matrix(model.permuted))
+      ##commented out alternative method of permutation— permuting only the contrast variable
+        #model.permuted=model
+        #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
+        #mod.permuted=lm(CT_data~data.matrix(model.permuted))
       
       mod.permuted=lm(CT_data[permseq[,perm],]~data.matrix)
       tmap=extract.t(mod.permuted,colno+1)
