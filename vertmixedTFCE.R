@@ -204,7 +204,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
         brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
         brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
 
-      ##commented out alternative method of permutation
+      ##commented out alternative method of permutation— permuting only the contrast variable
         #model.permuted=model
         #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
         #terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model.permuted,"_check_categorical" = F)
