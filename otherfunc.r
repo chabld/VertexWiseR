@@ -66,16 +66,17 @@ smooth=function(data, FWHM)
 extract.t=function(mod,row)
 {
   p = mod$rank
-  rdf = mod$df.residual
+  df.residual=NROW(mod$residuals)-NROW(mod$coefficients)
+  rdf = df.residual
   Qr = mod$qr
   p1 = 1L:p
   r = mod$residuals
   rss = colSums(r^2)
   resvar = rss/rdf
-  R = chol2inv(Qr$qr[p1, p1, drop = FALSE])  
+  R = chol2inv(Qr[p1, p1, drop = FALSE])  
   se = (sqrt(diag(R) %*% t(resvar)))[row,]
   est = mod$coefficients[row,]
-  tval = est/se
+  tval = est/se 
   return(tval)
 }
 ############################################################################################################################
