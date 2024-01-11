@@ -1,23 +1,6 @@
 ## FUNCTIONS FOR VERTEX-WISE TFCE ANALYSIS
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
-extract.t=function(mod,row)
-{
-  p = mod$rank
-  df.residual=NROW(mod$residuals)-NROW(mod$coefficients)
-  rdf = df.residual
-  Qr = mod$qr
-  p1 = 1L:p
-  r = mod$residuals
-  rss = colSums(r^2)
-  resvar = rss/rdf
-  R = chol2inv(Qr[p1, p1, drop = FALSE])  
-  se = (sqrt(diag(R) %*% t(resvar)))[row,]
-  est = mod$coefficients[row,]
-  tval = est/se 
-  return(tval)
-}
-
 ############################################################################################################################
 ############################################################################################################################
 ##Main function
@@ -25,7 +8,7 @@ extract.t=function(mod,row)
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
   ##load other vertex-wise functions
-  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
   #check if required packages are installed
