@@ -1,6 +1,23 @@
 ## FUNCTIONS FOR VERTEX-WISE TFCE ANALYSIS
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 
+extract.t=function(mod,row)
+{
+  p = mod$rank
+  df.residual=NROW(mod$residuals)-NROW(mod$coefficients)
+  rdf = df.residual
+  Qr = mod$qr
+  p1 = 1L:p
+  r = mod$residuals
+  rss = colSums(r^2)
+  resvar = rss/rdf
+  R = chol2inv(Qr[p1, p1, drop = FALSE])  
+  se = (sqrt(diag(R) %*% t(resvar)))[row,]
+  est = mod$coefficients[row,]
+  tval = est/se 
+  return(tval)
+}
+
 ############################################################################################################################
 ############################################################################################################################
 ##Main function
@@ -8,135 +25,135 @@
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
   ##load other vertex-wise functions
-  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
+  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
-    #check if required packages are installed
-    packages=c("foreach","doParallel","parallel","doSNOW")
-    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }  
-    #check if nrow is consistent for model and CT_data
-    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
-    
-    #incomplete data check
-    idxF=which(complete.cases(model)==F)
-    if(length(idxF)>0)
-    {
-      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-      model=model[-idxF,]
-      contrast=contrast[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-    
-    #check contrast
-    for(colno in 1:(NCOL(model)+1))
-    {
-      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-      
-      if(class(contrast) != "integer" & class(contrast) != "numeric") 
-      {
-        if(identical(contrast,model[,colno]))  {break} 
-      } else 
-      {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
-      }
-    }
+  #check if required packages are installed
+  packages=c("foreach","doParallel","parallel","doSNOW")
+  new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
+  #check if nrow is consistent for model and CT_data
+  if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
   
-    #check categorical variable
-    if(NCOL(model)>1)
-    {
-      for (column in 1:NCOL(model))
-      {
-        if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
-        {
-          if(length(unique(model[,column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
-            
-            recode=rep(0,NROW(model))
-            recode[model[,column]==unique(model[,column])[2]]=1
-            model[,column]=recode
-            IV_of_interest=model[,colno]
-          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
-    } else
-    {
-      for (column in 1:NCOL(model))
-      {
-        if(class(model[column]) != "integer" & class(model[column]) != "numeric")
-        {
-          if(length(unique(model[column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded such that ",unique(model[column])[1],"=0 and ",unique(model[column])[2],"=1 for the analysis\n",sep=""))
-            
-            recode=rep(0,NROW(model))
-            recode[model[column]==unique(model[column])[2]]=1
-            model[,column]=recode
-            IV_of_interest=model[,colno]
-          } else if(length(unique(model[column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
-    }
+  #incomplete data check
+  idxF=which(complete.cases(model)==F)
+  if(length(idxF)>0)
+  {
+    cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+    model=model[-idxF,]
+    contrast=contrast[-idxF]
+    CT_data=CT_data[-idxF,]
+  }
+  
+  #check contrast
+  for(colno in 1:(NCOL(model)+1))
+  {
+    if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
     
-    #check length of CT data and load the appropriate fsaverage files
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)
+    if(class(contrast) != "integer" & class(contrast) != "numeric") 
     {
-      template="fsaverage5"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
-    }
-    else if (n_vert==81924)
+      if(identical(contrast,model[,colno]))  {break} 
+    } else 
     {
-      template="fsaverage6"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
+      if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
     }
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-
+  }
+  
+  #check categorical variable
+  if(NCOL(model)>1)
+  {
+    for (column in 1:NCOL(model))
+    {
+      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+      {
+        if(length(unique(model[,column]))==2)
+        {
+          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          
+          recode=rep(0,NROW(model))
+          recode[model[,column]==unique(model[,column])[2]]=1
+          model[,column]=recode
+          IV_of_interest=model[,colno]
+        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+      }      
+    }
+  } else
+  {
+    for (column in 1:NCOL(model))
+    {
+      if(class(model[column]) != "integer" & class(model[column]) != "numeric")
+      {
+        if(length(unique(model[column]))==2)
+        {
+          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded such that ",unique(model[column])[1],"=0 and ",unique(model[column])[2],"=1 for the analysis\n",sep=""))
+          
+          recode=rep(0,NROW(model))
+          recode[model[column]==unique(model[column])[2]]=1
+          model[,column]=recode
+          IV_of_interest=model[,colno]
+        } else if(length(unique(model[column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+      }      
+    }
+  }
+  
+  #check length of CT data and load the appropriate fsaverage files
+  n_vert=ncol(CT_data)
+  if(n_vert==20484)
+  {
+    template="fsaverage5"
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
+  }
+  else if (n_vert==81924)
+  {
+    template="fsaverage6"
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
+  }
+  else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+  
   #check for collinearity
   if(NCOL(model)>1)
+  {
+    cormat=cor(model,use = "pairwise.complete.obs")
+    cormat.0=cormat
+    cormat.0[cormat.0==1]=NA
+    if(max(abs(cormat.0),na.rm = T) >0.5)
     {
-      cormat=cor(model,use = "pairwise.complete.obs")
-      cormat.0=cormat
-      cormat.0[cormat.0==1]=NA
-      if(max(abs(cormat.0),na.rm = T) >0.5)
-      {
-        warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
-      }
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
     }
+  }
   
-    ##smoothing
-    n_vert=NCOL(CT_data)
-    if(missing("smooth_FWHM"))
-    {
-      if(n_vert==20484) 
-      {
-        reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-        cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-        CT_data=mesh_smooth(CT_data, FWHM=10)
-      }
-      else if(n_vert==81924) 
-      {
-        reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-        cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-        CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
-      }
-    } else if(smooth_FWHM>0) 
+  ##smoothing
+  n_vert=NCOL(CT_data)
+  if(missing("smooth_FWHM"))
+  {
+    if(n_vert==20484) 
     {
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-      cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
-      CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
+      cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
+      CT_data=mesh_smooth(CT_data, FWHM=10)
     }
-      
+    else if(n_vert==81924) 
+    {
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
+      cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
+      CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
+    }
+  } else if(smooth_FWHM>0) 
+  {
+    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
+    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
+    CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
+  }
+  
   ##unpermuted model
   model=data.matrix(model)
-  mod=lm(CT_data~data.matrix(model))
+  mod=.lm.fit(y=CT_data,x=data.matrix(cbind(1,model)))
   
   #extract tstat and calculate tfce image
   start=Sys.time()
@@ -150,27 +167,27 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   cat(paste("Completed in",round(difftime(end,start, units="secs"),1),"secs\nEstimating permuted TFCE images...\n",sep=" "))
   
   ##permuted models
-    #generating permutation sequences  
-    set.seed(123)
-    permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
-    for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}
+  #generating permutation sequences  
+  set.seed(123)
+  permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
+  for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}
   
-    #activate parallel processing
-    unregister_dopar = function() {
-      env = foreach:::.foreachGlobals
-      rm(list=ls(name=env), pos=env)
-    }
-    unregister_dopar()
-    
-    cl=parallel::makeCluster(nthread)
-    doParallel::registerDoParallel(cl)
-    `%dopar%` = foreach::`%dopar%`
-    
-    #progress bar
-    doSNOW::registerDoSNOW(cl)
-    pb=txtProgressBar(max = nperm, style = 3)
-    progress=function(n) setTxtProgressBar(pb, n)
-    opts=list(progress = progress)
+  #activate parallel processing
+  unregister_dopar = function() {
+    env = foreach:::.foreachGlobals
+    rm(list=ls(name=env), pos=env)
+  }
+  unregister_dopar()
+  
+  cl=parallel::makeCluster(nthread)
+  doParallel::registerDoParallel(cl)
+  `%dopar%` = foreach::`%dopar%`
+  
+  #progress bar
+  doSNOW::registerDoSNOW(cl)
+  pb=txtProgressBar(max = nperm, style = 3)
+  progress=function(n) setTxtProgressBar(pb, n)
+  opts=list(progress = progress)
   
   ##fitting permuted regression model and extracting t-stats in parallel streams
   start=Sys.time()
@@ -178,11 +195,11 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","extract.t","getClusters","edgelist"), .options.snow = opts)  %dopar%
     {
       ##commented out alternative method of permutation— permuting only the contrast variable
-        #model.permuted=model
-        #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
-        #mod.permuted=lm(CT_data~data.matrix(model.permuted))
+      #model.permuted=model
+      #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
+      #mod.permuted=lm(CT_data~data.matrix(model.permuted))
       
-      mod.permuted=lm(CT_data[permseq[,perm],]~data.matrix(model))
+      mod.permuted=.lm.fit(y=CT_data[permseq[,perm],],x=data.matrix(cbind(1,model)))
       tmap=extract.t(mod.permuted,colno+1)
       
       remove(mod.permuted,model.permuted)
@@ -500,7 +517,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   returnobj=list(cluster_level_results, t_stat.thresholdedPK, pos.clustermap, neg.clustermap)  
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_clustermap","neg_clustermap")
   returnobj$cluster_level_results
- 
+  
   return(returnobj)
   remove(template,ROImap,envir = globalenv())
 }  
