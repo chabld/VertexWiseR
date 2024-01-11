@@ -182,7 +182,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
         #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
         #mod.permuted=lm(CT_data~data.matrix(model.permuted))
       
-      mod.permuted=lm(CT_data[permseq[,perm],]~data.matrix)
+      mod.permuted=lm(CT_data[permseq[,perm],]~data.matrix(model.permuted))
       tmap=extract.t(mod.permuted,colno+1)
       
       remove(mod.permuted,model.permuted)
