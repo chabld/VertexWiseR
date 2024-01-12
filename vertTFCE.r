@@ -65,7 +65,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   {
     for (column in 1:NCOL(model))
     {
-      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+      if(!suppressWarnings(all(!is.na(as.numeric(as.character(model[,column])))))) 
       {
         if(length(unique(model[,column]))==2)
         {
