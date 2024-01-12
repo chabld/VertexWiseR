@@ -80,7 +80,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   } else
   {
-    if (!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
+    if(!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
     {
       if(length(unique(model))==2)
       {
