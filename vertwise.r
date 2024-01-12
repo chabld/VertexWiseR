@@ -81,7 +81,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       }
     } else
     {
-      if(class(all_predictors) != "integer" & class(all_predictors) != "numeric")
+      if (!suppressWarnings(all(!is.na(as.numeric(as.character(all_predictors)))))) 
       {
         if(length(unique(all_predictors))==2)
         {
