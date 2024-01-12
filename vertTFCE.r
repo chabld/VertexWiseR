@@ -49,14 +49,13 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   }  else
   {
-    colno=1
     if(class(contrast) != "integer" & class(contrast) != "numeric") 
     {
-      if(identical(contrast,model))  {break} 
+      if(identical(contrast,model))  {colno=1} 
       else  {stop("contrast is not contained within model")}
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {break}
+      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
       else  {stop("contrast is not contained within model")}
     }
   }
