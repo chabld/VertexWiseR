@@ -49,6 +49,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   }  else
   {
+    colno=1
     if(class(contrast) != "integer" & class(contrast) != "numeric") 
     {
       if(identical(contrast,model))  {break} 
