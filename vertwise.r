@@ -11,19 +11,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
-    #check IV_of_interest
-    for(colno in 1:(NCOL(all_predictors)+1))
-    {
-      if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
-      
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
-      {
-        if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
-      } else 
-      {
-        if(identical(as.numeric(IV_of_interest),as.numeric(data.matrix(all_predictors)[,colno])))  {break}
-      }
-    }
     #check if required packages are installed
     packages="reticulate"
     new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
@@ -32,6 +19,35 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
       install.packages(new.packages)
     }  
+  
+    #check IV_of_interest
+    if(NCOL(all_predictors)>1)
+    {
+      for(colno in 1:(NCOL(all_predictors)+1))
+      {
+        if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+        
+        if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+        {
+          if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+        } else 
+        {
+          if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+        }
+      }
+    }  else
+    {
+      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      {
+        if(identical(IV_of_interest,all_predictors))  {colno=1} 
+        else  {stop("IV_of_interest is not contained within all_predictors")}
+      } else
+      {
+        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors)))  {colno=1}
+        else  {stop("IV_of_interest is not contained within all_predictors")}
+      }
+    }
+    
     #check if nrow is consistent for all_predictors and CT_data
     if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
     
@@ -45,7 +61,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       CT_data=CT_data[-idxF,]
     }
 
-    #check and recode categorical variable
+    #check categorical and recode variable
     if(NCOL(all_predictors)>1)
     {
       for (column in 1:NCOL(all_predictors))
@@ -54,7 +70,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
         {
           if(length(unique(all_predictors[,column]))==2)
           {
-            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded such that ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
             
             recode=rep(0,NROW(all_predictors))
             recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
@@ -65,21 +81,18 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       }
     } else
     {
-      for (column in 1:NCOL(all_predictors))
+      if(class(all_predictors) != "integer" & class(all_predictors) != "numeric")
       {
-        if(class(all_predictors[column]) != "integer" & class(all_predictors[column]) != "numeric")
+        if(length(unique(all_predictors))==2)
         {
-          if(length(unique(all_predictors[column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[column])[1],"=0 and ",unique(all_predictors[column])[2],"=1 for the analysis\n",sep=""))
-            
-            recode=rep(0,NROW(all_predictors))
-            recode[all_predictors[column]==unique(all_predictors[column])[2]]=1
-            all_predictors[,column]=recode
-            IV_of_interest=all_predictors[,colno]
-          } else if(length(unique(all_predictors[column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
+          cat(paste("The binary variable '",colnames(all_predictors),"' will be recoded such that ",unique(all_predictors)[1],"=0 and ",unique(all_predictors)[2],"=1 for the analysis\n",sep=""))
+          
+          recode=rep(0,NROW(all_predictors))
+          recode[all_predictors==unique(all_predictors)[2]]=1
+          all_predictors=recode
+          IV_of_interest=all_predictors
+        } else if(length(unique(all_predictors))>2)    {stop(paste("The categorical variable '",colnames(all_predictors),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+      }      
     }
   
     #check length of CT data and load the appropriate fsaverage files
