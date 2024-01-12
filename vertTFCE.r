@@ -33,16 +33,30 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   }
   
   #check contrast
-  for(colno in 1:(NCOL(model)+1))
+  if(NCOL(model)>1)
   {
-    if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-    
+    for(colno in 1:(NCOL(model)+1))
+    {
+      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
+      
+      if(class(contrast) != "integer" & class(contrast) != "numeric") 
+      {
+        if(identical(contrast,model[,colno]))  {break} 
+      } else 
+      {
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+      }
+    }
+  }  else
+  {
     if(class(contrast) != "integer" & class(contrast) != "numeric") 
     {
-      if(identical(contrast,model[,colno]))  {break} 
-    } else 
+      if(identical(contrast,model))  {break} 
+      else  {stop("contrast is not contained within model")}
+    } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+      if(identical(as.numeric(contrast),as.numeric(model)))  {break}
+      else  {stop("contrast is not contained within model")}
     }
   }
   
