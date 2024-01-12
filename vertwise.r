@@ -143,7 +143,8 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
-    
+  CT_data[is.na(CT_data)]=0
+  
   ##import python libaries
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
