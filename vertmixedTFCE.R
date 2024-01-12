@@ -48,7 +48,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
       {
         if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
         
-        if(class(contrast) != "integer" & class(contrast) != "numeric") 
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
         {
           if(identical(contrast,model[,colno]))  {break} 
         } else 
@@ -58,7 +58,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
       }
     }  else
     {
-      if(class(contrast) != "integer" & class(contrast) != "numeric") 
+      if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
       {
         if(identical(contrast,model))  {colno=1} 
         else  {stop("contrast is not contained within model")}
@@ -74,7 +74,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     {
       for (column in 1:NCOL(model))
       {
-        if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(model[,column])))))) 
         {
           if(length(unique(model[,column]))==2)
           {
