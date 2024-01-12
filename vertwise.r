@@ -66,7 +66,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     {
       for (column in 1:NCOL(all_predictors))
       {
-        if(class(all_predictors[,column]) != "integer" & class(all_predictors[,column]) != "numeric")
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(all_predictors[,column])))))) 
         {
           if(length(unique(all_predictors[,column]))==2)
           {
