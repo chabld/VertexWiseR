@@ -27,7 +27,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       {
         if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
         
-        if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
         {
           if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
         } else 
@@ -37,7 +37,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       }
     }  else
     {
-      if(class(IV_of_interest) != "integer" & class(IV_of_interest) != "numeric") 
+      if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
       {
         if(identical(IV_of_interest,all_predictors))  {colno=1} 
         else  {stop("IV_of_interest is not contained within all_predictors")}
