@@ -60,7 +60,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     }
   }
   
-  #check categorical variable
+  #check and recode categorical variable
   if(NCOL(model)>1)
   {
     for (column in 1:NCOL(model))
