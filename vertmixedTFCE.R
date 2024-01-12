@@ -42,16 +42,30 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     }
     
     #check contrast
-    for(colno in 1:(NCOL(model)+1))
+    if(NCOL(model)>1)
     {
-      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-      
+      for(colno in 1:(NCOL(model)+1))
+      {
+        if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
+        
+        if(class(contrast) != "integer" & class(contrast) != "numeric") 
+        {
+          if(identical(contrast,model[,colno]))  {break} 
+        } else 
+        {
+          if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        }
+      }
+    }  else
+    {
       if(class(contrast) != "integer" & class(contrast) != "numeric") 
       {
-        if(identical(contrast,model[,colno]))  {break} 
-      } else 
+        if(identical(contrast,model))  {colno=1} 
+        else  {stop("contrast is not contained within model")}
+      } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+        else  {stop("contrast is not contained within model")}
       }
     }
     
@@ -64,7 +78,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
         {
           if(length(unique(model[,column]))==2)
           {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded such that ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
             
             recode=rep(0,NROW(model))
             recode[model[,column]==unique(model[,column])[2]]=1
@@ -75,21 +89,18 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
       }
     } else
     {
-      for (column in 1:NCOL(model))
+      if (!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
       {
-        if(class(model[column]) != "integer" & class(model[column]) != "numeric")
+        if(length(unique(model))==2)
         {
-          if(length(unique(model[column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded such that ",unique(model[column])[1],"=0 and ",unique(model[column])[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
             
-            recode=rep(0,NROW(model))
-            recode[model[column]==unique(model[column])[2]]=1
-            model[,column]=recode
-            IV_of_interest=model[,colno]
-          } else if(length(unique(model[column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
+          recode=rep(0,NROW(model))
+          recode[model==unique(model)[2]]=1
+          model=recode
+          IV_of_interest=model
+        } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+      }      
     }
     
     #check length of CT data and load the appropriate fsaverage files
