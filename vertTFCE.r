@@ -141,7 +141,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   } else if(smooth_FWHM>0) 
   {
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
+    cat(paste("CT_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
   CT_data[is.na(CT_data)]=0
