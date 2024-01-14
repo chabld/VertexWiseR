@@ -206,48 +206,41 @@ fs6_to_fs5=function(data)
 ############################################################################################################################
 ############################################################################################################################
 ##CT surface plots
-plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, range=NULL , colorbar=T)
+plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
 {
   #check length of vector
   n_vert=length(data)
   if(n_vert==20484) {template="fsaverage5"}
   else if (n_vert==81924) {template="fsaverage6"} 
   else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-
+  
   #legacy input message
   if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
-
+  
   #import python libraries
   brainstat.datasets=reticulate::import("brainstat.datasets")  
   brainspace.plotting=reticulate::import("brainspace.plotting")  
-
+  
   #loading fsaverage surface
   left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
   right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
-
+  
   #setting color maps
   if(missing("cmap"))
   {
-    if(range(data,na.rm = T)[1]>=0)
-      {
-      cmap="Reds"
-      range=NULL
-      }
-    else if (range(data,na.rm = T)[2]<=0)
-      {cmap="Blues_r"
-      range=NULL
-      }
-    else
-      {
-      cmap="RdBu_r"
-      range="sym"
-      }  
+    if(range(data,na.rm = T)[1]>=0)  {cmap="Reds"}
+    else if (range(data,na.rm = T)[2]<=0)  {cmap="Blues_r"}
+    else  {cmap="RdBu_r"}  
   }
-
+  
+  #setting limits
+  if(missing("limits")) {limits=range(data,na.rm = T)}
+  limits=reticulate::tuple(limits[1],limits[2])
+  
   #plot object
   CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
-                                              size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(c(0.7, 0.7, 0.7, 1)),
-                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=range,
+                                              size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
                                               label_text=list('left'=list(title)),interactive=F, color_bar=colorbar,  transparent_bg=FALSE)
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
