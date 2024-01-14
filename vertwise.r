@@ -140,7 +140,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   } else if(smooth_FWHM>0) 
   {
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-    cat(paste("CT_data will be smoothed using a ", smooth,"mm FWHM kernel", sep=""))
+    cat(paste("CT_data will be smoothed using a ",smooth_FWHM,"mm FWHM kernel", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
   CT_data[is.na(CT_data)]=0
