@@ -25,7 +25,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     {
       for(colno in 1:(NCOL(all_predictors)+1))
       {
-        if(colno==(NCOL(all_predictors)+1))  {stop("IV_of_interest is not contained within all_predictors")}
+        if(colno==(NCOL(all_predictors)+1))  {warning("IV_of_interest is not contained within all_predictors")}
         
         if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
         {
@@ -40,11 +40,11 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
       {
         if(identical(IV_of_interest,all_predictors))  {colno=1} 
-        else  {stop("IV_of_interest is not contained within all_predictors")}
+        else  {warning("IV_of_interest is not contained within all_predictors")}
       } else
       {
         if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors)))  {colno=1}
-        else  {stop("IV_of_interest is not contained within all_predictors")}
+        else  {warning("IV_of_interest is not contained within all_predictors")}
       }
     }
     
@@ -109,18 +109,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     }
     else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
     
-    #check for collinearity
-    if(NCOL(all_predictors)>1)
-    {
-      cormat=cor(all_predictors,use = "pairwise.complete.obs")
-      cormat.0=cormat
-      cormat.0[cormat.0==1]=NA
-      if(max(abs(cormat.0),na.rm = T) >0.5)
-      {
-        warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
-      }
-    }
-  
   ##smoothing
   n_vert=NCOL(CT_data)
   if(missing("smooth_FWHM"))
