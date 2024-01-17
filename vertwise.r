@@ -7,6 +7,8 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 {
+  if(class(IV_of_interest)=="integer") {IV_of_interest=as.numeric(IV_of_interest)}
+  
   ##load other vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
@@ -29,7 +31,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
         
         if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
         {
-          if(identical(IV_of_interest,all_predictors[,colno]))  {break} 
+           if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
         } else 
         {
           if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
@@ -61,16 +63,16 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       CT_data=CT_data[-idxF,]
     }
 
-    #check categorical and recode variable
+   #check categorical and recode variable
     if(NCOL(all_predictors)>1)
     {
       for (column in 1:NCOL(all_predictors))
       {
-        if(!suppressWarnings(all(!is.na(as.numeric(as.character(all_predictors[,column])))))) 
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(data.matrix(all_predictors)[,column])))))) 
         {
           if(length(unique(all_predictors[,column]))==2)
           {
-            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(all_predictors[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
+            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(data.matrix(all_predictors)[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
             
             recode=rep(0,NROW(all_predictors))
             recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
