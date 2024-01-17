@@ -7,6 +7,7 @@
 
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
+  if(class(contrast)=="integer") {IV_of_interest=as.numeric(contrast)}
   ##load other vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
@@ -32,67 +33,67 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     CT_data=CT_data[-idxF,]
   }
   
-  #check contrast
-  if(NCOL(model)>1)
-  {
-    for(colno in 1:(NCOL(model)+1))
+   #check contrast
+    if(NCOL(model)>1)
     {
-      if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
-      
+      for(colno in 1:(NCOL(model)+1))
+      {
+        if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
+        
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
+        {
+           if(identical(contrast,data.matrix(model)[,colno]))  {break} 
+        } else 
+        {
+          if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        }
+      }
+    }  else
+    {
       if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
       {
-        if(identical(contrast,model[,colno]))  {break} 
-      } else 
+        if(identical(contrast,model))  {colno=1} 
+        else  {warning("contrast is not contained within model")}
+      } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+        else  {warning("contrast is not contained within model")}
       }
     }
-  }  else
-  {
-    if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
+  
+ #check categorical and recode variable
+    if(NCOL(model)>1)
     {
-      if(identical(contrast,model))  {colno=1} 
-      else  {warning("contrast is not contained within model")}
+      for (column in 1:NCOL(model))
+      {
+        if(!suppressWarnings(all(!is.na(as.numeric(as.character(data.matrix(model)[,column])))))) 
+        {
+          if(length(unique(model[,column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(model))
+            recode[model[,column]==unique(model[,column])[2]]=1
+            model[,column]=recode
+            IV_of_interest=model[,colno]
+          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
-      else  {warning("contrast is not contained within model")}
-    }
-  }
-  
-  #check and recode categorical variable
-  if(NCOL(model)>1)
-  {
-    for (column in 1:NCOL(model))
-    {
-      if(!suppressWarnings(all(!is.na(as.numeric(as.character(model[,column])))))) 
+      if (!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
       {
-        if(length(unique(model[,column]))==2)
+        if(length(unique(model))==2)
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(model))
-          recode[model[,column]==unique(model[,column])[2]]=1
-          model[,column]=recode
-          IV_of_interest=model[,colno]
-        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode[model==unique(model)[2]]=1
+          model=recode
+          IV_of_interest=model
+        } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
-  } else
-  {
-    if(!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
-    {
-      if(length(unique(model))==2)
-      {
-        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
-          
-        recode=rep(0,NROW(model))
-        recode[model==unique(model)[2]]=1
-        model=recode
-        IV_of_interest=model
-      } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-    }      
-  }
   
   #check length of CT data and load the appropriate fsaverage files
   n_vert=ncol(CT_data)
