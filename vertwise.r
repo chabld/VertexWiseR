@@ -13,103 +13,111 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
-    #check if required packages are installed
-    packages="reticulate"
-    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }  
+  #check if required packages are installed
+  packages="reticulate"
+  new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
+  if(length(new.packages)) 
+  {
+    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+    install.packages(new.packages)
+  }  
   
-    #check IV_of_interest
-    if(NCOL(all_predictors)>1)
+  #check IV_of_interest
+  if(NCOL(all_predictors)>1)
+  {
+    for(colno in 1:(NCOL(all_predictors)+1))
     {
-      for(colno in 1:(NCOL(all_predictors)+1))
-      {
-        if(colno==(NCOL(all_predictors)+1))  {warning("IV_of_interest is not contained within all_predictors")}
-        
-        if(class(IV_of_interest)=="character") 
-        {
-          if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
-        } else 
-        {
-          if(identical(as.numeric(IV_of_interest),suppressWarnings(as.numeric(all_predictors[,colno]))))  {break}
-        }
-      }
-    }  else
-    {
+      if(colno==(NCOL(all_predictors)+1))  {warning("IV_of_interest is not contained within all_predictors")}
+      
       if(class(IV_of_interest)=="character") 
       {
-        if(identical(IV_of_interest,all_predictors))  {colno=1} 
-        else  {warning("IV_of_interest is not contained within all_predictors")}
-      } else
+        if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
+      } else 
       {
-        if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors)))  {colno=1}
-        else  {warning("IV_of_interest is not contained within all_predictors")}
+        if(identical(as.numeric(IV_of_interest),suppressWarnings(as.numeric(all_predictors[,colno]))))  {break}
       }
     }
-    
-    #check if nrow is consistent for all_predictors and CT_data
-    if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
-    
-    #incomplete data check
-    idxF=which(complete.cases(all_predictors)==F)
-    if(length(idxF)>0)
+  }  else
+  {
+    if(class(IV_of_interest)=="character") 
     {
-      cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
-      all_predictors=all_predictors[-idxF,]
-      IV_of_interest=IV_of_interest[-idxF]
-      CT_data=CT_data[-idxF,]
-    }
-    
-    #check categorical and recode variable
-    if(NCOL(all_predictors)>1)
-    {
-      for (column in 1:NCOL(all_predictors))
-      {
-        if(class(all_predictors[,column])=="character") 
-        {
-          if(length(unique(all_predictors[,column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(data.matrix(all_predictors)[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
-            
-            recode=rep(0,NROW(all_predictors))
-            recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
-            all_predictors[,column]=recode
-            IV_of_interest=all_predictors[,colno]
-          } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
+      if(identical(IV_of_interest,all_predictors))  {colno=1} 
+      else  {warning("IV_of_interest is not contained within all_predictors")}
     } else
     {
-      if(class(all_predictors)=="character") 
+      if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors)))  {colno=1}
+      else  {warning("IV_of_interest is not contained within all_predictors")}
+    }
+  }
+  
+  #check if nrow is consistent for all_predictors and CT_data
+  if(NROW(CT_data)!=NROW(all_predictors))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and all_predictors (",NROW(all_predictors),") are not the same",sep=""))}
+  
+  #incomplete data check
+  idxF=which(complete.cases(all_predictors)==F)
+  if(length(idxF)>0)
+  {
+    cat(paste("all_predictors contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+    all_predictors=all_predictors[-idxF,]
+    IV_of_interest=IV_of_interest[-idxF]
+    CT_data=CT_data[-idxF,]
+  }
+  
+  #check categorical and recode variable
+  if(NCOL(all_predictors)>1)
+  {
+    for (column in 1:NCOL(all_predictors))
+    {
+      if(class(all_predictors[,column])=="character") 
       {
-        if(length(unique(all_predictors))==2)
+        if(length(unique(all_predictors[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(all_predictors),"' will be recoded such that ",unique(all_predictors)[1],"=0 and ",unique(all_predictors)[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(all_predictors)[column],"' will be recoded with ",unique(data.matrix(all_predictors)[,column])[1],"=0 and ",unique(all_predictors[,column])[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(all_predictors))
-          recode[all_predictors==unique(all_predictors)[2]]=1
-          all_predictors=recode
-          IV_of_interest=all_predictors
-        } else if(length(unique(all_predictors))>2)    {stop(paste("The categorical variable '",colnames(all_predictors),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode[all_predictors[,column]==unique(all_predictors[,column])[2]]=1
+          all_predictors[,column]=recode
+          IV_of_interest=all_predictors[,colno]
+        } else if(length(unique(all_predictors[,column]))>2)    {stop(paste("The categorical variable '",colnames(all_predictors)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
-    #check length of CT data and load the appropriate fsaverage files
-    n_vert=ncol(CT_data)
-    if(n_vert==20484)
+  } else
+  {
+    if(class(all_predictors)=="character") 
     {
-      template="fsaverage5"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
-    }
-    else if (n_vert==81924)
-    {
-      template="fsaverage6"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
-    }
-    else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
-    
+      if(length(unique(all_predictors))==2)
+      {
+        cat(paste("The binary variable '",colnames(all_predictors),"' will be recoded such that ",unique(all_predictors)[1],"=0 and ",unique(all_predictors)[2],"=1 for the analysis\n",sep=""))
+        
+        recode=rep(0,NROW(all_predictors))
+        recode[all_predictors==unique(all_predictors)[2]]=1
+        all_predictors=recode
+        IV_of_interest=all_predictors
+      } else if(length(unique(all_predictors))>2)    {stop(paste("The categorical variable '",colnames(all_predictors),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+    }      
+  }
+  
+  #check length of CT data and load the appropriate fsaverage files
+  n_vert=ncol(CT_data)
+  if(n_vert==20484)
+  {
+    template="fsaverage5"
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+  }
+  else if (n_vert==81924)
+  {
+    template="fsaverage6"
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+  }
+  else if (n_vert==14524)
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hipsurfdict.rdata?raw=TRUE"))
+    brainspace.mesh.mesh_creation=reticulate::import("brainspace.mesh.mesh_creation")
+    template=brainspace.mesh.mesh_creation$build_polydata(cells = hippoly$tri,points = hippoly$coord)
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
+  }
+  else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
+
   ##smoothing
   n_vert=NCOL(CT_data)
   if(missing("smooth_FWHM"))
@@ -124,7 +132,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     {
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
+      CT_data=mesh_smooth(CT_data, FWHM=5)
+    }
+    else if(n_vert==14524) 
+    {
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
+      cat("CT_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
+      CT_data=mesh_smooth(CT_data, FWHM=5)
     }
   } else if(smooth_FWHM>0) 
   {
@@ -138,7 +152,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
   brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
   brainstat.datasets=reticulate::import("brainstat.datasets")  
-
+  
   ##fitting model
   #preparing mask for model
   mask=array(rep(T,NCOL(CT_data)))
@@ -150,7 +164,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   else {model0=brainstat.stats.terms$MixedEffect(ran = random,fix = all_predictors,"_check_categorical" = F)}
   model=brainstat.stats.SLM$SLM(model = model0,
                                 contrast=IV_of_interest,
-                                surf = template, 
+                                surf = template,
                                 mask=mask,
                                 correction=c("fdr", "rft"),
                                 cluster_threshold=p)
@@ -260,7 +274,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   returnobj=list(cluster_results,tstat,posmask,negmask,pos_clusterIDmap,neg_clusterIDmap)
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
   return(returnobj)
-  remove(template,ROImap,envir = globalenv())
 }
 ############################################################################################################################
 ############################################################################################################################
