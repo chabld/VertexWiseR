@@ -32,7 +32,8 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     }  
     #check if nrow is consistent for model and CT_data
     if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
-    
+    if(length(random)!=NROW(model))  {stop(paste("The number of rows for random (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
+  
     #incomplete data check
     idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
