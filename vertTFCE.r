@@ -12,119 +12,119 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
-  #check if required packages are installed
-  packages=c("foreach","doParallel","parallel","doSNOW")
-  new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
-  if(length(new.packages)) 
-  {
-    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }  
-  #check if nrow is consistent for model and CT_data
-  if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
-  
-  #incomplete data check
-  idxF=which(complete.cases(model)==F)
-  if(length(idxF)>0)
-  {
-    cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
-    model=model[-idxF,]
-    contrast=contrast[-idxF]
-    CT_data=CT_data[-idxF,]
-  }
-  
-  #check contrast
-  if(NCOL(model)>1)
-  {
-    for(colno in 1:(NCOL(model)+1))
+    #check if required packages are installed
+    packages=c("foreach","doParallel","parallel","doSNOW")
+    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
+    if(length(new.packages)) 
     {
-      if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
-      
+      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
+      install.packages(new.packages)
+    }  
+    #check if nrow is consistent for model and CT_data
+    if(NROW(CT_data)!=NROW(model))  {stop(paste("The number of rows for CT_data (",NROW(CT_data),") and model (",NROW(model),") are not the same",sep=""))}
+    
+    #incomplete data check
+    idxF=which(complete.cases(model)==F)
+    if(length(idxF)>0)
+    {
+      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+      model=model[-idxF,]
+      contrast=contrast[-idxF]
+      CT_data=CT_data[-idxF,]
+    }
+    
+    #check contrast
+    if(NCOL(model)>1)
+    {
+      for(colno in 1:(NCOL(model)+1))
+      {
+        if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
+        
+        if (class(contrast)=="character") 
+        {
+          if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
+        } else 
+        {
+          if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        }
+      }
+    }  else
+    {
       if (class(contrast)=="character") 
       {
-        if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
-      } else 
+        if(identical(contrast,model))  {colno=1} 
+        else  {warning("contrast is not contained within model")}
+      } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+        else  {warning("contrast is not contained within model")}
       }
     }
-  }  else
-  {
-    if (class(contrast)=="character") 
+    
+    #check categorical and recode variable
+    if(NCOL(model)>1)
     {
-      if(identical(contrast,model))  {colno=1} 
-      else  {warning("contrast is not contained within model")}
+      for (column in 1:NCOL(model))
+      {
+        if(class(model[,column])=="character") 
+        {
+          if(length(unique(model[,column]))==2)
+          {
+            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+            
+            recode=rep(0,NROW(model))
+            recode[model[,column]==unique(model[,column])[2]]=1
+            model[,column]=recode
+            contrast=model[,colno]
+          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+        }      
+      }
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
-      else  {warning("contrast is not contained within model")}
-    }
-  }
-  
-  #check categorical and recode variable
-  if(NCOL(model)>1)
-  {
-    for (column in 1:NCOL(model))
-    {
-      if(class(model[,column])=="character") 
+      if (class(model)=="character") 
       {
-        if(length(unique(model[,column]))==2)
+        if(length(unique(model))==2)
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(model))
-          recode[model[,column]==unique(model[,column])[2]]=1
-          model[,column]=recode
-          contrast=model[,colno]
-        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode[model==unique(model)[2]]=1
+          model=recode
+          model=model
+        } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
-  } else
-  {
-    if (class(model)=="character") 
+    
+    #check length of CT data and load the appropriate fsaverage files
+    n_vert=ncol(CT_data)
+    if(n_vert==20484)
     {
-      if(length(unique(model))==2)
-      {
-        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
-        
-        recode=rep(0,NROW(model))
-        recode[model==unique(model)[2]]=1
-        model=recode
-        model=model
-      } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-    }      
-  }
-  
-  #check length of CT data and load the appropriate fsaverage files
-  n_vert=ncol(CT_data)
-  if(n_vert==20484)
-  {
-    template="fsaverage5"
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
-  }
-  else if (n_vert==81924)
-  {
-    template="fsaverage6"
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
-  }
-  else if (n_vert==14524)
-  {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
-  }
-  else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
-  
-  #check for collinearity
-  if(NCOL(model)>1)
-  {
-    cormat=cor(model,use = "pairwise.complete.obs")
-    cormat.0=cormat
-    cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.5)
-    {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
+      template="fsaverage5"
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
     }
-  }
-  
+    else if (n_vert==81924)
+    {
+      template="fsaverage6"
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
+    }
+    else if (n_vert==14524)
+    {
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
+    }
+    else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
+    
+    #check for collinearity
+    if(NCOL(model)>1)
+    {
+      cormat=cor(model,use = "pairwise.complete.obs")
+      cormat.0=cormat
+      cormat.0[cormat.0==1]=NA
+      if(max(abs(cormat.0),na.rm = T) >0.5)
+      {
+        warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...\n",sep=""))
+      }
+    }
+    
   ##smoothing
   n_vert=NCOL(CT_data)
   if(missing("smooth_FWHM"))
