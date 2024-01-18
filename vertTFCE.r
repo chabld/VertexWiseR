@@ -100,18 +100,15 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
   if(n_vert==20484)
   {
     template="fsaverage5"
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
   }
   else if (n_vert==81924)
   {
     template="fsaverage6"
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
   }
   else if (n_vert==14524)
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
   }
   else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
@@ -533,7 +530,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   returnobj$cluster_level_results
   
   return(returnobj)
-  remove(template,ROImap,envir = globalenv())
 }  
 ############################################################################################################################
 ############################################################################################################################
