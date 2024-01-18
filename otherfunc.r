@@ -248,11 +248,11 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   {
     ##hippocampal plots
       #import python libraries
-      hippunfold_toolbox=reticulate::import("hippunfold_toolbox.hippunfold_toolbox")
+      reticulate::source_python("https://github.com/CogBrainHealthLab/hippunfold_toolbox/blob/main/hippunfold_toolbox/plotting.py?raw=TRUE")
     
-      CTplot=hippunfold_toolbox$plotting$surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),labels="hipp",color_bar=colorbar,
-                                                                     nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T,
-                                                                     cmap=cmap,color_range=limits,label_text=list('left'=list(title)))
+      CTplot=surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),labels="hipp",color_bar=colorbar,
+                                           nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T,
+                                           cmap=cmap,color_range=limits,label_text=list('left'=list(title)))
   }
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
