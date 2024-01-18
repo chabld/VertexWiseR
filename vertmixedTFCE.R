@@ -7,7 +7,7 @@
 
 TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=F)
 {
-  if(class(contrast)=="integer") {IV_of_interest=as.numeric(contrast)}
+  if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
   
   ##load other TFCE and vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertTFCE.r?raw=TRUE")
@@ -85,7 +85,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
                 recode=rep(0,NROW(model))
                 recode[model[,column]==unique(model[,column])[2]]=1
                 model[,column]=recode
-                IV_of_interest=model[,colno]
+                contrast=model[,colno]
               } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
             }      
           }
@@ -100,7 +100,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
               recode=rep(0,NROW(model))
               recode[model==unique(model)[2]]=1
               model=recode
-              IV_of_interest=model
+              contrast=model
             } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
           }      
         }
