@@ -351,10 +351,6 @@ TFCE.multicore=function(data,tail=tail,nthread)
 ############################################################################################################################
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
-  TFCE.output=mod1
-  p=0.05
-  atlas=1
-  k=20
   nperm=length(TFCE.output$TFCE.max)
   
   #check if number of permutations is adequate
