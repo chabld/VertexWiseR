@@ -38,7 +38,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     idxF=which(complete.cases(model)==F)
     if(length(idxF)>0)
     {
-      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis"))
+      cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
       model=model[-idxF,]
       contrast=contrast[-idxF]
       CT_data=CT_data[-idxF,]
