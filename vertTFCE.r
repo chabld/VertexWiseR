@@ -40,9 +40,9 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       {
         if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
         
-        if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
+        if(class(contrast)=="character") 
         {
-           if(identical(contrast,data.matrix(model)[,colno]))  {break} 
+           if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
         } else 
         {
           if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
@@ -50,7 +50,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       }
     }  else
     {
-      if(!suppressWarnings(all(!is.na(as.numeric(as.character(contrast)))))) 
+      if(class(contrast)=="character") 
       {
         if(identical(contrast,model))  {colno=1} 
         else  {warning("contrast is not contained within model")}
@@ -66,7 +66,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     {
       for (column in 1:NCOL(model))
       {
-        if(!suppressWarnings(all(!is.na(as.numeric(as.character(data.matrix(model)[,column])))))) 
+        if(class(model[,column])=="character") 
         {
           if(length(unique(model[,column]))==2)
           {
@@ -81,7 +81,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
       }
     } else
     {
-      if (!suppressWarnings(all(!is.na(as.numeric(as.character(model)))))) 
+      if(class(model)=="character") 
       {
         if(length(unique(model))==2)
         {
