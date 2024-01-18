@@ -372,6 +372,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
     ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_hip.rdata?raw=TRUE"))
   } 
   ##generating p map
   tfce.p=rep(NA,n_vert)
@@ -426,7 +427,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           pos.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
           if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
-          if(n_vert!=14524) {pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)}
+          pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
           pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
@@ -492,7 +493,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
           if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
-          if(n_vert!=14524) {neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)}
+          neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
           neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
