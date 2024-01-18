@@ -37,6 +37,11 @@ def mesh_smooth(
         url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy')
         edg=np.load(io.BytesIO(url.content))
         FWHM=FWHM/2
+    
+    elif Y.shape[1]==14524:
+        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistHIP.npy')
+        edg=np.load(io.BytesIO(url.content))
+        FWHM=FWHM/0.5
    
     niter = int(np.ceil(pow(FWHM, 2) / (2 * np.log(2))))
     if isinstance(Y, np.ndarray):
