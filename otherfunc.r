@@ -205,26 +205,18 @@ fs6_to_fs5=function(data)
 }
 ############################################################################################################################
 ############################################################################################################################
-##CT surface plots
+##Cortical surface/hippocampal plots
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
 {
   #check length of vector
   n_vert=length(data)
   if(n_vert==20484) {template="fsaverage5"}
   else if (n_vert==81924) {template="fsaverage6"} 
-  else {stop("data vector should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+  else if (n_vert!=14524) {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   #legacy input message
   if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
-  
-  #import python libraries
-  brainstat.datasets=reticulate::import("brainstat.datasets")  
-  brainspace.plotting=reticulate::import("brainspace.plotting")  
-  
-  #loading fsaverage surface
-  left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
-  right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
-  
+
   #setting color maps
   if(missing("cmap"))
   {
@@ -237,11 +229,31 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   if(missing("limits")) {limits=range(data,na.rm = T)}
   limits=reticulate::tuple(limits[1],limits[2])
   
-  #plot object
-  CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
-                                              size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
-                                              return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
-                                              label_text=list('left'=list(title)),interactive=F, color_bar=colorbar,  transparent_bg=FALSE)
+  if(n_vert!=14524)
+  {
+    ##cortical surface fplots
+      #import python libraries
+      brainstat.datasets=reticulate::import("brainstat.datasets")  
+      brainspace.plotting=reticulate::import("brainspace.plotting")  
+      
+      #loading fsaverage surface
+      left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
+      right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
+      
+      CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
+                                                  size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                                  return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
+                                                  label_text=list('left'=list(title)),interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  
+  } else
+  {
+    ##hippocampal plots
+      #import python libraries
+      hippunfold_toolbox=reticulate::import("hippunfold_toolbox.hippunfold_toolbox")
+    
+      CTplot=hippunfold_toolbox$plotting$surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),labels="hipp",color_bar=colorbar,
+                                                                     nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T,
+                                                                     cmap=cmap,color_range=limits,label_text=list('left'=list(title)))
+  }
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
 }
