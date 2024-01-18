@@ -29,17 +29,17 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       {
         if(colno==(NCOL(all_predictors)+1))  {warning("IV_of_interest is not contained within all_predictors")}
         
-        if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
+        if(class(IV_of_interest)=="character") 
         {
-           if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
+          if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
         } else 
         {
-          if(identical(as.numeric(IV_of_interest),as.numeric(all_predictors[,colno])))  {break}
+          if(identical(as.numeric(IV_of_interest),suppressWarnings(as.numeric(all_predictors[,colno]))))  {break}
         }
       }
     }  else
     {
-      if(!suppressWarnings(all(!is.na(as.numeric(as.character(IV_of_interest)))))) 
+      if(class(IV_of_interest)=="character") 
       {
         if(identical(IV_of_interest,all_predictors))  {colno=1} 
         else  {warning("IV_of_interest is not contained within all_predictors")}
@@ -62,13 +62,13 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       IV_of_interest=IV_of_interest[-idxF]
       CT_data=CT_data[-idxF,]
     }
-
-   #check categorical and recode variable
+    
+    #check categorical and recode variable
     if(NCOL(all_predictors)>1)
     {
       for (column in 1:NCOL(all_predictors))
       {
-        if(!suppressWarnings(all(!is.na(as.numeric(as.character(data.matrix(all_predictors)[,column])))))) 
+        if(class(all_predictors[,column])=="character") 
         {
           if(length(unique(all_predictors[,column]))==2)
           {
@@ -83,7 +83,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
       }
     } else
     {
-      if (!suppressWarnings(all(!is.na(as.numeric(as.character(all_predictors)))))) 
+      if(class(all_predictors)=="character") 
       {
         if(length(unique(all_predictors))==2)
         {
@@ -96,7 +96,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
         } else if(length(unique(all_predictors))>2)    {stop(paste("The categorical variable '",colnames(all_predictors),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
-  
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(CT_data)
     if(n_vert==20484)
