@@ -33,67 +33,67 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     CT_data=CT_data[-idxF,]
   }
   
-   #check contrast
-    if(NCOL(model)>1)
+  #check contrast
+  if(NCOL(model)>1)
+  {
+    for(colno in 1:(NCOL(model)+1))
     {
-      for(colno in 1:(NCOL(model)+1))
+      if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
+      
+      if (class(contrast)=="character") 
       {
-        if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
-        
-        if(class(contrast)=="character") 
-        {
-           if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
-        } else 
-        {
-          if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
-        }
-      }
-    }  else
-    {
-      if(class(contrast)=="character") 
+        if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
+      } else 
       {
-        if(identical(contrast,model))  {colno=1} 
-        else  {warning("contrast is not contained within model")}
-      } else
-      {
-        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
-        else  {warning("contrast is not contained within model")}
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
       }
     }
-  
- #check categorical and recode variable
-    if(NCOL(model)>1)
+  }  else
+  {
+    if (class(contrast)=="character") 
     {
-      for (column in 1:NCOL(model))
-      {
-        if(class(model[,column])=="character") 
-        {
-          if(length(unique(model[,column]))==2)
-          {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
-            
-            recode=rep(0,NROW(model))
-            recode[model[,column]==unique(model[,column])[2]]=1
-            model[,column]=recode
-            contrast=model[,colno]
-          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
-        }      
-      }
+      if(identical(contrast,model))  {colno=1} 
+      else  {warning("contrast is not contained within model")}
     } else
     {
-      if(class(model)=="character") 
+      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      else  {warning("contrast is not contained within model")}
+    }
+  }
+  
+  #check categorical and recode variable
+  if(NCOL(model)>1)
+  {
+    for (column in 1:NCOL(model))
+    {
+      if(class(model[,column])=="character") 
       {
-        if(length(unique(model))==2)
+        if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
+          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(model))
-          recode[model==unique(model)[2]]=1
-          model=recode
-          contrast=model
-        } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          recode[model[,column]==unique(model[,column])[2]]=1
+          model[,column]=recode
+          contrast=model[,colno]
+        } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
       }      
     }
+  } else
+  {
+    if (class(model)=="character") 
+    {
+      if(length(unique(model))==2)
+      {
+        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
+        
+        recode=rep(0,NROW(model))
+        recode[model==unique(model)[2]]=1
+        model=recode
+        model=model
+      } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+    }      
+  }
   
   #check length of CT data and load the appropriate fsaverage files
   n_vert=ncol(CT_data)
@@ -109,7 +109,12 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
   }
-  else {stop("CT_data should only contain 20484 (fsaverage5) or 81924 (fsaverage6) columns")}
+  else if (n_vert==14524)
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
+  }
+  else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   #check for collinearity
   if(NCOL(model)>1)
@@ -136,13 +141,19 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     else if(n_vert==81924) 
     {
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-      cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=mesh_smoothsmooth(CT_data, FWHM=5)
+      cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images\n")
+      CT_data=mesh_smooth(CT_data, FWHM=5)
+    }
+    else if(n_vert==14524) 
+    {
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
+      cat("CT_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
+      CT_data=mesh_smooth(CT_data, FWHM=5)
     }
   } else if(smooth_FWHM>0) 
   {
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
-    cat(paste("CT_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel", sep=""))
+    cat(paste("CT_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel\n", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
   CT_data[is.na(CT_data)]=0
@@ -340,6 +351,10 @@ TFCE.multicore=function(data,tail=tail,nthread)
 ############################################################################################################################
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
+  TFCE.output=mod1
+  p=0.05
+  atlas=1
+  k=20
   nperm=length(TFCE.output$TFCE.max)
   
   #check if number of permutations is adequate
@@ -359,7 +374,12 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
   } 
-  
+  else if (n_vert==14524) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
+    ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+  } 
   ##generating p map
   tfce.p=rep(NA,n_vert)
   TFCE.output$t_stat[is.na(TFCE.output$t_stat)]=0
@@ -390,7 +410,9 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
       pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
       pos.mask=rep(0,n_vert)
-      
+      ROImap[[1]][, atlas]
+      ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
+
       #results table
       pos.clustermap=rep(NA,n_vert)
       
@@ -411,7 +433,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           pos.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
           if(pos.clust.results[clust.idx,3]==0) {pos.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
-          pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+          if(n_vert!=14524) {pos.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)}
           pos.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
@@ -477,7 +499,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
           max.vert.idx=clust.vert.idx[which(abs(TFCE.output$t_stat[clust.vert.idx])==max(abs(TFCE.output$t_stat[clust.vert.idx]),na.rm = T))[1]]
           neg.clust.results[clust.idx,3]=round(tfce.p[max.vert.idx],3)
           if(neg.clust.results[clust.idx,3]==0) {neg.clust.results[clust.idx,3]=paste("<",1/nperm,sep="")}
-          neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)
+          if(n_vert!=14524) {neg.clust.results[clust.idx,c(4,5,6)]=round(MNImap[,max.vert.idx],1)}
           neg.clust.results[clust.idx,7]=round(abs(TFCE.output$t_stat[max.vert.idx]),2)
           
           atlas.idx=ROImap[[1]][,atlas][max.vert.idx]
