@@ -45,7 +45,7 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
           if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
         } else 
         {
-          if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+          if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(model[,colno]))))  {break}
         }
       }
     }  else
