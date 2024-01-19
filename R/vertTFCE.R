@@ -12,14 +12,6 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/otherfunc.r?raw=TRUE")
   
   ##checks
-    #check if required packages are installed
-    packages=c("foreach","doParallel","parallel","doSNOW")
-    new.packages = packages[!(packages %in% installed.packages()[,"Package"])]
-    if(length(new.packages)) 
-    {
-      cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-      install.packages(new.packages)
-    }  
     #check if nrow is consistent for model and surf_data
     if(NROW(surf_data)!=NROW(model))  {stop(paste("The number of rows for surf_data (",NROW(surf_data),") and model (",NROW(model),") are not the same",sep=""))}
     
