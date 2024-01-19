@@ -63,7 +63,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
         {
           if(length(unique(model[,column]))==2)
           {
-            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(data.matrix(model)[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+            cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
             
             recode=rep(0,NROW(model))
             recode[model[,column]==unique(model[,column])[2]]=1
