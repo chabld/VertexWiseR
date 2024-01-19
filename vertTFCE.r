@@ -153,7 +153,6 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     cat(paste("CT_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel\n", sep=""))
     CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
   }
-  CT_data[is.na(CT_data)]=0
   
   ##unpermuted model
   model=data.matrix(model)
