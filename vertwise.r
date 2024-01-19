@@ -34,7 +34,7 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
         if(identical(IV_of_interest,data.matrix(all_predictors)[,colno]))  {break} 
       } else 
       {
-        if(identical(as.numeric(IV_of_interest),suppressWarnings(as.numeric(all_predictors[,colno]))))  {break}
+        if(identical(suppressWarnings(as.numeric(IV_of_interest)),suppressWarnings(as.numeric(all_predictors[,colno]))))  {break}
       }
     }
   }  else
