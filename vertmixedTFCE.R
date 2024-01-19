@@ -120,6 +120,14 @@ TFCE.vertex_analysis.mixed=function(model,contrast, CT_data, random, nperm=100, 
     }
     else if (n_vert==14524)
     {
+      if(file.exists("hip_template.fs")==F)
+      {
+        cat("\nhip_template.fs is not detected in the current working directory. The hippocampus surface template will be downloaded\n")
+        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/hip_template.fs",destfile ="hip_template.fs",mode = "wb")
+      } 
+      brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
+      template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")
+  
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
