@@ -251,8 +251,8 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
       plotting=reticulate::import("hippunfold_toolbox.plotting")
 
       data[data==0]=NA
-      CTplot=plotting$surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),labels="hipp",color_bar=colorbar,
-                                           nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T,
+      CTplot=plotting$surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),labels="hipp",color_bar=colorbar,share="row",
+                                           nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T, 
                                            cmap=cmap,color_range=limits,label_text=list('left'=list(title)))
   }
   #output plot as a .png image
