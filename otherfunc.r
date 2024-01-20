@@ -48,7 +48,7 @@ perm_within_between=function(random)
 ## smooth fsaverage5/6 images
 smooth=function(data, FWHM)
   {
-  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/smooth.py?raw=TRUE")
+  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
   
   ##setting default FWHM values for fsaverage5/6 space
   if(missing("FWHM")) 
