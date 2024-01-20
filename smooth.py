@@ -2,9 +2,10 @@
    Modified from BrainStat toolbox https://github.com/MICA-MNI/BrainStat/blob/master/brainstat/mesh/data.py 
    -removed third dimension
    -removed printing of messages (messes up the R console)
-   -replace surf(dict, BSPolyData) input with ndarray edgelists that are loaded automatically depending on the number of columns in the CT data
    -remove edges in the medial wall
    -converted mesh units to mm
+   -replace surf(dict, BSPolyData) input with ndarray edgelists that are loaded automatically depending on the number of columns in the CT data
+   -current templates supported : fsaverage6 (v=81924), fsaverage5 (v=20484), hippunfold-0p5mm (v=14524)
 """
 import numpy as np
 import requests
