@@ -62,6 +62,6 @@ def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs
     new_size[1] = new_size[1]*cdata.shape[2]
     if 'color_bar' in qwargs:
         new_size[0] = new_size[0]+60
-    p = plot_surf(surfDict,surfList, array_name=arrName, size=new_size,view=['ventral','dorsal','dorsal','ventral'], **new_qwargs)
+    p = plot_surf(surfDict,surfList, array_name=arrName, size=new_size,view=['ventral','dorsal','dorsal','ventral'],return_plotter=True, **new_qwargs)
     return p
 
