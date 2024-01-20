@@ -125,7 +125,10 @@ getClusters=function(data)
 ############################################################################################################################
 ############################################################################################################################
 ## To extract atlas ROI values from fsaverage5 vertex-wise data and vice-versa
-fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+## Atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+## ROI to vertex mapping data for 1 to 4 obtained from enigmatoolbox https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations
+## ROI to vertex mapping data for 5 obtained from nilearn.datasets.fetch_atlas_surf_destrieux https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py
+fs5_to_atlas=function(data,atlas) 
 {  
   #check length of vector
   if(length(data)%%20484!=0) {stop("Length of data is not a multiple of 20484")}
@@ -152,7 +155,7 @@ fs5_to_atlas=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefe
   return(ROI)
 }
 
-atlas_to_fs5=function(data,atlas) ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
+atlas_to_fs5=function(data,atlas) 
   {
     #load atlas mapping data
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
