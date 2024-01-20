@@ -18,7 +18,7 @@ def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs
     '''
     Plots canonical folded and unfolded surfaces (hipp/dentate; folded/unfolded). This is good for cdata that isn't specific to one subject (eg. maybe it has been averaged across many subjects).
     
-    cdata: array with the shape Vx2xF, where V is the number of vertices (including DG unless specified), 2 is the number of hemispheres (unless specified), and F is the number of rows/features
+    cdata: array with the shape Vx2xF, where V is the number of vertices, 2 is the number of hemispheres (unless specified), and F is the number of rows/features
     kwargs: see https://brainspace.readthedocs.io/en/latest/generated/brainspace.plotting.surface_plotting.plot_surf.html#brainspace.plotting.surface_plotting.plot_surf
     '''
     hipdat = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/hip_points_cells.pkl"))
