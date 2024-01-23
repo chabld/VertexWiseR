@@ -263,6 +263,27 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
 }
 ############################################################################################################################
 ############################################################################################################################
+##converting surface to volumetric data and exporting it as a .nii file
+
+surf_to_vol=function(surf_data, filename="output.nii")
+  {
+  #check length of vector
+    n_vert=length(surf_data)
+    if(n_vert==20484) {template="fsaverage5"}
+    else if (n_vert==81924) {template="fsaverage6"} 
+    else {stop("Only an surf_data vector with a length of 20484 (fsaverage5) or 81924 (fsaverage6) is accepted")}
+  
+  #load python libraries
+    interpolate=reticulate::import("brainstat.mesh.interpolate")
+    nibabel=reticulate::import("nibabel")
+
+  #convert and export .nii file
+    stat_nii = interpolate$`_surf2vol`(template, surf_data)
+    nibabel$save(stat_nii,filename)
+  }
+
+############################################################################################################################
+############################################################################################################################
 ##CT image decoding
 decode_img=function(img,contrast="positive")
 {
@@ -271,7 +292,7 @@ decode_img=function(img,contrast="positive")
     n_vert=length(img)
     if(n_vert==20484) {template="fsaverage5"}
     else if (n_vert==81924) {stop("decoding of fsaverage6-space image is current not implemented, please resample the image to fsaverage5 space")} 
-    else {stop("img vector should only contain 20484 (fsaverage5)")}
+    else {stop("Only an img vector with a length of 20484 (fsaverage5) is accepted")}
 
     #check contrast
     if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
