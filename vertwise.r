@@ -285,5 +285,5 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
 ##example
 # source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
 # 
-# model=vertex_analysis(fixed_predictors = dat_beh[,c(2:4)], IV_of_interest = dat_beh$AGE_AT_SCAN = dat_beh$SUB_ID,CT_data = dat_CT,p = 0.01, atlas=1)
+# model=vertex_analysis(fixed_predictors = dat_beh[,c(2:4)], IV_of_interest = dat_beh$AGE_AT_SCAN, random = dat_beh$SUB_ID,CT_data = dat_CT,p = 0.01, atlas=1)
 # model$cluster_level_results
