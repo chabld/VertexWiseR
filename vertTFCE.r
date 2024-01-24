@@ -99,12 +99,10 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     n_vert=ncol(CT_data)
     if(n_vert==20484)
     {
-      template="fsaverage5"
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
     }
     else if (n_vert==81924)
     {
-      template="fsaverage6"
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
     }
     else if (n_vert==14524)
