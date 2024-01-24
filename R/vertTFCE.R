@@ -89,18 +89,9 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
     
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(surf_data)
-    if(n_vert==20484)
-    {
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
-    }
-    else if (n_vert==81924)
-    {
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
-    }
-    else if (n_vert==14524)
-    {
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
-    }
+    if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==81924)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())}
+    else if (n_vert==14524)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())}
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
     
     #check for collinearity
@@ -327,8 +318,9 @@ TFCE.multicore=function(data,tail=tail,nthread)
     #suppressWarnings(closeAllConnections())
     
     #combine results from positive and negative tails if necessary 
-    if(sign.idx==1){tfce_step_values.all=colSums(tfce)}
-    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+colSums(tfce)}
+    if(length(tfce)!=0)  {tfce=colSums(tfce)}
+    if(sign.idx==1){tfce_step_values.all=tfce}
+    else if (sign.idx==2){tfce_step_values.all=tfce_step_values.all+tfce}
   }
   parallel::stopCluster(cl)
   return(tfce_step_values.all)
