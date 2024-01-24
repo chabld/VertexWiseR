@@ -329,9 +329,9 @@ TFCE.multicore=function(data,tail=tail,nthread)
     if(length(tfce)>length(temp_data))
     {
       tfce=colSums(tfce)
-    } else if(length(NULL)==0)
+    } else if(length(tfce)==0)
     {
-      tfce=rep(0,length(temp_data))
+      tfce=0
     }
     if(sign.idx==1)
     {
