@@ -213,7 +213,11 @@ fs6_to_fs5=function(surf_data)
 plotCT=function(surf_data, filename,title="",surface="inflated",cmap, limits, colorbar=T)
 {
   #format title for single row
-  if(is.null(nrow(surf_data)))  {title=list('left'=list(title))}
+  if(is.null(nrow(surf_data))) 
+    {
+    title=list('left'=list(title))
+    rows=1
+    } else {rows=nrow(surf_data)}
   
   #check length of vector
   n_vert=length(surf_data)
@@ -245,7 +249,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap, limits, co
       right=brainstat.surf_datasets$fetch_template_surface(template, join=F, layer=surface)[2]
       
       CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(surf_data),cmap=cmap, 
-                                                  size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                                  size=reticulate::tuple(as.integer(c(1920,400*rows))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
                                                   return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
                                                   label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE) ##disabling interactive mode because this causes RStudio to hang
   }
@@ -259,7 +263,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap, limits, co
       if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} ##if N=1
       else  {surf_data=array(cbind(surf_data[,1:7262],surf_data[,7263:14524]),c(7262,2,nrow(surf_data)))} ##if N>1
       
-      CTplot=surfplot_canonical_foldunfold(surf_data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+      CTplot=surfplot_canonical_foldunfold(surf_data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=reticulate::tuple(as.integer(c(1920,400*rows))),
                                            cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
