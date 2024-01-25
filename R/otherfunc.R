@@ -252,7 +252,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap, limits, co
   {
     ##hippocampal plots
       #import python libraries
-      reticulate::source_python("hipp_plot.py")
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
       
       #formatting surf_data into two hemispheres because in put has to be a 7262 x 2 x N array
       if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} 
