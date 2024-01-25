@@ -257,7 +257,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
       #import python libraries
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
       
-      #formatting data into two hemispheres because in put has to be a 7262 x 2 x N array
+      #reshaping data into a 7262 x 2 x N array
       if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} 
       else  {data=array(cbind(data[,1:7262],data[,7263:14524]),c(7262,2,nrow(data)))}
       
