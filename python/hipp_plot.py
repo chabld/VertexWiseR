@@ -18,12 +18,15 @@ def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs
     cdata: array with the shape Vx2xF, where V is the number of vertices (including DG unless specified), 2 is the number of hemispheres (unless specified), and F is the number of rows/features
     kwargs: see https://brainspace.readthedocs.io/en/latest/generated/brainspace.plotting.surface_plotting.plot_surf.html#brainspace.plotting.surface_plotting.plot_surf
     '''
+    #load hippcampal surface template data
     hipdat = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/hip_points_cells.pkl"))
 
+    # build right hippocampal surface
     rh = mc.build_polydata(hipdat[0], cells=hipdat[1])
     ru = mc.build_polydata(hipdat[2], cells=hipdat[1])
     ru.Points = ru.Points[:,[1,0,2]] # reorient unfolded
     ru.Points[:,1]=-ru.Points[:,1]
+    
     # flip to get left hemisphere
     lh = mc.build_polydata(rh.Points.copy(), cells=rh.GetCells2D().copy())
     lh.Points[:,0] = -lh.Points[:,0]
@@ -60,6 +63,7 @@ def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs
     new_size[1] = new_size[1]*cdata.shape[2]
     if 'color_bar' in qwargs:
         new_size[0] = new_size[0]+60
+    # plot
     p = plot_surf(surfDict,surfList, array_name=arrName, size=new_size,view=['ventral','dorsal','dorsal','ventral'], **new_qwargs)
     return p
 
