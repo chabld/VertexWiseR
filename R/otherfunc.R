@@ -255,9 +255,9 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap, limits, co
       #import python libraries
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
       
-      #formatting surf_data into two hemispheres because in put has to be a 7262 x 2 x N array
-      if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} 
-      else  {surf_data=array(cbind(surf_data[,1:7262],surf_data[,7263:14524]),c(7262,2,nrow(surf_data)))}
+      #reshaping data into a 7262 x 2 x N array
+      if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} ##if N=1
+      else  {surf_data=array(cbind(surf_data[,1:7262],surf_data[,7263:14524]),c(7262,2,nrow(surf_data)))} ##if N>1
       
       CTplot=surfplot_canonical_foldunfold(surf_data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
                                            cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
