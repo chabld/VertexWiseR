@@ -209,7 +209,7 @@ fs6_to_fs5=function(data)
 ############################################################################################################################
 ############################################################################################################################
 ##Cortical surface/hippocampal plots
-##Cortical surface/hippocampal plots
+##input data can be a matrix with multiple rows, for multiple plots in a single .png file
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
 {
   #format title for single row
