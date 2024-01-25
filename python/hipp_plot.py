@@ -2,6 +2,7 @@
    Modified from jordandekraker/hippunfold_toolbox https://github.com/jordandekraker/hippunfold_toolbox/blob/main/hippunfold_toolbox/plotting.py
    -removed dentate gyrus label
    -load template point and cell data from github
+   -view set to 'ventral' for both hippocampi
    -no longer need to import hippunfold_toolbox
 """
 import numpy as np
@@ -9,14 +10,11 @@ import pickle
 import copy
 import urllib.request
 
-from brainspace.mesh.mesh_io import read_surface
 from brainspace.plotting import  plot_surf
 from brainspace.mesh import mesh_creation as mc
 
 def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs):
     '''
-    Plots canonical folded and unfolded surfaces (hipp/dentate; folded/unfolded). This is good for cdata that isn't specific to one subject (eg. maybe it has been averaged across many subjects).
-    
     cdata: array with the shape Vx2xF, where V is the number of vertices (including DG unless specified), 2 is the number of hemispheres (unless specified), and F is the number of rows/features
     kwargs: see https://brainspace.readthedocs.io/en/latest/generated/brainspace.plotting.surface_plotting.plot_surf.html#brainspace.plotting.surface_plotting.plot_surf
     '''
