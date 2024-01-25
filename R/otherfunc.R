@@ -217,6 +217,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
   {
     title=list('left'=list(title))
     rows=1
+    surf_data=as.numeric(surf_data)
   } else {rows=nrow(surf_data)}
   
   #check length of vector
