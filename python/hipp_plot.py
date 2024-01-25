@@ -54,7 +54,6 @@ def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs
         for f in range(cdata.shape[2]):
             arrName[f,:] = f'feature{f}'
             
-    
     # extra parameters
     new_qwargs = dict(zoom=1.7, nan_color=(0,0,0,0))
     new_qwargs.update(qwargs)
