@@ -217,6 +217,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   {
     title=list('left'=list(title))
     rows=1
+    data=as.numeric(data)
   } else {rows=nrow(data)}
   
   #check length of vector
@@ -242,7 +243,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   
   if(n_vert%%14524!=0)
   {
-    ##cortical surface fplots
+  ##cortical surface fplots
     #import python libraries
     brainstat.datasets=reticulate::import("brainstat.datasets")  
     brainspace.plotting=reticulate::import("brainspace.plotting")  
@@ -257,7 +258,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
-    ##hippocampal plots
+  ##hippocampal plots
     #import python libraries
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
     
@@ -266,10 +267,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
     else  
       {
         data.3d=array(NA,c(7262,2,nrow(data))) #if N>1
-        for (row in 1:nrow(data))
-        {
-          data.3d[,,row]=cbind(data[row,1:7262],data[row,7263:14524])
-        }
+        for (row in 1:nrow(data))  {data.3d[,,row]=cbind(data[row,1:7262],data[row,7263:14524])}
         data=data.3d
       }
     
