@@ -243,7 +243,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
   
   if(n_vert%%14524!=0)
   {
-    ##cortical surface fplots
+  ##cortical surface fplots
     #import python libraries
     brainstat.surf_datasets=reticulate::import("brainstat.surf_datasets")  
     brainspace.plotting=reticulate::import("brainspace.plotting")  
@@ -258,7 +258,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
-    ##hippocampal plots
+  ##hippocampal plots
     #import python libraries
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
     
@@ -267,10 +267,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
     else  
       {
         surf_data.3d=array(NA,c(7262,2,nrow(surf_data))) #if N>1
-        for (row in 1:nrow(surf_data))
-        {
-          surf_data.3d[,,row]=cbind(surf_data[row,1:7262],surf_data[row,7263:14524])
-        }
+        for (row in 1:nrow(surf_data))  {surf_data.3d[,,row]=cbind(surf_data[row,1:7262],surf_data[row,7263:14524])}
         surf_data=surf_data.3d
       }
     
