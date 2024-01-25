@@ -255,7 +255,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
 
       data[data==0]=NA
       CTplot=surfplot_canonical_foldunfold(cbind(data[1:7262],data[7263:14524]),color_bar=colorbar,share="row",
-                                           nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),return_plotter=T, 
+                                           nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
                                            cmap=cmap,color_range=limits,label_text=list('left'=list(title)))
   }
   #output plot as a .png image
