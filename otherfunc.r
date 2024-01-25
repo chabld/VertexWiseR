@@ -265,7 +265,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
       if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} #if N=1
       else  {data=array(cbind(data[,1:7262],data[,7263:14524]),c(7262,2,nrow(data)))} #if N>1
       
-      CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=reticulate::tuple(as.integer(c(350,rows*400)))
+      CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=reticulate::tuple(as.integer(c(350,rows*400))),
                                            cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
