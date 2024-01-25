@@ -261,7 +261,8 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
     if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} 
     else  {data=array(cbind(data[,1:7262],data[,7263:14524]),c(7262,2,nrow(data)))}
     
-    CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),cmap=cmap,color_range=limits,label_text=title)
+    CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                         cmap=cmap,color_range=limits,label_text=title, return_plotter=T)
   }
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
