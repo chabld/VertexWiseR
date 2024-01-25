@@ -239,30 +239,30 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   if(n_vert%%14524!=0)
   {
     ##cortical surface fplots
-    #import python libraries
-    brainstat.datasets=reticulate::import("brainstat.datasets")  
-    brainspace.plotting=reticulate::import("brainspace.plotting")  
-    
-    #loading fsaverage surface
-    left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
-    right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
-    
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
-                                                size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
-                                                return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
-                                                label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  
+      #import python libraries
+      brainstat.datasets=reticulate::import("brainstat.datasets")  
+      brainspace.plotting=reticulate::import("brainspace.plotting")  
+      
+      #loading fsaverage surface
+      left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
+      right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
+      
+      CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(data),cmap=cmap, 
+                                                  size=reticulate::tuple(as.integer(c(1920,400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                                  return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
+                                                  label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
     ##hippocampal plots
-    #import python libraries
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
-    
-    #formatting data into two hemispheres because in put has to be a 7262 x 2 x N array
-    if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} 
-    else  {data=array(cbind(data[,1:7262],data[,7263:14524]),c(7262,2,nrow(data)))}
-    
-    CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
-                                         cmap=cmap,color_range=limits,label_text=title, return_plotter=T)
+      #import python libraries
+      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
+      
+      #formatting data into two hemispheres because in put has to be a 7262 x 2 x N array
+      if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} 
+      else  {data=array(cbind(data[,1:7262],data[,7263:14524]),c(7262,2,nrow(data)))}
+      
+      CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                           cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
   CTplot$screenshot(filename=filename,transparent_bg = F)
