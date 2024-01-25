@@ -213,10 +213,8 @@ fs6_to_fs5=function(data)
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
 {
   #format title for single row
-  if(is.null(nrow(data)))
-  {
-    title=list('left'=list(title))
-  }
+  if(is.null(nrow(data)))  {title=list('left'=list(title))}
+  
   #check length of vector
   n_vert=length(data)
   if(n_vert%%20484==0) {template="fsaverage5"}
