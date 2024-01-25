@@ -222,7 +222,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   else if (n_vert%%14524!=0) {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   #legacy input message
-  if(!missing("fs_path")){cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
+  if(!missing("fs_path"))  {cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
   
   #setting color maps
   if(missing("cmap"))
