@@ -45,21 +45,32 @@ perm_within_between=function(random)
 
 ############################################################################################################################
 ############################################################################################################################
-## smooth fsaverage5/6 images
+## smooth surface data 
+## FWHM input is measured in mm, which is subsequently converted into mesh units
 smooth=function(surf_data, FWHM)
-  {
+{
+  ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
+
+  ##select template, set its FWHM parameter and load its edgelist file
+  if(NCOL(surf_data)==20484) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    FWHM=FWHM/3.5 #converting mm to mesh units
+  } else if(NCOL(surf_data)==81924) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    FWHM=FWHM/2 #converting mm to mesh units
+  } else if(NCOL(surf_data)==14524) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    FWHM=FWHM/0.5 #converting m to mesh units
+  } else {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
-  ##setting default FWHM values for fsaverage5/6 space
-  if(missing("FWHM")) 
-    {
-    if(NCOL(surf_data)==20484) {FWHM=10}
-    else if(NCOL(surf_data)==81924) {FWHM=5}
-    }
-  smoothed=mesh_smooth(surf_data, FWHM)
+  smoothed=mesh_smooth(data,edgelist, FWHM)
   smoothed[is.na(smoothed)]=0
   return(smoothed)
-  }
+}
 ############################################################################################################################
 ############################################################################################################################
 ## Efficient way to extract t statistics from linear regression models to speed up the permutation process
@@ -210,7 +221,7 @@ fs6_to_fs5=function(surf_data)
 ############################################################################################################################
 ##Cortical surface/hippocampal plots
 ##input surf_data can be a matrix with multiple rows, for multiple plots in a single .png file
-plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
+plot_surf=function(surf_data, filename,title="",surface="inflated",cmap,limits, colorbar=T)
 {
   #format title for single row
   if(is.null(nrow(surf_data))) 
@@ -225,10 +236,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
   if(n_vert%%20484==0) {template="fsaverage5"}
   else if (n_vert%%81924==0) {template="fsaverage6"} 
   else if (n_vert%%14524!=0) {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
-  
-  #legacy input message
-  if(!missing("fs_path"))  {cat("The fs_path parameter and the fsaverage5 files are no longer needed in the updated plotCT function\n")}
-  
+
   #setting color maps
   if(missing("cmap"))
   {
@@ -252,7 +260,7 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
     left=brainstat.surf_datasets$fetch_template_surface(template, join=F, layer=surface)[1]
     right=brainstat.surf_datasets$fetch_template_surface(template, join=F, layer=surface)[2]
     
-    CTplot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(surf_data),cmap=cmap, 
+    surf_plot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(surf_data),cmap=cmap, 
                                                 size=reticulate::tuple(as.integer(c(1920,rows*400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
                                                 return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
@@ -271,11 +279,11 @@ plotCT=function(surf_data, filename,title="",surface="inflated",cmap,fs_path, li
         surf_data=surf_data.3d
       }
     
-    CTplot=surfplot_canonical_foldunfold(surf_data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(c(350,300)),
+    surf_plot=surfplot_canonical_foldunfold(surf_data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(c(350,300)),
                                          cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
-  CTplot$screenshot(filename=filename,transparent_bg = F)
+  surf_plot$screenshot(filename=filename,transparent_bg = F)
 }
 ############################################################################################################################
 ############################################################################################################################
