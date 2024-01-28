@@ -270,8 +270,9 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   } else
   {
   ##hippocampal plots
-    #import python libraries
+    #import python libraries and hippocampal template data
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
     
     #reshaping data into a 7262 x 2 x N array
     if(is.null(nrow(data)))  {data=cbind(data[1:7262],data[7263:14524])} #if N=1
@@ -282,7 +283,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
         data=data.3d
       }
     
-    CTplot=surfplot_canonical_foldunfold(data,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(c(350,300)),
+    CTplot=surfplot_canonical_foldunfold(data,hipdat=hip_points_cells,color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(c(350,300)),
                                          cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
