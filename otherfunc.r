@@ -45,21 +45,32 @@ perm_within_between=function(random)
 
 ############################################################################################################################
 ############################################################################################################################
-## smooth fsaverage5/6 images
+## smooth surface data 
+## FWHM input is measured in mm, which is subsequently converted into mesh units
 smooth=function(data, FWHM)
-  {
+{
+  ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
+
+  ##select template, set its FWHM parameter and load its edgelist file
+  if(NCOL(data)==20484) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    FWHM=FWHM/3.5 #converting mm to mesh units
+  } else if(NCOL(data)==81924) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    FWHM=FWHM/2 #converting mm to mesh units
+  } else if(NCOL(data)==14524) 
+  {
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    FWHM=FWHM/0.5 #converting m to mesh units
+  } else {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
-  ##setting default FWHM values for fsaverage5/6 space
-  if(missing("FWHM")) 
-    {
-    if(NCOL(data)==20484) {FWHM=10}
-    else if(NCOL(data)==81924) {FWHM=5}
-    }
-  smoothed=mesh_smooth(data, FWHM)
+  smoothed=mesh_smooth(data,edgelist, FWHM)
   smoothed[is.na(smoothed)]=0
   return(smoothed)
-  }
+}
 ############################################################################################################################
 ############################################################################################################################
 ## Efficient way to extract t statistics from linear regression models to speed up the permutation process
