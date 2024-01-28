@@ -6,9 +6,7 @@
    -no longer need to import hippunfold_toolbox
 """
 import numpy as np
-import pickle 
 import copy
-import urllib.request
 
 from brainspace.plotting import  plot_surf
 from brainspace.mesh import mesh_creation as mc
