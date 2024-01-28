@@ -65,7 +65,7 @@ smooth=function(data, FWHM)
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     FWHM=FWHM/0.5 #converting m to mesh units
-  } else {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
+  } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   smoothed=mesh_smooth(data,edgelist, FWHM)
   smoothed[is.na(smoothed)]=0
