@@ -13,13 +13,12 @@ import urllib.request
 from brainspace.plotting import  plot_surf
 from brainspace.mesh import mesh_creation as mc
 
-def surfplot_canonical_foldunfold(cdata, hemis=['L','R'],size=[350,400],**qwargs):
+def surfplot_canonical_foldunfold(cdata, hipdat, hemis=['L','R'],size=[350,400],**qwargs):
     '''
     cdata: array with the shape Vx2xF, where V is the number of vertices (including DG unless specified), 2 is the number of hemispheres (unless specified), and F is the number of rows/features
+    hipdat: list containing hippocampal point and cell data, loaded from the R plot_surf() function.
     kwargs: see https://brainspace.readthedocs.io/en/latest/generated/brainspace.plotting.surface_plotting.plot_surf.html#brainspace.plotting.surface_plotting.plot_surf
     '''
-    #load hippcampal surface template data
-    hipdat = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/hip_points_cells.pkl"))
 
     # build right hippocampal surface
     rh = mc.build_polydata(hipdat[0], cells=hipdat[1])
