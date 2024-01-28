@@ -4,16 +4,12 @@
    -removed printing of messages (messes up the R console)
    -remove edges in the medial wall
    -converted mesh units to mm
-   -replace surf(dict, BSPolyData) input with ndarray edgelists that are loaded automatically depending on the number of columns in the CT data
+   -replace surf(dict, BSPolyData) input with ndarray edgelists that are loaded automatically (from the smooth() R function) depending on the number of columns in the CT data
    -current templates supported : fsaverage6 (v=81924), fsaverage5 (v=20484), hippunfold-0p5mm (v=14524)
 """
 import numpy as np
-import requests
-import io
 
-def mesh_smooth(
-    Y: np.ndarray,  FWHM: float
-) -> np.ndarray:
+def mesh_smooth(Y: np.ndarray,  edg: np.ndarray,  FWHM: float) -> np.ndarray:
     """Smooths surface data by repeatedly averaging over edges.
 
     Parameters
@@ -21,6 +17,7 @@ def mesh_smooth(
     Y : numpy.ndarray
         Surface data of shape (n,v). v is the number of vertices,
         n is the number of observations.
+    edg : edgelist for the surface template
     FWHM : float
        Gaussian smoothing filter in mesh units.
 
@@ -29,20 +26,8 @@ def mesh_smooth(
     numpy.ndarray
         Smoothed surface data of shape (n,v).
     """
-    if Y.shape[1]==20484:
-        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs5.npy')
-        edg=np.load(io.BytesIO(url.content))
-        FWHM=FWHM/3.5
-        
-    elif Y.shape[1]==81924:
-        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistfs6.npy')
-        edg=np.load(io.BytesIO(url.content))
-        FWHM=FWHM/2
-    
-    elif Y.shape[1]==14524:
-        url = requests.get('https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/edgelistHIP.npy')
-        edg=np.load(io.BytesIO(url.content))
-        FWHM=FWHM/0.5
+   
+    edg=np.int64(edg)
    
     niter = int(np.ceil(pow(FWHM, 2) / (2 * np.log(2))))
     if isinstance(Y, np.ndarray):
