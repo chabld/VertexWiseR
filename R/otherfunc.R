@@ -7,9 +7,9 @@
 #'
 #' @description Shuffles paired/grouped data points within subjects, then shuffles pairs/groups between subjects
 #'
-#' @param random A list or data.frame object containing random variable
+#' @param random An array or list containing the random variable data
 #'
-#' @return A matrix object with smoothed vertex-wise values
+#' @return Permuted list o
 #' @examples
 #' perm_within_between(dat_beh$Subject.ID)
 #' @export

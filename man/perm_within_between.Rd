@@ -7,10 +7,10 @@
 perm_within_between(random)
 }
 \arguments{
-\item{random}{A list or data.frame object containing random variable}
+\item{random}{An array or list containing the random variable data}
 }
 \value{
-A matrix object with smoothed vertex-wise values
+Permuted list o
 }
 \description{
 Shuffles paired/grouped data points within subjects, then shuffles pairs/groups between subjects
