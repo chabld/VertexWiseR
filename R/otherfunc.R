@@ -45,6 +45,20 @@ perm_within_between=function(random)
 
 ############################################################################################################################
 ############################################################################################################################
+
+#' @title Smooth
+#'
+#' @description Smooths surface data at defined full width at half maximum (FWHM) as per the data's corresponding surface template
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format
+#' @param FWHM A vector object containing the desired smoothing width in mm 
+#'
+#' @return A matrix object with smoothed vertex-wise values
+#' @examples
+#' smooth=function(CT_data, 10)
+#' @importFrom reticulate source_python
+#' @export
+
 ## smooth surface data 
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
 smooth=function(surf_data, FWHM)
