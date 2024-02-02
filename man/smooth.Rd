@@ -15,7 +15,7 @@ smooth(surf_data, FWHM)
 A matrix object with smoothed vertex-wise values
 }
 \description{
-Smooths surface data at defined full width at half maximum (FWHM) as per the data's corresponding surface template
+Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 }
 \examples{
 smooth=function(CT_data, 10)

@@ -48,7 +48,7 @@ perm_within_between=function(random)
 
 #' @title Smooth
 #'
-#' @description Smooths surface data at defined full width at half maximum (FWHM) as per the data's corresponding surface template
+#' @description Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 #'
 #' @param surf_data A matrix object containing the surface data, see CTvextract() output format
 #' @param FWHM A vector object containing the desired smoothing width in mm 
