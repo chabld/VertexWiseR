@@ -18,5 +18,5 @@ A matrix object with smoothed vertex-wise values
 Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 }
 \examples{
-smooth=function(CT_data, 10)
+smooth(CT_data, 10)
 }

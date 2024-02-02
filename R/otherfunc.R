@@ -2,6 +2,18 @@
 ## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 ############################################################################################################################
 ############################################################################################################################
+
+#' @title Permutation for random subject effects
+#'
+#' @description Shuffles paired/grouped data points within subjects, then shuffles pairs/groups between subjects
+#'
+#' @param random A list or data.frame object containing random variable
+#'
+#' @return A matrix object with smoothed vertex-wise values
+#' @examples
+#' perm_within_between(dat_beh$Subject.ID)
+#' @export
+
 ## permutation function for random subject effects
 ## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
 perm_within_between=function(random)
@@ -55,7 +67,7 @@ perm_within_between=function(random)
 #'
 #' @return A matrix object with smoothed vertex-wise values
 #' @examples
-#' smooth=function(CT_data, 10)
+#' smooth(CT_data, 10)
 #' @importFrom reticulate source_python
 #' @export
 
