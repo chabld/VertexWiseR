@@ -11,9 +11,9 @@ CTvextract(sdirpath, filename, template = "fsaverage5", measure = "thickness")
 
 \item{filename}{A string object containing the desired name of the output RDS file.}
 
-\item{template:}{A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.}
+\item{template}{A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.}
 
-\item{measure:}{A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.}
+\item{measure}{A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.}
 }
 \value{
 A matrix object that can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise cortical thickness values

@@ -3,19 +3,6 @@
 ############################################################################################################################
 ############################################################################################################################
 
-#' @title Permutation for random subject effects
-#'
-#' @description Shuffles paired/grouped data points within subjects, then shuffles pairs/groups between subjects
-#'
-#' @param random An array or list containing the random variable data
-#'
-#' @return Permuted list o
-#' @examples
-#' perm_within_between(dat_beh$Subject.ID)
-#' @export
-
-## permutation function for random subject effects
-## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
 perm_within_between=function(random)
 {
   ##for groups of 2 or more (subjects with 2 or more measurements)
@@ -99,6 +86,7 @@ smooth=function(surf_data, FWHM)
 }
 ############################################################################################################################
 ############################################################################################################################
+
 ## Efficient way to extract t statistics from linear regression models to speed up the permutation process
 ## adapted from https://stackoverflow.com/questions/15820623/obtain-t-statistic-for-regression-coefficients-of-an-mlm-object-returned-by-l
 extract.t=function(mod,row)
@@ -161,6 +149,21 @@ getClusters=function(surf_data)
 }
 ############################################################################################################################
 ############################################################################################################################
+
+#' @title Fs5 to atlas
+#'
+#' @description Returns the mean vertex-wise surface data in fsaverage5 space for each ROI of a selected atlas
+#' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param atlas An integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
+#'
+#' @return A matrix object with ROI as column and corresponding average vertex-wise values as row
+#' @seealso \code{\link{atlas_to_fs5}}
+#' @examples
+#' fs5_to_atlas(CTv, 1)
+#' @export
+
 ## To extract atlas ROI values from fsaverage5 vertex-wise data and vice-versa
 ## Atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148
 ## ROI to vertex mapping data for 1 to 4 obtained from enigmatoolbox https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations
@@ -192,6 +195,22 @@ fs5_to_atlas=function(surf_data,atlas)
   return(ROI)
 }
 
+
+#' @title Atlas to fsaverage5
+#'
+#' @description Returns the vertex-wise surface data mapped in fsaverage5 space from data parcellated with a selected atlas
+#' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param atlas An integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
+#'
+#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @seealso \code{\link{fs5_to_atlas}}
+#' @examples
+#' atlas_to_fs5(CTv, 1)
+#' @export
+
+
 atlas_to_fs5=function(surf_data,atlas) 
   {
     #load atlas mapping surf_data
@@ -201,12 +220,26 @@ atlas_to_fs5=function(surf_data,atlas)
     nregions=max(ROImap[[1]][,atlas])
     fs5_dat=rep(NA,20484)
   
-    #mapping atlas label to fsaverag5 space
+    #mapping atlas label to fsaverage5 space
     for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=surf_data[region]}
     return(as.numeric(fs5_dat))
   }
 ############################################################################################################################
 ############################################################################################################################
+
+
+#' @title fsaverage5 to fsaverage6
+#'
+#' @description Remaps vertex-wise surface data in fsaverage5 space to fsaverage6 space 
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#'
+#' @return A matrix object containing vertex-wise surface data mapped in fsaverage6 space
+#' @seealso \code{\link{fs6_to_fs5}}
+#' @examples
+#' fs5_to_fs6(CTv)
+#' @export
+
 #convert between fsaverage5 and fsaverage6 spacing
 fs5_to_fs6=function(surf_data)
 {
@@ -222,6 +255,18 @@ fs5_to_fs6=function(surf_data)
   return(surf_data.fs6)
 }
 
+#' @title fsaverage6 to fsaverage5
+#'
+#' @description Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space 
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#'
+#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @seealso \code{\link{fs5_to_fs6}}
+#' @examples
+#' fs6_to_fs5(CTv)
+#' @export
+
 fs6_to_fs5=function(surf_data)
 {
   #check length of vector
@@ -230,7 +275,7 @@ fs6_to_fs5=function(surf_data)
   #load atlas mapping surf_data
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
   
-  if(length(surf_data)==81924) #mapping fsaverage6 to fsaverage5 space if surf_data is a Nx20484 matrix
+  if(length(surf_data)==81924) #mapping fsaverage6 to fsaverage5 space if surf_data is a Nx81924 matrix
   {
     surf_data=matrix(surf_data,ncol=81924,nrow=1)  
     surf_data.fs5=matrix(NA,ncol=20484,nrow=1)
@@ -245,9 +290,28 @@ fs6_to_fs5=function(surf_data)
 }
 ############################################################################################################################
 ############################################################################################################################
+
+#' @title Surface plotter
+#'
+#' @description Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param filename A string object containing the desired name of the output .png file.
+#' @param title A string object containing the title of the plot. Default is none. 
+#' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
+#' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
+#' @param limits A numeric vector composed of the lower limit and the upper limit of the vertex-wise data values. Default is min and max values across all the vertices. 
+#' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
+#'
+#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @examples
+#' fs5_to_fs6(CTv)
+#' @importFrom reticulate tuple import np_array source_python
+#' @export
+
 ##Cortical surface/hippocampal plots
 ##input surf_data can be a matrix with multiple rows, for multiple plots in a single .png file
-plot_surf=function(surf_data, filename,title="",surface="inflated",cmap,limits, colorbar=T)
+plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T)
 {
   #format title for single row
   if(is.null(nrow(surf_data))) 
