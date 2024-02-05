@@ -150,27 +150,23 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     {
       if(n_vert==20484) 
       {
-        reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
         cat("surf_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-        surf_data=mesh_smooth(surf_data, FWHM=10)
+        surf_data=smooth(surf_data, FWHM=10)
       }
       else if(n_vert==81924) 
       {
-        reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
         cat("surf_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images\n")
-        surf_data=mesh_smooth(surf_data, FWHM=5)
+        surf_data=smooth(surf_data, FWHM=5)
       }
       else if(n_vert==14524) 
       {
-        reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
         cat("surf_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
-        surf_data=mesh_smooth(surf_data, FWHM=5)
+        surf_data=smooth(surf_data, FWHM=5)
       }
     } else if(smooth_FWHM>0) 
     {
-      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
       cat(paste("surf_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel\n", sep=""))
-      surf_data=mesh_smooth(surf_data, FWHM=smooth_FWHM)
+      surf_data=smooth(surf_data, FWHM=smooth_FWHM)
     }
     surf_data[is.na(surf_data)]=0
   
