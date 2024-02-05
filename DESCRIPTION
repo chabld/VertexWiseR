@@ -18,9 +18,14 @@ Description: Provides functions to run statistical analyses on
     restructuring the data values into a single file. The single file can
     then be used by the package for analyses independently from its base
     dataset and without need for its access.
-License: GPL-3
+License: GPL-3 + file LICENSE
 URL: https://github.com/CogBrainHealthLab/VertexWiseR
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Depends: 
+    R (>= 3.5.0)
+Imports: 
+    freesurferformats,
+    reticulate
