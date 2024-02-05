@@ -7,10 +7,10 @@
 perm_within_between(random)
 }
 \arguments{
-\item{random}{An array or list containing the random variable data}
+\item{random}{An array or list containing the random variable data points}
 }
 \value{
-Permuted list o
+Permuted list containing the random variable data points
 }
 \description{
 Shuffles paired/grouped data points within subjects, then shuffles pairs/groups between subjects
