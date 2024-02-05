@@ -109,6 +109,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       } 
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
@@ -139,7 +140,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
     {
       reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
       cat(paste("surf_data will be smoothed using a ",smooth_FWHM,"mm FWHM kernel", sep=""))
-      surf_data=mesh_smooth(surf_data, FWHM=smooth_FWHM)
+      surf_data=mesh_smooth(surf_data,edgelist, FWHM=smooth_FWHM)
     }
     surf_data[is.na(surf_data)]=0
   
