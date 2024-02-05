@@ -25,7 +25,6 @@ system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \
        mris_preproc --f ./sublist.txt --target fsaverage5 --hemi rh --meas", measure, " --out rh.mgh"))
 
 #Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR
-library(freesurferformats) 
-CT=t(rbind(drop(read.fs.mgh("lh.mgh")),drop(read.fs.mgh("rh.mgh"))))
+CT=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))))
 saveRDS(CT, file=paste0(filename,".rds"))
 }
