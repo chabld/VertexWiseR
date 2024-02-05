@@ -297,7 +297,7 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
 #' @param filename A string object containing the desired name of the output .png file.
-#' @param title A string object containing the title of the plot. Default is none. 
+#' @param title A string object containing the title wanted in the plot. Default is none. 
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
 #' @param limits A numeric vector composed of the lower limit and the upper limit of the vertex-wise data values. Default is min and max values across all the vertices. 
@@ -305,7 +305,7 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
-#' fs5_to_fs6(CTv)
+#' plot_surf(CTv, filename = 'output', title = 'Cortical thickness', surface = 'white', cmap = 'RdBu_r', colorbar = FALSE)
 #' @importFrom reticulate tuple import np_array source_python
 #' @export
 
@@ -378,6 +378,20 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 }
 ############################################################################################################################
 ############################################################################################################################
+
+#' @title Surface to volume
+#'
+#' @description Converts surface data to volumetric data (.nii file)
+#'
+#' @param surf_data A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See CTvextract() output format. 
+#' @param filename A string object containing the desired name of the output .nii file (default is 'output.nii').
+#'
+#' @return A .nii volume file
+#' @examples
+#' surf_to_vol(CTv, filename = 'volume.nii')
+#' @importFrom reticulate import
+#' @export
+
 ##converting surface to volumetric data and exporting it as a .nii file
 
 surf_to_vol=function(surf_data, filename="output.nii")

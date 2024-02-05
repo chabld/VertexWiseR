@@ -19,7 +19,7 @@ plot_surf(
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 
-\item{title}{A string object containing the title of the plot. Default is none.}
+\item{title}{A string object containing the title wanted in the plot. Default is none.}
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
@@ -36,5 +36,5 @@ A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
 }
 \examples{
-fs5_to_fs6(CTv)
+plot_surf(CTv, filename = 'output', title = 'Cortical thickness', surface = 'white', cmap = 'RdBu_r', colorbar = FALSE)
 }
