@@ -248,7 +248,7 @@ fs5_to_fs6=function(surf_data)
   
   #load atlas mapping surf_data
   load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
-  #mapping fsaverage5 to fsaverage6 space if surf_data is a Nx20484 matrix
+  #mapping fsaverage5 to fsaverage6 space if surf_data is a vector length of 20484
   if(length(surf_data)==20484) {surf_data.fs6=surf_data[fs6_to_fs5]} 
   #mapping fsaverage5 to fsaverage6 space if surf_data is a Nx20484 matrix
   else {surf_data.fs6=surf_data[,fs6_to_fs5]}
