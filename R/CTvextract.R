@@ -4,8 +4,8 @@
 #'
 #' @param sdirpath A string object containing the path to the Freesurfer output subjects directory.
 #' @param filename A string object containing the desired name of the output RDS file.
-#' @param template: A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.
-#' @param measure: A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.
+#' @param template A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.
+#' @param measure A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.
 #'
 #' @return A matrix object that can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise cortical thickness values
 #' @examples
