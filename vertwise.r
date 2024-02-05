@@ -118,7 +118,6 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     } 
     brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
     template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
   }
   else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
@@ -129,27 +128,23 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
   {
     if(n_vert==20484) 
     {
-      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      CT_data=mesh_smooth(CT_data, FWHM=10)
+      CT_data=mooth(CT_data, FWHM=10)
     }
     else if(n_vert==81924) 
     {
-      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
-      CT_data=mesh_smooth(CT_data, FWHM=5)
+      CT_data=smooth(CT_data, FWHM=5)
     }
     else if(n_vert==14524) 
     {
-      reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
-      CT_data=mesh_smooth(CT_data,edgelist, FWHM=5)
+      CT_data=smooth(CT_data, FWHM=5)
     }
   } else if(smooth_FWHM>0) 
   {
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
     cat(paste("CT_data will be smoothed using a ",smooth_FWHM,"mm FWHM kernel", sep=""))
-    CT_data=mesh_smooth(CT_data, FWHM=smooth_FWHM)
+    CT_data=smooth(CT_data, FWHM=smooth_FWHM)
   }
   CT_data[is.na(CT_data)]=0
   
