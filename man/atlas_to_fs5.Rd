@@ -9,7 +9,7 @@ atlas_to_fs5(surf_data, atlas)
 \arguments{
 \item{surf_data}{A matrix object containing the surface data, see CTvextract() output format.}
 
-\item{atlas}{An integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.}
+\item{atlas}{A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.}
 }
 \value{
 A matrix object containing vertex-wise surface data mapped in fsaverage5 space

@@ -9,7 +9,7 @@ smooth(surf_data, FWHM)
 \arguments{
 \item{surf_data}{A matrix object containing the surface data, see CTvextract() output format}
 
-\item{FWHM}{A vector object containing the desired smoothing width in mm}
+\item{FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
 A matrix object with smoothed vertex-wise values
