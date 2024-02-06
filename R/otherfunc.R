@@ -413,6 +413,21 @@ surf_to_vol=function(surf_data, filename="output.nii")
 
 ############################################################################################################################
 ############################################################################################################################
+#' @title Decode surface data
+#'
+#' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates
+#'
+#' @details The ]href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
+#'
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param contrast A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')
+#'
+#' @return A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
+#' @examples
+#' decode_surf_data(CTv, 'positive')
+#' @importFrom reticulate import r_to_py
+#' @export
+
 ##CT image decoding
 decode_surf_data=function(surf_data,contrast="positive")
 {
@@ -451,7 +466,7 @@ decode_surf_data=function(surf_data,contrast="positive")
   ##download neurosynth database if necessary 
   if(file.exists("neurosynth_dataset.pkl.gz")==F)
   {
-    cat("\nneurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
+    cat("\neurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
     download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/neurosynth_dataset.pkl.gz",destfile = "neurosynth_dataset.pkl.gz")
   } 
   ##running the decoding procedure
