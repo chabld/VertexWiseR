@@ -6,7 +6,9 @@
 ############################################################################################################################
 #' @title Vertex-wise analysis
 #'
-#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps. The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}. 
+#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps. 
+#'
+#' @details The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}. 
 #'
 #' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
 #' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
@@ -14,12 +16,13 @@
 #' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
 #' @param p A numeric object stating the p-value threshold for the linear model and cluster-correction
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.
-#' @param FWHM A numeric vector object containing the desired smoothing width in mm 
+#' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #'
 #' @return A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative  cluster maps. 
 #' @examples
-#' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#' model=vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#' model$cluster_level_results
 #' @importFrom reticulate import r_to_py
 #' @export
 

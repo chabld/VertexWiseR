@@ -3,6 +3,48 @@
 
 ############################################################################################################################
 ############################################################################################################################
+#' @title Vertex-wise analysis with TFCE (fixed effect)
+#'
+#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
+#' 
+#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' 
+#' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
+#' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
+#' @param tail A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model
+#' @param nthread Maximum number of cpu cores to allocate 
+#' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
+#'
+#'
+#' @return A list object containing the results at cluster level, the threshold t-test map, and positive and negative  cluster maps. 
+#' @examples
+#'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
+#'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
+#'two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+#'
+#'pos.results=TFCE.threshold(pos)
+#'pos.results$cluster_level_results
+#'plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
+#'
+#'neg.results=TFCE.threshold(neg)
+#'neg.results$cluster_level_results
+#'plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
+#'
+#'two.results=TFCE.threshold(two)
+#'two.results$cluster_level_results
+#'plotCT(two.results$thresholded_tstat_map, filename="two.png")
+#' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#'
+#' @importFrom reticulate import r_to_py
+#' @importFrom foreach foreach foreachGlobals 
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doParallel registerDoParallel
+#' @importFrom doSNOW registerDoSNOW
+#' @export
+
+
 ##Main function
 
 TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
