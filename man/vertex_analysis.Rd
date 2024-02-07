@@ -27,14 +27,18 @@ vertex_analysis(
 
 \item{atlas}{A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.}
 
-\item{FWHM}{A numeric vector object containing the desired smoothing width in mm}
+\item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
 A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative  cluster maps.
 }
 \description{
-Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps. The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
+Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps.
+}
+\details{
+The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
 }
 \examples{
-vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+model=vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+model$cluster_level_results
 }

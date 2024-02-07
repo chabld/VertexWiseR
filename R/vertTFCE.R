@@ -38,7 +38,7 @@
 #' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #'
 #' @importFrom reticulate import r_to_py
-#' @importFrom foreach foreach foreachGlobals 
+#' @importFrom foreach foreach 
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
