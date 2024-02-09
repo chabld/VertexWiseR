@@ -3,6 +3,8 @@
 ############################################################################################################################
 ############################################################################################################################
 
+## permutation function for random subject effects
+## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
 perm_within_between=function(random)
 {
   ##for groups of 2 or more (subjects with 2 or more measurements)

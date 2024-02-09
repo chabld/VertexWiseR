@@ -30,7 +30,7 @@ TFCE.vertex_analysis(
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
-A list object containing the results at cluster level, the threshold t-test map, and positive and negative  cluster maps.
+A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps.
 }
 \description{
 Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
@@ -48,7 +48,7 @@ pos.results$cluster_level_results
 plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
 
 neg.results=TFCE.threshold(neg)
-neg.results$cluster_level_results
+neg.results$cluster_level_result
 plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
 
 two.results=TFCE.threshold(two)

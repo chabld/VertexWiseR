@@ -18,7 +18,7 @@
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #'
-#' @return A list object containing the results at cluster level, the threshold t-test map, and positive and negative  cluster maps. 
+#' @return A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
 #' @examples
 #'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
 #'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
@@ -29,7 +29,7 @@
 #'plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
 #'
 #'neg.results=TFCE.threshold(neg)
-#'neg.results$cluster_level_results
+#'neg.results$cluster_level_result
 #'plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
 #'
 #'two.results=TFCE.threshold(two)
@@ -238,6 +238,23 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
 }
 ############################################################################################################################
 ############################################################################################################################
+#' @title Threshold-free cluster enhancement (single core)
+#'
+#' @description Estimates clusters with threshold-free cluster enhancement from whole-brain and hippocampal surface t-statistics map, when only one cpu core is allocated.
+#' 
+#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' 
+#' @param data A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
+#' @param tail A numeric integer object stating whether the t-test is one-sided (1) or two-sided (2) model
+#'
+#'
+#' @return A list object containing permuted TFCE statistics
+#' @examples
+#'TFCE(data = tmap,tail = 2)
+#'
+#' @export
+
+
 ##TFCE single core— for estimating permuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE=function(data,tail=tail)
@@ -295,6 +312,24 @@ TFCE=function(data,tail=tail)
 }
 ############################################################################################################################
 ############################################################################################################################
+#' @title Threshold-free cluster enhancement (multi core)
+#'
+#' @description Estimates clusters with threshold-free cluster enhancement from whole-brain and hippocampal surface t-statistics map, when multiple cpu cores are allocated.
+#' 
+#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' 
+#' @param data A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
+#' @param tail A numeric integer object stating whether the t-test is one-sided (1) or two-sided (2) model
+#' @param nthread Maximum number of cpu cores to allocate 
+#'
+#'
+#' @return A list object containing permuted TFCE statistics
+#' @examples
+#'TFCE(data = tmap,tail = 2)
+#'
+#' @export
+
+
 ##TFCE multicore— for estimating unpermuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
 TFCE.multicore=function(data,tail=tail,nthread)

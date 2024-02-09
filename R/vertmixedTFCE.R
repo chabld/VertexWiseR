@@ -3,6 +3,38 @@
 
 ############################################################################################################################
 ############################################################################################################################
+#' @title Vertex-wise analysis with TFCE (mixed effect)
+#'
+#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
+#' 
+#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' 
+#' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
+#' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
+#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param random An object containing the values of the random variable 
+#' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
+#' @param tail A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model
+#' @param nthread Maximum number of cpu cores to allocate 
+#' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
+#' @param perm_within_between A logical object stating whether to implement a permutation function for random subject effects 
+#'
+#'
+#' @return A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
+#' @examples
+#'model=TFCE.vertex_analysis.mixed(model = dat_beh[,c(2:4)],contrast = dat_beh$AGE_AT_SCAN,random = dat_beh$SUB_ID,surf_data = dat_CT,nperm = 100,tail = 2, nthread = 10, smooth_FWHM = 0)
+#'
+#'results=TFCE.threshold(model)
+#'results$cluster_level_results
+#'
+#' @importFrom reticulate import r_to_py
+#' @importFrom foreach foreach 
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doParallel registerDoParallel
+#' @importFrom doSNOW registerDoSNOW
+#' @export
+
+
 ##Main function
 
 TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=F)
