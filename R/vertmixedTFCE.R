@@ -14,7 +14,7 @@
 #' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
 #' @param random An object containing the values of the random variable 
 #' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
-#' @param tail A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model
+#' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
 #' @param nthread Maximum number of cpu cores to allocate 
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #' @param perm_within_between A logical object stating whether to implement a permutation function for random subject effects 

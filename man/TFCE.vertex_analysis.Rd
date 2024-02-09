@@ -23,17 +23,17 @@ TFCE.vertex_analysis(
 
 \item{nperm}{A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)}
 
-\item{tail}{A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model}
+\item{tail}{A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model}
 
 \item{nthread}{Maximum number of cpu cores to allocate}
 
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
-A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps.
+A list object containing  the  t-test and the TFCE cluster output
 }
 \description{
-Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
+Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps and cluster maps generated with threshold-free cluster enhancement.
 }
 \details{
 The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.

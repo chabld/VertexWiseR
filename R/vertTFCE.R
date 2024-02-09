@@ -5,7 +5,7 @@
 ############################################################################################################################
 #' @title Vertex-wise analysis with TFCE (fixed effect)
 #'
-#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
+#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps and cluster maps generated with threshold-free cluster enhancement.
 #' 
 #' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
 #' 
@@ -13,12 +13,13 @@
 #' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
 #' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
 #' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
-#' @param tail A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model
+#' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
 #' @param nthread Maximum number of cpu cores to allocate 
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #'
-#' @return A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
+#' @return A list object containing  the  t-test and the TFCE cluster output
+#'  
 #' @examples
 #'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
 #'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
@@ -238,22 +239,6 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
 }
 ############################################################################################################################
 ############################################################################################################################
-#' @title Threshold-free cluster enhancement (single core)
-#'
-#' @description Estimates clusters with threshold-free cluster enhancement from whole-brain and hippocampal surface t-statistics map, when only one cpu core is allocated.
-#' 
-#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
-#' 
-#' @param data A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
-#' @param tail A numeric integer object stating whether the t-test is one-sided (1) or two-sided (2) model
-#'
-#'
-#' @return A list object containing permuted TFCE statistics
-#' @examples
-#'TFCE(data = tmap,tail = 2)
-#'
-#' @export
-
 
 ##TFCE single core— for estimating permuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
@@ -312,23 +297,6 @@ TFCE=function(data,tail=tail)
 }
 ############################################################################################################################
 ############################################################################################################################
-#' @title Threshold-free cluster enhancement (multi core)
-#'
-#' @description Estimates clusters with threshold-free cluster enhancement from whole-brain and hippocampal surface t-statistics map, when multiple cpu cores are allocated.
-#' 
-#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
-#' 
-#' @param data A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
-#' @param tail A numeric integer object stating whether the t-test is one-sided (1) or two-sided (2) model
-#' @param nthread Maximum number of cpu cores to allocate 
-#'
-#'
-#' @return A list object containing permuted TFCE statistics
-#' @examples
-#'TFCE(data = tmap,tail = 2)
-#'
-#' @export
-
 
 ##TFCE multicore— for estimating unpermuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
@@ -411,6 +379,36 @@ TFCE.multicore=function(data,tail=tail,nthread)
 }
 ############################################################################################################################
 ############################################################################################################################
+#' @title Thresholding TFCE output
+#'
+#' @description Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output 
+#' 
+#' @param TFCE.outout An object containing the output from TFCE.vertex_analysis()
+#' @param p A numeric object stating whether the p-value at which to threshold the results (Default is 0.05)
+#' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)
+#' @param k Cluster-forming threshold (Default is 20)
+#'
+#' @return A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
+#' @examples
+#'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
+#'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
+#'two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+#'
+#'pos.results=TFCE.threshold(pos)
+#'pos.results$cluster_level_results
+#'plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
+#'
+#'neg.results=TFCE.threshold(neg)
+#'neg.results$cluster_level_result
+#'plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
+#'
+#'two.results=TFCE.threshold(two)
+#'two.results$cluster_level_results
+#'plotCT(two.results$thresholded_tstat_map, filename="two.png")
+#' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#'
+#' @export
+
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
 {
   nperm=length(TFCE.output$TFCE.max)
@@ -460,13 +458,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(which(pos.t_stat.thresholdedP!=0))>1) #skip if no clusters detected
     {
-      pos.clusters0=getClusters(pos.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
+      pos.clusters0=getClusters(pos.t_stat.thresholdedP) ## 1st getClusters() to identify all clusters with no. vertices > 1
       #applying k thresholding
       pos.clustID.remove=which(pos.clusters0[[2]]<k)
       pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
       
       #generating mask
-      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
+      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getClusters() to identify all clusters from the k-thresholded clustermap
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
       pos.mask=rep(0,n_vert)
       ROImap[[1]][, atlas]

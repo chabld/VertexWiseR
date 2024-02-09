@@ -27,7 +27,7 @@ TFCE.vertex_analysis.mixed(
 
 \item{nperm}{A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)}
 
-\item{tail}{A numeric integer object stating whether to test a one-sided (1) or two-sided (2) model}
+\item{tail}{A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model}
 
 \item{nthread}{Maximum number of cpu cores to allocate}
 
