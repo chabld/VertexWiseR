@@ -27,5 +27,5 @@ A .rds file containing a matrix object. The matrix can be used independently by 
 Extracts whole-brain vertex-wise cortical thickness values for each subject in a Freesurfer output subjects directory, resamples the data to a common surface template, and stores it into a single matrix. This function requires the Freesurfer environment to be preset; and the 'freesurferformats' R package.
 }
 \examples{
-SURFvextract('myfreesurfer_output_path/subjects_directory/', template='fsaverage5') 
+SURFvextract(sdirpath = "myfreesurfer_output_path/subjects_directory/", filename = "CTv", template="fsaverage5", measure = "curv") 
 }

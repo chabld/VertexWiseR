@@ -9,7 +9,7 @@
 #'
 #' @return A .rds file containing a matrix object. The matrix can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise cortical thickness values
 #' @examples
-#' SURFvextract('myfreesurfer_output_path/subjects_directory/', template='fsaverage5') 
+#' SURFvextract(sdirpath = "myfreesurfer_output_path/subjects_directory/", filename = "CTv", template="fsaverage5", measure = "curv") 
 #' @importFrom freesurferformats read.fs.mgh
 #' @export
 
@@ -17,14 +17,15 @@ SURFvextract=function(sdirpath, filename, template='fsaverage5', measure = 'thic
 { 
 #finds specifically subject folders in the directory (checks if a surf folder is present) and stores their ordered IDs in a list  
 system(paste0("export SUBJECTS_DIR=", sdirpath))
-system("find $SUBJECTS_DIR -maxdepth 1 -type d -exec test -e '{}/surf' \\; -exec basename {} > ./sublist.txt \\; \n sort -n ./sublist.txt -o ./sublist.txt")
+system("find $SUBJECTS_DIR -maxdepth 1 -type d -exec test -e '{}/surf' \\; -exec basename {} > ./sublist.txt \\;");
+system("sort -n ./sublist.txt -o ./sublist.txt");
   
 #Calls Freesurfer to extract vertex-wise thickness data from the sample and resample it to the fsaverage5 common-space surface; and concatenate it into mgh files
 system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \n
-       mris_preproc --f ./sublist.txt --target fsaverage5 --hemi lh --meas", measure, " --out lh.mgh \n 
-       mris_preproc --f ./sublist.txt --target fsaverage5 --hemi rh --meas", measure, " --out rh.mgh"))
+       mris_preproc --f ./sublist.txt --target fsaverage5 --hemi lh --meas ", measure, " --out lh.mgh \n 
+       mris_preproc --f ./sublist.txt --target fsaverage5 --hemi rh --meas ", measure, " --out rh.mgh"));
 
 #Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR
-SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))))
+SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))));
 saveRDS(SURFdata, file=filename)
 }
