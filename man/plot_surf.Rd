@@ -15,7 +15,7 @@ plot_surf(
 )
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, see CTvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 

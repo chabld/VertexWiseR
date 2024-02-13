@@ -51,7 +51,7 @@ perm_within_between=function(random)
 #'
 #' @description Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format
 #' @param FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #' @return A matrix object with smoothed vertex-wise values
@@ -157,7 +157,7 @@ getClusters=function(surf_data)
 #' @description Returns the mean vertex-wise surface data in fsaverage5 space for each ROI of a selected atlas
 #' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
 #'
 #' @return A matrix object with ROI as column and corresponding average vertex-wise values as row
@@ -203,7 +203,7 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @description Returns the vertex-wise surface data mapped in fsaverage5 space from data parcellated with a selected atlas
 #' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
 #'
 #' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
@@ -234,7 +234,7 @@ atlas_to_fs5=function(surf_data,atlas)
 #'
 #' @description Remaps vertex-wise surface data in fsaverage5 space to fsaverage6 space 
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
 #' @return A matrix object containing vertex-wise surface data mapped in fsaverage6 space
 #' @seealso \code{\link{fs6_to_fs5}}
@@ -261,7 +261,7 @@ fs5_to_fs6=function(surf_data)
 #'
 #' @description Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space 
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
 #' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_fs6}}
@@ -297,7 +297,7 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @description Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param filename A string object containing the desired name of the output .png file.
 #' @param title A string object containing the title wanted in the plot. Default is none. 
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
@@ -385,7 +385,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 #'
 #' @description Converts surface data to volumetric data (.nii file)
 #'
-#' @param surf_data A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See SURFvextract() output format. 
 #' @param filename A string object containing the desired name of the output .nii file (default is 'output.nii').
 #'
 #' @return A .nii volume file
@@ -421,7 +421,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #'
 #' @details The ]href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
 #'
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param contrast A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')
 #'
 #' @return A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate

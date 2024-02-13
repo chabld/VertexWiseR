@@ -1,4 +1,4 @@
-#' @title CTvextract
+#' @title SURFvextract
 #'
 #' @description Extracts whole-brain vertex-wise cortical thickness values for each subject in a Freesurfer output subjects directory, resamples the data to a common surface template, and stores it into a single matrix. This function requires the Freesurfer environment to be preset; and the 'freesurferformats' R package.
 #'
@@ -7,13 +7,13 @@
 #' @param template A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.
 #' @param measure A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.
 #'
-#' @return A matrix object that can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise cortical thickness values
+#' @return A .rds file containing a matrix object. The matrix can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise cortical thickness values
 #' @examples
-#' CTvextract('myfreesurfer_output_path/subjects_directory/', template='fsaverage5') 
+#' SURFvextract('myfreesurfer_output_path/subjects_directory/', template='fsaverage5') 
 #' @importFrom freesurferformats read.fs.mgh
 #' @export
 
-CTvextract=function(sdirpath, filename, template='fsaverage5', measure = 'thickness') 
+SURFvextract=function(sdirpath, filename, template='fsaverage5', measure = 'thickness') 
 { 
 #finds specifically subject folders in the directory (checks if a surf folder is present) and stores their ordered IDs in a list  
 system(paste0("export SUBJECTS_DIR=", sdirpath))
@@ -25,6 +25,6 @@ system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \
        mris_preproc --f ./sublist.txt --target fsaverage5 --hemi rh --meas", measure, " --out rh.mgh"))
 
 #Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR
-CT=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))))
-saveRDS(CT, file=paste0(filename,".rds"))
+SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))))
+saveRDS(SURFdata, file=paste0(filename,".rds"))
 }

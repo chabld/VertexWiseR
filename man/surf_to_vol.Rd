@@ -7,7 +7,7 @@
 surf_to_vol(surf_data, filename = "output.nii")
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See CTvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See SURFvextract() output format.}
 
 \item{filename}{A string object containing the desired name of the output .nii file (default is 'output.nii').}
 }

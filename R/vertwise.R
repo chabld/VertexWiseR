@@ -13,7 +13,7 @@
 #' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
 #' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
 #' @param random An object containing the values of the random variable (optional)
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param p A numeric object stating the p-value threshold for the linear model and cluster-correction
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 

@@ -21,7 +21,7 @@ vertex_analysis(
 
 \item{random}{An object containing the values of the random variable (optional)}
 
-\item{surf_data}{A matrix object containing the surface data, see CTvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
 
 \item{p}{A numeric object stating the p-value threshold for the linear model and cluster-correction}
 

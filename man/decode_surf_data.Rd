@@ -7,7 +7,7 @@
 decode_surf_data(surf_data, contrast = "positive")
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, see CTvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
 
 \item{contrast}{A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')}
 }

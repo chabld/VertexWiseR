@@ -21,7 +21,7 @@ TFCE.vertex_analysis.mixed(
 
 \item{contrast}{An object containing the values of the independent variable of interest for which to fit a contrast}
 
-\item{surf_data}{A matrix object containing the surface data, see CTvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
 
 \item{random}{An object containing the values of the random variable}
 

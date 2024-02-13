@@ -11,7 +11,7 @@
 #' 
 #' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
 #' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
-#' @param surf_data A matrix object containing the surface data, see CTvextract() output format. 
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
 #' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
 #' @param nthread Maximum number of cpu cores to allocate 
