@@ -26,5 +26,5 @@ system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \
 
 #Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR
 SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh("lh.mgh")),drop(freesurferformats::read.fs.mgh("rh.mgh"))))
-saveRDS(SURFdata, file=paste0(filename,".rds"))
+saveRDS(SURFdata, file=filename)
 }
