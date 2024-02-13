@@ -21,7 +21,7 @@
 #'
 #' @return A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative  cluster maps. 
 #' @examples
-#' model=vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#' model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #' model$cluster_level_results
 #' @importFrom reticulate import r_to_py
 #' @export
@@ -31,8 +31,8 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
 {
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
   
-  ##load other vertex-wise functions
-  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
+  ##load other vertex-wise functions (not needed when package is in library)
+  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
   
   ##checks
     #check contrast
@@ -288,11 +288,3 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
   return(returnobj)
 }
-############################################################################################################################
-############################################################################################################################
-
-##example
-# source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/vertwise.r?raw=TRUE")
-# 
-# model=vertex_analysis(fixed_predictors = dat_beh[,c(2:4)], contrast = dat_beh$AGE_AT_SCAN = dat_beh$SUB_ID,surf_data = dat_CT,p = 0.01, atlas=1)
-# model$cluster_level_results
