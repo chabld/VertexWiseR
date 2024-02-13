@@ -47,7 +47,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
           if(identical(contrast,data.matrix(model)[,colno]))  {break} 
         } else 
         {
-          if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(model[,colno]))))  {break}
+          if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(unlist(model[,colno])))))  {break}
         }
       }
     }  else
