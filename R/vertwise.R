@@ -48,6 +48,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   
   ##load other vertex-wise functions (not needed when package is in library)
   #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
+
   
   ##checks
     #check contrast
@@ -131,13 +132,11 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
     {
       template="fsaverage5"
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
-    }
-    else if (n_vert==81924)
+    } else if (n_vert==81924)
     {
       template="fsaverage6"
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
-    }
-    else if (n_vert==14524)
+    } else if (n_vert==14524)
     {
       if(file.exists("hip_template.fs")==F)
       {
@@ -147,8 +146,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
-    }
-    else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
+    } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   ##smoothing
     n_vert=NCOL(surf_data)
@@ -158,13 +156,11 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       {
         cat("surf_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
         surf_data=smooth(surf_data, FWHM=10)
-      }
-      else if(n_vert==81924) 
+      } else if(n_vert==81924) 
       {
         cat("surf_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
         surf_data=smooth(surf_data, FWHM=5)
-      }
-      else if(n_vert==14524) 
+      } else if(n_vert==14524) 
       {
         cat("surf_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
         surf_data=smooth(surf_data, FWHM=5)
