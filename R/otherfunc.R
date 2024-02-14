@@ -62,27 +62,28 @@ perm_within_between=function(random)
 
 ## smooth surface data 
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
-smooth=function(data, FWHM)
+smooth=function(surf_data, FWHM)
 {
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
-
+  
+  n_vert=ncol(surf_data)
   ##select template, set its FWHM parameter and load its edgelist file
-  if(NCOL(surf_data)==20484) 
+  if(n_vert==20484) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
     FWHM=FWHM/3.5 #converting mm to mesh units
-  } else if(NCOL(surf_data)==81924) 
+  } else if(n_vert==81924) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
     FWHM=FWHM/2 #converting mm to mesh units
-  } else if(NCOL(surf_data)==14524) 
+  } else if(n_vert==14524) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     FWHM=FWHM/0.5 #converting m to mesh units
   } else {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
-  smoothed=mesh_smooth(data,edgelist, FWHM)
+  smoothed=mesh_smooth(surf_data,edgelist, FWHM)
   smoothed[is.na(smoothed)]=0
   return(smoothed)
 }
