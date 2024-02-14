@@ -43,8 +43,8 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
   #converts the columns to regular data.frame column types
   if ('tbl_df' %in% class(contrast)) {
-    if (class(contrast[[1]])=="character") {contrast = contrast[[1]]}
-    if(class(contrast[[1]])=="integer") {contrast = as.numeric(contrast[[1]])}
+    if (class(contrast[[1]])=="character") {contrast = contrast[[1]]
+    } else {contrast = as.numeric(contrast[[1]])}
   } 
   if ('tbl_df' %in% class(model)) {
     model=as.data.frame(model)
