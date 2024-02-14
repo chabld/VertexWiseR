@@ -65,8 +65,8 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   }
   
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
-  ##load other vertex-wise functions
-  source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
+  ##load other vertex-wise functions (not needed when package is in library)
+  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
   
   ##checks
     #check if nrow is consistent for model and surf_data
@@ -609,22 +609,3 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   
   return(returnobj)
 }  
-############################################################################################################################
-############################################################################################################################
-##example
-
-#pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
-#neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-#two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
-
-#pos.results=TFCE.threshold(pos)
-#pos.results$cluster_level_results
-#plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
-
-#neg.results=TFCE.threshold(neg)
-#neg.results$cluster_level_results
-#plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
-
-#two.results=TFCE.threshold(two)
-#two.results$cluster_level_results
-#plotCT(two.results$thresholded_tstat_map, filename="two.png")

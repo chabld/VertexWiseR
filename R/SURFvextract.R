@@ -27,7 +27,7 @@ system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \
        mris_preproc --f $SUBJECTS_DIR/sublist.txt --target fsaverage5 --hemi lh --meas ", measure, " --out $SUBJECTS_DIR/lh.mgh \n 
        mris_preproc --f $SUBJECTS_DIR/sublist.txt --target fsaverage5 --hemi rh --meas ", measure, " --out $SUBJECTS_DIR/rh.mgh"));
 
-#Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR
+#Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR. Appends a column with the subject IDs if required by the user.
 if (subj_ID == T) 
 {
 sublist = read.delim(paste0(sdirpath,"/sublist.txt"));
