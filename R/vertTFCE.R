@@ -170,22 +170,22 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
     if(n_vert==20484) 
     {
       cat("surf_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      surf_data=smooth(surf_data, FWHM=10)
+      surf_data=smooth_surf(surf_data, FWHM=10)
     }
     else if(n_vert==81924) 
     {
       cat("surf_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images\n")
-      surf_data=smooth(surf_data, FWHM=5)
+      surf_data=smooth_surf(surf_data, FWHM=5)
     }
     else if(n_vert==14524) 
     {
       cat("surf_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
-      surf_data=smooth(surf_data, FWHM=5)
+      surf_data=smooth_surf(surf_data, FWHM=5)
     }
   } else if(smooth_FWHM>0) 
   {
     cat(paste("surf_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel\n", sep=""))
-    surf_data=smooth(surf_data, FWHM=smooth_FWHM)
+    surf_data=smooth_surf(surf_data, FWHM=smooth_FWHM)
   }
   
   ##unpermuted model

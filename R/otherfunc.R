@@ -47,7 +47,7 @@ perm_within_between=function(random)
 ############################################################################################################################
 ############################################################################################################################
 
-#' @title Smooth
+#' @title Smooth surface
 #'
 #' @description Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 #'
@@ -56,13 +56,13 @@ perm_within_between=function(random)
 #'
 #' @returns A matrix object with smoothed vertex-wise values
 #' @examples
-#' smooth(CT_data, 10)
+#' smooth_surf(CT_data, 10)
 #' @importFrom reticulate source_python
 #' @export
 
 ## smooth surface data 
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
-smooth=function(surf_data, FWHM)
+smooth_surf=function(surf_data, FWHM)
 {
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
