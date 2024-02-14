@@ -29,6 +29,18 @@
 ##vertex wise analysis with mixed effects
 vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148; ignored for hippocampal surfaces
 {
+  
+  #If the contrast/model is a tibble (e.g., taken from a read_csv output)
+  #converts the columns to regular data.frame column types
+  if ('tbl_df' %in% class(contrast)) {
+    if (class(contrast[[1]])=="character") {contrast = contrast[[1]]}
+    if(class(contrast[[1]])=="integer") {contrast = as.numeric(contrast[[1]])}
+  } 
+  if ('tbl_df' %in% class(model)) {
+    model=as.data.frame(model)
+    for (c in 1:NCOL(model)) { if(class(model[,c])=="double") {model[,c] = as.numeric(model[,c])} }
+  }
+  
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
   
   ##load other vertex-wise functions (not needed when package is in library)
@@ -47,7 +59,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
           if(identical(contrast,data.matrix(model)[,colno]))  {break} 
         } else 
         {
-          if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(unlist(model[,colno])))))  {break}
+          if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(model[,colno]))))  {break}
         }
       }
     }  else
@@ -58,7 +70,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
         else  {warning("contrast is not contained within model")}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+        if(identical(as.numeric(contrast),as.numeric(model[,])))  {colno=1}
         else  {warning("contrast is not contained within model")}
       }
     }

@@ -50,6 +50,18 @@
 
 TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
+  
+  #If the contrast/model is a tibble (e.g., taken from a read_csv output)
+  #converts the columns to regular data.frame column types
+  if ('tbl_df' %in% class(contrast)) {
+    if (class(contrast[[1]])=="character") {contrast = contrast[[1]]}
+    if(class(contrast[[1]])=="integer") {contrast = as.numeric(contrast[[1]])}
+  } 
+  if ('tbl_df' %in% class(model)) {
+    model=as.data.frame(model)
+    for (c in 1:NCOL(model)) { if(class(model[,c])=="double") {model[,c] = as.numeric(model[,c])} }
+  }
+  
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
   ##load other vertex-wise functions
   source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
@@ -91,7 +103,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
         else  {warning("contrast is not contained within model")}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+        if(identical(as.numeric(contrast),as.numeric(model[,])))  {colno=1}
         else  {warning("contrast is not contained within model")}
       }
     }
