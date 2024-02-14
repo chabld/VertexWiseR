@@ -62,7 +62,7 @@ perm_within_between=function(random)
 
 ## smooth surface data 
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
-smooth=function(surf_data, FWHM)
+smooth=function(data, FWHM)
 {
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
