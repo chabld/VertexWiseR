@@ -32,7 +32,7 @@ if (subj_ID == T)
 {
 sublist = read.delim(paste0(sdirpath,"/sublist.txt"));
 SURFdata= t(rbind(drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"lh.mgh"))),drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"rh.mgh")))));
-SURFdata=as.matrix(cbind(sublist,SURFdata));
+SURFdata=cbind(sublist,SURFdata); 
 } else {
 SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"lh.mgh"))),drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"rh.mgh")))));
 }
