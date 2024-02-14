@@ -17,8 +17,7 @@
 #' @param nthread Maximum number of cpu cores to allocate 
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
-#'
-#' @return A list object containing  the  t-test and the TFCE cluster output
+#' @returns A list object containing  the  t-test and the TFCE cluster output
 #'  
 #' @examples
 #'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
@@ -403,7 +402,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)
 #' @param k Cluster-forming threshold (Default is 20)
 #'
-#' @return A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
+#' @returns A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
 #' @examples
 #'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
 #'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)

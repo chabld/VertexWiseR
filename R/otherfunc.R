@@ -54,7 +54,7 @@ perm_within_between=function(random)
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format
 #' @param FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
-#' @return A matrix object with smoothed vertex-wise values
+#' @returns A matrix object with smoothed vertex-wise values
 #' @examples
 #' smooth(CT_data, 10)
 #' @importFrom reticulate source_python
@@ -160,7 +160,7 @@ getClusters=function(surf_data)
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
 #'
-#' @return A matrix object with ROI as column and corresponding average vertex-wise values as row
+#' @returns A matrix object with ROI as column and corresponding average vertex-wise values as row
 #' @seealso \code{\link{atlas_to_fs5}}
 #' @examples
 #' fs5_to_atlas(CTv, 1)
@@ -206,7 +206,7 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
 #'
-#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
 #' @examples
 #' atlas_to_fs5(CTv, 1)
@@ -236,7 +236,7 @@ atlas_to_fs5=function(surf_data,atlas)
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
-#' @return A matrix object containing vertex-wise surface data mapped in fsaverage6 space
+#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage6 space
 #' @seealso \code{\link{fs6_to_fs5}}
 #' @examples
 #' fs5_to_fs6(CTv)
@@ -263,7 +263,7 @@ fs5_to_fs6=function(surf_data)
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
-#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_fs6}}
 #' @examples
 #' fs6_to_fs5(CTv)
@@ -305,7 +305,7 @@ fs6_to_fs5=function(surf_data)
 #' @param limits A numeric vector composed of the lower limit and the upper limit of the vertex-wise data values. Default is min and max values across all the vertices. 
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
 #'
-#' @return A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
 #' plot_surf(CTv, filename = 'output', title = 'Cortical thickness', surface = 'white', cmap = 'RdBu_r', colorbar = FALSE)
 #' @importFrom reticulate tuple import np_array source_python
@@ -388,7 +388,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 #' @param surf_data A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See SURFvextract() output format. 
 #' @param filename A string object containing the desired name of the output .nii file (default is 'output.nii').
 #'
-#' @return A .nii volume file
+#' @returns A .nii volume file
 #' @examples
 #' surf_to_vol(CTv, filename = 'volume.nii')
 #' @importFrom reticulate import
@@ -424,7 +424,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param contrast A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')
 #'
-#' @return A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
+#' @returns A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
 #' @examples
 #' decode_surf_data(CTv, 'positive')
 #' @importFrom reticulate import r_to_py

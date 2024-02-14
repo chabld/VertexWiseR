@@ -20,7 +20,7 @@
 #' @param perm_within_between A logical object stating whether to implement a permutation function for random subject effects 
 #'
 #'
-#' @return A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
+#' @returns A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
 #' @examples
 #'model=TFCE.vertex_analysis.mixed(model = dat_beh[,c(2:4)],contrast = dat_beh$AGE_AT_SCAN,random = dat_beh$SUB_ID,surf_data = dat_CT,nperm = 100,tail = 2, nthread = 10, smooth_FWHM = 0)
 #'
