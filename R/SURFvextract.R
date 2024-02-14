@@ -9,7 +9,7 @@
 #' @param measure A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.
 #' @param subj_ID A logical object stating whether to include subject IDs (folder names in the subjects directory) as a first column to the output matrix. Default is TRUE.
 #'
-#' @returns A .rds file containing a matrix object. The matrix can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise values
+#' @returns A .rds file with a list containing [1] the list of subject IDs and [2] a surface data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as [1]) and contains the left to right hemispheres' vertex-wise values.
 #' @examples
 #' SURFvextract(sdirpath = "myfreesurfer_output_path/subjects_directory/", filename = "CTv", template="fsaverage5", measure = "curv") 
 #' @importFrom freesurferformats read.fs.mgh
@@ -32,7 +32,7 @@ if (subj_ID == T)
 {
 sublist = read.delim(paste0(sdirpath,"/sublist.txt"));
 SURFdata= t(rbind(drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"lh.mgh"))),drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"rh.mgh")))));
-SURFdata=cbind(sublist,SURFdata); 
+SURFdata=list(sublist,SURFdata); 
 } else {
 SURFdata=t(rbind(drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"lh.mgh"))),drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"rh.mgh")))));
 }

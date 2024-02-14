@@ -24,7 +24,7 @@ SURFvextract(
 \item{subj_ID}{A logical object stating whether to include subject IDs (folder names in the subjects directory) as a first column to the output matrix. Default is TRUE.}
 }
 \value{
-A .rds file containing a matrix object. The matrix can be used independently by VertexWiseR to compute statistical analyses. Each row corresponds to a subject's left and right hemisphere vertex-wise values
+A .rds file with a list containing \link{1} the list of subject IDs and \link{2} a surface data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as \link{1}) and contains the left to right hemispheres' vertex-wise values.
 }
 \description{
 Extracts whole-brain vertex-wise surface-based measures for each subject in a Freesurfer output subjects directory, resamples the data to a common surface template, and stores it into a single matrix. This function requires the Freesurfer environment to be preset.
