@@ -59,7 +59,10 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   } 
   if ('tbl_df' %in% class(model)) {
     model=as.data.frame(model)
-    for (c in 1:NCOL(model)) { if(class(model[,c])=="double") {model[,c] = as.numeric(model[,c])} }
+    if (NCOL(model)==1) {model = model[[1]]
+    } else { for (c in 1:NCOL(model)) { 
+      if(class(model[,c])=="double") {model[,c] = as.numeric(model[,c])}
+    }  }
   }
   
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
@@ -103,7 +106,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
         else  {warning("contrast is not contained within model")}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,])))  {colno=1}
+        if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
         else  {warning("contrast is not contained within model")}
       }
     }
