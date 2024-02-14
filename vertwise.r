@@ -129,14 +129,12 @@ vertex_analysis=function(all_predictors,IV_of_interest, random, CT_data, p=0.05,
     if(n_vert==20484) 
     {
       cat("CT_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-      CT_data=mooth(CT_data, FWHM=10)
-    }
-    else if(n_vert==81924) 
+      CT_data=smooth(CT_data, FWHM=10)
+    } else if(n_vert==81924) 
     {
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images")
       CT_data=smooth(CT_data, FWHM=5)
-    }
-    else if(n_vert==14524) 
+    } else if(n_vert==14524) 
     {
       cat("CT_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
       CT_data=smooth(CT_data, FWHM=5)
