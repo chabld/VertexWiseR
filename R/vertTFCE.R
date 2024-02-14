@@ -52,11 +52,11 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
   #converts the columns to regular data.frame column types
-  if ('tbl_df' %in% class(contrast)) {
+  if ('tbl_df' %in% class(contrast) == TRUE) {
     if (class(contrast[[1]])=="character") {contrast = contrast[[1]]
     } else {contrast = as.numeric(contrast[[1]])}
   } 
-  if ('tbl_df' %in% class(model)) {
+  if ('tbl_df' %in% class(model) == TRUE) {
     model=as.data.frame(model)
     if (NCOL(model)==1) {model = model[[1]]
     } else { for (c in 1:NCOL(model)) { 
