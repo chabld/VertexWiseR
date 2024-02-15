@@ -303,7 +303,7 @@ fs6_to_fs5=function(surf_data)
 #' @param title A string object containing the title wanted in the plot. Default is none. 
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
-#' @param limits A numeric vector composed of the lower limit and the upper limit of the vertex-wise data values. Default is min and max values across all the vertices. 
+#' @param limits Combined pair of numeric vectors composed of the lower limit and the upper limit value of the surface data. Default is min and max values across all the vertices. 
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space

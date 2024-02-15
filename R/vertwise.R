@@ -19,7 +19,7 @@
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #'
-#' @returns A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative  cluster maps. 
+#' @returns A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative cluster maps. 
 #' @examples
 #' model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #' model$cluster_level_results

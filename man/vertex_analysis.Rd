@@ -30,7 +30,7 @@ vertex_analysis(
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
-A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative  cluster maps.
+A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative cluster maps.
 }
 \description{
 Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps.
