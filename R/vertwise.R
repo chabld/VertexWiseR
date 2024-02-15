@@ -18,11 +18,15 @@
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
-#'
-#' @returns A list object containing the results at cluster level, the threshold t-test map, positive and negative results maps, positive and negative cluster maps. 
+#' @returns A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive and negative clusters maps, which can be plotted with plot_surf(). 
+#' 
 #' @examples
 #' model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+#' 
 #' model$cluster_level_results
+#' 
+#' plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos_clusters.png', title='Positive clusters', surface = 'inflated')
+#' 
 #' @importFrom reticulate import r_to_py
 #' @export
 
