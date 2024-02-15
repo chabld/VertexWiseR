@@ -410,16 +410,12 @@ TFCE.multicore=function(data,tail=tail,nthread)
 #'
 #'pos.results=TFCE.threshold(pos)
 #'pos.results$cluster_level_results
-#'plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
 #'
 #'neg.results=TFCE.threshold(neg)
 #'neg.results$cluster_level_result
-#'plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
 #'
 #'two.results=TFCE.threshold(two)
 #'two.results$cluster_level_results
-#'plotCT(two.results$thresholded_tstat_map, filename="two.png")
-#' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #'
 #' @export
 
