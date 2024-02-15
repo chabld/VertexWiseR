@@ -290,9 +290,11 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   ##generating positive and negative masks
   posmask=array(rep(0,NCOL(surf_data)))
   posmask[which(tstat>0)]=1
+  posask = t(posmask)
   
   negmask=array(rep(0,NCOL(surf_data)))
   negmask[which(tstat<0)]=1
+  negmask = t(negmask)
   
   #listing objects to return
   returnobj=list(cluster_results,tstat,posmask,negmask,pos_clusterIDmap,neg_clusterIDmap)
