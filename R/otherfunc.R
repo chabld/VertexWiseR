@@ -317,7 +317,7 @@ fs6_to_fs5=function(surf_data)
 plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T)
 {
   #format title for single row
-  if(is.null(nrow(surf_data))) 
+  if(nrow(surf_data)==1) 
   {
     title=list('left'=list(title))
     rows=1
@@ -346,12 +346,12 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   {
   ##cortical surface fplots
     #import python libraries
-    brainstat.surf_datasets=reticulate::import("brainstat.surf_datasets")  
+    brainstat.datasets=reticulate::import("brainstat.datasets")  
     brainspace.plotting=reticulate::import("brainspace.plotting")  
     
     #loading fsaverage surface
-    left=brainstat.surf_datasets$fetch_template_surface(template, join=F, layer=surface)[1]
-    right=brainstat.surf_datasets$fetch_template_surface(template, join=F, layer=surface)[2]
+    left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
+    right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
     
     surf_plot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(surf_data),cmap=cmap, 
                                                 size=reticulate::tuple(as.integer(c(1920,rows*400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
