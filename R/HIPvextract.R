@@ -16,6 +16,7 @@
 hip.extract=function(sdirpath, filename, measure="thickness", subj_ID = T)
 {
   Sys.setenv(SUBJECTS_DIR=sdirpath)
+
   lh.filelist=list.files(pattern=paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""), recursive=T)
   rh.filelist=gsub(paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
                    paste("_hemi-R_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
