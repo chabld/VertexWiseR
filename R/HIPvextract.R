@@ -1,7 +1,7 @@
 #' @title HIPvextract
 #'
 #' @description Extracts hippocampal vertex-wise surface-based measures for each subject in the hippunfold subjects directory, and stores it into a single matrix.
-#' @details The function runs system shell commands that will produce in the set subjects directory: 1) a sorted list of subjects "sublist.txt"; 2) a link file to the selected surface fsaverage template. 3) left and right hemisphere .mgh maps outputted by FreeSurfer's mris_preproc.
+#' @details The function searches for the hippocampal surface data by listing out files with certain suffixes, and then read these files and save both the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix. 
 #'
 #' @param sdirpath A string object containing the path to the hipunfold subjects directory.
 #' @param filename A string object containing the desired name of the output RDS file.
@@ -11,12 +11,13 @@
 #' @returns A .rds file with a list containing the list of subject IDs (first element) and a surface data matrix object (second element), or a data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
 #' @examples
 #' HIPvextract(sdirpath = "./", filename = "hip_data.RDS", measure = "thickness") 
+#' @importFrom gifti readgii
 #' @export
 
 hip.extract=function(sdirpath, filename, measure="thickness", subj_ID = T)
 {
   Sys.setenv(SUBJECTS_DIR=sdirpath)
-
+  ## get filelists and subject lists
   lh.filelist=list.files(pattern=paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""), recursive=T)
   rh.filelist=gsub(paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
                    paste("_hemi-R_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
@@ -25,8 +26,9 @@ hip.extract=function(sdirpath, filename, measure="thickness", subj_ID = T)
                "",
                basename(lh.filelist))
 
+  ##read data and save data for each subject as rows in a data matrix
   hip_dat=matrix(NA, nrow=NROW(sublist), ncol=14524)
-
+  
   for (sub in 1:NROW(sublist))
   {
     lh=gifti::readgii(lh.filelist[sub])
@@ -34,6 +36,7 @@ hip.extract=function(sdirpath, filename, measure="thickness", subj_ID = T)
     hip_dat[sub,]=c(lh$data$normal,rh$data$normal)
   }
 
+  ##output file depending on subj_ID==T
   hip_dat=hip_dat[order(sublist),]
     if(subj_ID==T)
     {
