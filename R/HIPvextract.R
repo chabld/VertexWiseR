@@ -14,9 +14,10 @@
 #' @importFrom gifti readgii
 #' @export
 
-hip.extract=function(sdirpath, filename, measure="thickness", subj_ID = T)
+HIPvextract=function(sdirpath, filename, measure="thickness", subj_ID = T)
 {
-  Sys.setenv(SUBJECTS_DIR=sdirpath)
+  setwd(sdirpath)
+  
   ## get filelists and subject lists
   lh.filelist=list.files(pattern=paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""), recursive=T)
   rh.filelist=gsub(paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
