@@ -66,7 +66,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
   ##load other vertex-wise functions (not needed when package is in library)
-  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
+  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.R?raw=TRUE")
   
   ##checks
     #check if nrow is consistent for model and surf_data
@@ -144,7 +144,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       }      
     }
     
-    #check length of CT data and load the appropriate fsaverage files
+    #check length of surface data and load the appropriate fsaverage files
     n_vert=ncol(surf_data)
     if(n_vert==20484)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())}
     else if (n_vert==81924)  {load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())}
@@ -217,6 +217,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   unregister_dopar()
   
   cl=parallel::makeCluster(nthread)
+  parallel::clusterExport(cl, c("TFCE","extract.t","getClusters","edgelist"))
   doParallel::registerDoParallel(cl)
   `%dopar%` = foreach::`%dopar%`
   
@@ -426,7 +427,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   #check if number of permutations is adequate
   if(nperm<1/p)  {warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))}
   
-  #check which template is used and load appropriate tempalte files
+  #check which template is used and load appropriate template files
   n_vert=length(TFCE.output$t_stat)
   if(n_vert==20484) 
   {    
