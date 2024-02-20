@@ -131,7 +131,7 @@ getClusters=function(surf_data)
   if(length(edgelist1)>2) #if at least 2 edges are identified
   {
     #extracting cluster-related info from list of non-zero edges
-    com=igraph::components(igraph::graph.data.frame(edgelist1, directed = F))
+    com=igraph::components(igraph::graph_from_data_frame(edgelist1, directed = F))
     clust.size=com$csize
     
     #cluster mappings
