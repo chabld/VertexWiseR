@@ -224,7 +224,7 @@ fs6_to_fs5=function(data)
 plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits, colorbar=T)
 {
   #format title for single row
-  if(nrow(data)==1) 
+  if(is.null(nrow(data))) 
   {
     title=list('left'=list(title))
     rows=1
