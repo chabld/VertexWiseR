@@ -317,7 +317,7 @@ fs6_to_fs5=function(surf_data)
 plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T)
 {
   #format title for single row
-  if(nrow(surf_data)==1) 
+  if(is.null(nrow(surf_data)))
   {
     title=list('left'=list(title))
     rows=1
