@@ -31,5 +31,6 @@ Imports:
     doSNOW,
     foreach,
     freesurferformats,
+    gifti,
     igraph,
     reticulate
