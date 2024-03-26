@@ -256,7 +256,8 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     
     #activate parallel processing
     unregister_dopar = function() {
-      env = foreach:::.foreachGlobals
+      .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); 
+      env =  .foreachGlobals;
       rm(list=ls(name=env), pos=env)
     }
     unregister_dopar()
