@@ -13,6 +13,7 @@
 #' @examples
 #' SURFvextract(sdirpath = "myfreesurfer_output_path/subjects_directory/", filename = "CTv", template="fsaverage5", measure = "curv") 
 #' @importFrom freesurferformats read.fs.mgh
+#' @importFrom utils read.delim
 #' @export
 
 SURFvextract=function(sdirpath, filename, template='fsaverage5', measure = 'thickness', subj_ID = T) 
@@ -30,7 +31,7 @@ system(paste0("ln -s $FREESURFER_HOME/subjects/", template, " -t $SUBJECTS_DIR \
 #Reads mgh files to stores and assign the thickness values to each subject in a matrix object usable by VertexWiseR. Appends a column with the subject IDs if required by the user.
 if (subj_ID == T) 
 {
-sublist = read.delim(paste0(sdirpath,"/sublist.txt"));
+sublist = utils::read.delim(paste0(sdirpath,"/sublist.txt"));
 SURFdata= t(rbind(drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"lh.mgh"))),drop(freesurferformats::read.fs.mgh(paste0(sdirpath,"rh.mgh")))));
 SURFdata=list(sublist,SURFdata); 
 } else {
