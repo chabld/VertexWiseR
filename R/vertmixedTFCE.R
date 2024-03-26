@@ -65,7 +65,6 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     if(missing("random"))  {stop("random variable is missing")}
     else 
     { #recoding subject variable
-      random=dat_beh$SUB_ID
       random=match(random,unique(random))
     }
     
@@ -79,7 +78,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     }  
     #check if nrow is consistent for model and surf_data
     if(NROW(surf_data)!=NROW(model))  {stop(paste("The number of rows for surf_data (",NROW(surf_data),") and model (",NROW(model),") are not the same",sep=""))}
-    if(length(random)!=NROW(model))  {stop(paste("The number of rows for random (",NROW(surf_data),") and model (",NROW(model),") are not the same",sep=""))}
+    if(length(random)!=NROW(model))  {stop(paste("The number of rows for random (",length(random),") and model (",NROW(model),") are not the same",sep=""))}
   
     #incomplete data check
     idxF=which(complete.cases(model)==F)
