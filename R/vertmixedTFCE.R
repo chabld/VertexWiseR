@@ -133,7 +133,8 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
             recode[model[,column]==unique(model[,column])[2]]=1
             model[,column]=recode
             contrast=model[,colno]
-          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+          } else if(length(unique(model[,column]))>2)    {stop(paste("The categorical variable '",colnames(model)[column],"' contains more than 2 levels, please code it into binarized dummy variables. 
+If it is your random variable and it is non-binarizable, do not include it in the 'model' object.",sep=""))}
         }      
       }
     } else
