@@ -398,7 +398,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
 #'
 #' @description Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output 
 #' 
-#' @param TFCE.outout An object containing the output from TFCE.vertex_analysis()
+#' @param TFCE.output An object containing the output from TFCE.vertex_analysis()
 #' @param p A numeric object stating whether the p-value at which to threshold the results (Default is 0.05)
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)
 #' @param k Cluster-forming threshold (Default is 20)
