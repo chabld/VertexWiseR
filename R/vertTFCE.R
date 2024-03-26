@@ -211,7 +211,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   
   #activate parallel processing
   unregister_dopar = function() {
-    env = foreach:::.foreachGlobals
+    .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
     rm(list=ls(name=env), pos=env)
   }
   unregister_dopar()
@@ -344,7 +344,8 @@ TFCE.multicore=function(data,tail=tail,nthread)
     
     #activate parallel processing
     unregister_dopar = function() {
-      env = foreach:::.foreachGlobals
+      .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); 
+      env =  .foreachGlobals;
       rm(list=ls(name=env), pos=env)
     }
     unregister_dopar()
