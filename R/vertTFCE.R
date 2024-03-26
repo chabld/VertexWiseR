@@ -42,6 +42,8 @@
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
+#' @importFrom stats .lm.fit complete.cases cor
+#' @importFrom utils download.file install.packages installed.packages setTxtProgressBar txtProgressBar
 #' @export
 
 
