@@ -219,8 +219,14 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   unregister_dopar()
   
   cl=parallel::makeCluster(nthread)
-  parallel::clusterExport(cl, c("TFCE","extract.t","getClusters","edgelist"))
+  
+  #The functions from otherfunc.r below are not exported for users in library(VertexWiseR). For vertTFCE to use them, They are manually exported below beforehand:
+  TFCE = utils::getFromNamespace("TFCE", "VertexWiseR")
+  extract.t = utils::getFromNamespace("extract.t", "VertexWiseR")
+  getClusters = utils::getFromNamespace("getClusters", "VertexWiseR")
+  
   doParallel::registerDoParallel(cl)
+  parallel::clusterExport(cl, c("edgelist"))
   `%dopar%` = foreach::`%dopar%`
   
   #progress bar
@@ -352,8 +358,11 @@ TFCE.multicore=function(data,tail=tail,nthread)
     }
     unregister_dopar()
     
+    #The functions from otherfunc.r below are not exported for users in library(VertexWiseR). For vertTFCE to use them, They are manually exported below beforehand:
+    getClusters = utils::getFromNamespace("getClusters", "VertexWiseR")
+    
     cl=parallel::makeCluster(nthread)
-    parallel::clusterExport(cl, c("getClusters","edgelist"))
+    parallel::clusterExport(cl, c("edgelist"))
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
     
