@@ -38,12 +38,12 @@
 #' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #'
 #' @importFrom reticulate import r_to_py
-#' @importFrom foreach foreach 
+#' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom stats .lm.fit complete.cases cor
-#' @importFrom utils download.file install.packages installed.packages setTxtProgressBar txtProgressBar
+#' @importFrom utils download.file install.packages installed.packages setTxtProgressBar txtProgressBar getFromNamespace
 #' @export
 
 
@@ -353,6 +353,7 @@ TFCE.multicore=function(data,tail=tail,nthread)
     unregister_dopar()
     
     cl=parallel::makeCluster(nthread)
+    parallel::clusterExport(cl, c("getClusters","edgelist"))
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
     
