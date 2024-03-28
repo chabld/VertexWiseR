@@ -301,7 +301,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   negmask = t(negmask)
   
   #listing objects to return
-  returnobj=list(cluster_results,tstat,posmask,negmask,pos_clusterIDmap,neg_clusterIDmap)
+  returnobj=(list(cluster_results,as.numeric(tstat),as.numeric(posmask),as.numeric(negmask),as.numeric(pos_clusterIDmap),as.numeric(neg_clusterIDmap)))
   names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
   return(returnobj)
 }
