@@ -111,6 +111,7 @@ extract.t=function(mod,row)
 ############################################################################################################################
 ############################################################################################################################
 #' @importFrom igraph graph_from_data_frame
+#' @importFrom igraph components
 
 ##find clusters using edgelist
 getClusters=function(surf_data)
