@@ -18,7 +18,7 @@
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
-#' @returns A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive and negative clusters maps, which can be plotted with plot_surf(). 
+#' @returns A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive, negative and bidirectional clusters maps, which can be plotted with plot_surf(). 
 #' 
 #' @examples
 #' model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
@@ -26,6 +26,8 @@
 #' model$cluster_level_results
 #' 
 #' plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos_clusters.png', title='Positive clusters', surface = 'inflated')
+#'
+#' plot_surf(surf_data = model$bi_clusterIDmap, filename = 'bi_clusters.png', title='Significant clusters', surface = 'inflated', cmap = "seismic")
 #' 
 #' @importFrom reticulate import r_to_py
 #' @export
@@ -286,6 +288,13 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   cluster_results=list(cluster_pos,cluster_neg)
   names(cluster_results)=c("Positive contrast","Negative contrast")
   
+  ##combining positive and negative cluster maps
+  posc = as.matrix(as.numeric(pos_clusterIDmap))
+  negc = as.matrix(as.numeric(neg_clusterIDmap))*-1
+  posc[negc!=0,] <- negc[negc!=0,]
+  posc[posc==0 & negc==0,] <- NA
+  bi_clusterIDmap = posc
+  
   ##generating thresholded t-stat vector (for plotting)
   tstat[intersect(which(neg_clusterIDmap==0),which(pos_clusterIDmap==0))]=NA
   tstat[is.na(tstat)]=0
@@ -301,7 +310,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   negmask = t(negmask)
   
   #listing objects to return
-  returnobj=(list(cluster_results,as.numeric(tstat),as.numeric(posmask),as.numeric(negmask),as.numeric(pos_clusterIDmap),as.numeric(neg_clusterIDmap)))
-  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
+  returnobj=(list(cluster_results,as.numeric(tstat),as.numeric(posmask),as.numeric(negmask),as.numeric(pos_clusterIDmap),as.numeric(neg_clusterIDmap), as.numeric(bi_clusterIDmap)))
+  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap", "bi_clusterIDmap")
   return(returnobj)
 }
