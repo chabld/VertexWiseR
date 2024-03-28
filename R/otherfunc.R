@@ -306,7 +306,7 @@ fs6_to_fs5=function(surf_data)
 #' @param title A string object containing the title wanted in the plot. Default is none. 
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
-#' @param limits Combined pair of numeric vectors composed of the lower limit and the upper limit value of the surface data. Default is min and max values across all the vertices. 
+#' @param limits Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data. 
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
@@ -342,8 +342,8 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   }
   
   #setting limits
-  if(missing("limits")) {limits=range(surf_data,na.rm = T)}
-  limits=reticulate::tuple(limits[1],limits[2])
+  if(missing("limits")) {limits=NULL}
+  else {limits=reticulate::tuple(limits[1],limits[2])}
   
   if(n_vert%%14524!=0)
   {
