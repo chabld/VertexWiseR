@@ -523,7 +523,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   t_stat.thresholdedPK=TFCE.output$t_stat*(pos.mask+neg.mask)
   
   returnobj=list(cluster_level_results, t_stat.thresholdedPK, pos.clustermap, neg.clustermap)  
-  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_clustermap","neg_clustermap")
+  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_clusterIDmap","neg_clusterIDmap")
   returnobj$cluster_level_results
   
   return(returnobj)
