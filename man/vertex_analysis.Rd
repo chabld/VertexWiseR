@@ -30,7 +30,7 @@ vertex_analysis(
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
-A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive and negative clusters maps, which can be plotted with plot_surf().
+A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive, negative and bidirectional clusters maps, which can be plotted with plot_surf().
 }
 \description{
 Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps.
@@ -44,5 +44,7 @@ model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = da
 model$cluster_level_results
 
 plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos_clusters.png', title='Positive clusters', surface = 'inflated')
+
+plot_surf(surf_data = model$bi_clusterIDmap, filename = 'bi_clusters.png', title='Significant clusters', surface = 'inflated', cmap = "seismic")
 
 }

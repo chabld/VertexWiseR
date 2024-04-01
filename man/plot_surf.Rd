@@ -25,7 +25,7 @@ plot_surf(
 
 \item{cmap}{A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}.}
 
-\item{limits}{Combined pair of numeric vectors composed of the lower limit and the upper limit value of the surface data. Default is min and max values across all the vertices.}
+\item{limits}{Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data.}
 
 \item{colorbar}{A logical object stating whether to include a color bar in the plot or not (default is TRUE).}
 }
