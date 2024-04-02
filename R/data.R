@@ -1,9 +1,9 @@
 #' Atlas parcellations of fsaverage5
 #'
-#' A list containing two data frames, [[2]] listing each available atlas and their corresponding labels (1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148), and [[1]] listing vertex coordinates for each atlas label in fsaverage5 template space. 
+#' A list containing two data frames, 1) listing vertex coordinates for each atlas label in fsaverage5 template space, and 2) listing each available atlas and their corresponding labels (1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148). 
 #'
 #' @format ## `ROImap_fs5`
-#' A list object with two data frame objects: [[1]]  [[2]] () 
+#' A list object with two data frame objects: () 
 #' \describe{
 #'   \item{vertices}{data frame with 20484 rows (vertices), 5 columns (atlases)}
 #'   \item{atlases}{data frame with 360 rows (labels, not all are filled depending on atlas), 5 columns (atlases)}
@@ -12,10 +12,10 @@
 
 #' Atlas parcellations of fsaverage6
 #'
-#' A list containing two data frames, [[2]] listing each available atlas and their corresponding labels (1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148), and [[1]] listing vertex coordinates for each atlas label in fsaverage6 template space. 
+#' A list containing two data frames, 1) listing vertex coordinates for each atlas label in fsaverage6 template space, and  2) listing each available atlas and their corresponding labels (1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148). 
 #'
 #' @format ## `ROImap_fs6`
-#' A list object with two data frame objects: [[1]]  [[2]] () 
+#' A list object with two data frame objects: () 
 #' \describe{
 #'   \item{vertices}{data frame with 81924 rows (vertices), 5 columns (atlases)}
 #'   \item{atlases}{data frame with 360 rows (labels, not all are filled depending on atlas), 5 columns (atlases)}
@@ -59,10 +59,10 @@
 
 #' Atlas parcellations of the hippocampus
 #'
-#' A list containing [[2]] a data frame listing 10 bilateral hippocampal subfields and corresponding labels, [[1]] a matrix  listing vertex coordinates for each template hippocampal surface  
+#' A list containing 1) a matrix  listing vertex coordinates for each template hippocampal surface, and  2) a data frame listing 10 bilateral hippocampal subfields and corresponding labels. 
 #'
 #' @format ## `ROImap_HIP`
-#' A list object with two data frame objects: [[1]]  [[2]] () 
+#' A list object with two data frame objects: () 
 #' \describe{
 #'   \item{vertices}{array of 14524 numeric vectors (vertices)}
 #'   \item{atlases}{data frame with 10 rows listing names of left and right hippocampal subfields}
@@ -101,7 +101,7 @@
 
 #' Hippocampus surface template
 #'
-#' @format ## A list object with two data frame objects: [[1]]  [[2]]  [[3]] () 
+#' @format ## A list object with two data frame objects: () 
 #' \describe{
 #'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
 #'   \item{vertices}{data frame with 14266 rows (vertices), 3 columns (atlases)}
