@@ -64,22 +64,31 @@ perm_within_between=function(random)
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
 smooth_surf=function(surf_data, FWHM)
 {
+  
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
   
   n_vert=ncol(surf_data)
   ##select template, set its FWHM parameter and load its edgelist file
+  
+  #create function to rename RDA edgelist objects to "edgelist"
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  
   if(n_vert==20484) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
     FWHM=FWHM/3.5 #converting mm to mesh units
   } else if(n_vert==81924) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
     FWHM=FWHM/2 #converting mm to mesh units
   } else if(n_vert==14524) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     FWHM=FWHM/0.5 #converting m to mesh units
   } else {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
@@ -179,13 +188,27 @@ fs5_to_atlas=function(surf_data,atlas)
   #check length of vector
   if(length(surf_data)%%20484!=0) {stop("Length of surf_data is not a multiple of 20484")}
   
+  #create function to rename RDA ROImap_fs5 to ROImap
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  
   #load atlas mapping surf_data
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+  ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
   
   #init variables
   nregions=max(ROImap[[1]][,atlas])
   surf_data[is.na(surf_data)]=0
-
+  
+  #create function to rename RDA roimaps objects to "ROImap"
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  
   #mapping fsaverage5 space vertice to atlas regions if surf_data is a 1x20484 vector
   if(length(surf_data)==20484) 
   {
@@ -219,8 +242,16 @@ fs5_to_atlas=function(surf_data,atlas)
 
 atlas_to_fs5=function(surf_data,atlas) 
   {
+  
+    #create function to rename RDA roimaps objects to "ROImap"
+    loadRData <- function(fileName){
+      #loads and rename rda file
+      load(fileName)
+      get(ls()[ls() != "fileName"])
+    }
+  
     #load atlas mapping surf_data
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
   
     #init variables
     nregions=max(ROImap[[1]][,atlas])

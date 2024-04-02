@@ -132,16 +132,23 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       }      
     }
     
+    #create function to rename RDA roimaps objects to "ROImap"
+    loadRData <- function(fileName){
+      #loads and rename rda file
+      load(fileName)
+      get(ls()[ls() != "fileName"])
+    }
+    
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(surf_data)
     if(n_vert==20484)
     {
       template="fsaverage5"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+     ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
     } else if (n_vert==81924)
     {
       template="fsaverage6"
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     } else if (n_vert==14524)
     {
       if(file.exists("hip_template.fs")==F)
@@ -151,7 +158,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       } 
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
+      ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
     } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   ##smoothing
