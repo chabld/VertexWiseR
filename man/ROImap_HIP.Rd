@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{ROImap_HIP}}{
 
-A list object with two data frame objects: [\link{1}]  [\link{2}] ()
+A list object with two data frame objects: ()
 \describe{
 \item{vertices}{array of 14524 numeric vectors (vertices)}
 \item{atlases}{data frame with 10 rows listing names of left and right hippocampal subfields}
@@ -18,6 +18,6 @@ A list object with two data frame objects: [\link{1}]  [\link{2}] ()
 ROImap_HIP
 }
 \description{
-A list containing [\link{2}] a data frame listing 10 bilateral hippocampal subfields and corresponding labels, [\link{1}] a matrix  listing vertex coordinates for each template hippocampal surface
+A list containing 1) a matrix  listing vertex coordinates for each template hippocampal surface, and  2) a data frame listing 10 bilateral hippocampal subfields and corresponding labels.
 }
 \keyword{datasets}
