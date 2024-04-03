@@ -129,7 +129,25 @@ getClusters=function(surf_data)
   
   #listing out non-zero vertices
   vert=which(surf_data!=0)
-
+  
+  #create function to rename RDA ROImap_fs5 to ROImap
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  #Solves the "no visible binding for global variable" issue
+  #by reloading the edgelist
+  if(n_vert==20484)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+  assign("edgelist", edgelist, envir = .GlobalEnv)
+  }
+  else if (n_vert==81924)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+  assign("edgelist", edgelist, envir = .GlobalEnv)
+  }
+  else if (n_vert==14524)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+  assign("edgelist", edgelist, envir = .GlobalEnv)
+  }
+  
   #matching non-zero vertices with adjacency matrices to obtain list of edges connecting between the non-zero vertices
   edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
   if(length(edgelist0)>2)  {edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]} 
@@ -395,9 +413,9 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   {
   ##hippocampal plots
     #import python libraries and hippocampal template data
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/extdata/hip_points_cells.rdata?raw=TRUE"))
-    
+    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE", envir = globalenv())
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"), envir = globalenv())
+
     #reshaping surf_data into a 7262 x 2 x N array
     if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} #if N=1
     else  

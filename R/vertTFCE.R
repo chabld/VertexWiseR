@@ -154,11 +154,24 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       get(ls()[ls() != "fileName"])
     }
     
+    #create function to rename RDA edgelist rda files to edgelist
+    loadRData <- function(fileName){
+      #loads and rename rda file
+      load(fileName)
+      get(ls()[ls() != "fileName"])
+    }
+    
     #check length of surface data and load the appropriate fsaverage files
     n_vert=ncol(surf_data)
-    if(n_vert==20484)  {edgelist <- get(load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv()))}
-    else if (n_vert==81924)  {edgelist <- get(load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv()))}
-    else if (n_vert==14524)  {edgelist <- get(load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv()))}
+    if(n_vert==20484)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = .GlobalEnv)
+    }
+    else if (n_vert==81924)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = .GlobalEnv)
+    }
+    else if (n_vert==14524)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = .GlobalEnv)
+    }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
     
     #check for collinearity
@@ -256,6 +269,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       mod.permuted=.lm.fit(y=surf_data[permseq[,perm],],x=data.matrix(cbind(1,model)))
       tmap=extract.t(mod.permuted,colno+1)
       
+      . <- model.permuted <- NULL #visible binding needed if commented out 
       remove(mod.permuted,model.permuted)
       return(max(abs(suppressWarnings(TFCE(data = tmap,tail = tail)))))
     }
@@ -373,6 +387,10 @@ TFCE.multicore=function(data,tail=tail,nthread)
     parallel::clusterExport(cl, c("edgelist"))
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
+    
+    #Solves the "no visible binding for global variable" issue
+    . <- thresh.no <- NULL 
+    assign("thresh.no", thresh.no, envir = .GlobalEnv)
     
     #parallel loop across different score_threshs values for TFCE estimation
     tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","edgelist"))  %dopar%
