@@ -177,7 +177,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
       if(file.exists("hip_template.fs")==F)
       {
         cat("\nhip_template.fs is not detected in the current working directory. The hippocampus surface template will be downloaded\n")
-        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/hip_template.fs",destfile ="hip_template.fs",mode = "wb")
+        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/hip_template.fs",destfile ="hip_template.fs",mode = "wb")
       } 
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("hip_template.fs")

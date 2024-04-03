@@ -396,7 +396,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   ##hippocampal plots
     #import python libraries and hippocampal template data
     reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/extdata/hip_points_cells.rdata?raw=TRUE"))
     
     #reshaping surf_data into a 7262 x 2 x N array
     if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} #if N=1
@@ -504,7 +504,7 @@ decode_surf_data=function(surf_data,contrast="positive")
   if(file.exists("neurosynth_dataset.pkl.gz")==F)
   {
     cat("\neurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
-    download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/data/neurosynth_dataset.pkl.gz",destfile = "neurosynth_dataset.pkl.gz")
+    download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = "neurosynth_dataset.pkl.gz")
   } 
   ##running the decoding procedure
   neurosynth_dset = nimare.dataset$dataset$load("neurosynth_dataset.pkl.gz")
