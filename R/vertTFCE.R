@@ -161,16 +161,19 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       get(ls()[ls() != "fileName"])
     }
     
-    #check length of surface data and load the appropriate fsaverage files
+    #make internal invironment to save edgelist
+    edgelistenv <- new.env()
+    
+    #check length of surface data and load the appropriate edgelist files
     n_vert=ncol(surf_data)
     if(n_vert==20484)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
-    assign("edgelist", edgelist, envir = .GlobalEnv)
+    assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==81924)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
-    assign("edgelist", edgelist, envir = .GlobalEnv)
+    assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==14524)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
-    assign("edgelist", edgelist, envir = .GlobalEnv)
+    assign("edgelist", edgelist, envir = edgelistenv)
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
     
@@ -220,7 +223,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   cat("Estimating unpermuted TFCE image...")
   
   tmap.orig=extract.t(mod,colno+1)
-  TFCE.orig=suppressWarnings(TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread))
+  TFCE.orig=suppressWarnings(TFCE.multicore(data = tmap.orig,tail = tail,nthread=nthread, envir=edgelistenv))
   remove(mod)
   
   end=Sys.time()
@@ -247,7 +250,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
   getClusters = utils::getFromNamespace("getClusters", "VertexWiseR")
   
   doParallel::registerDoParallel(cl)
-  parallel::clusterExport(cl, c("edgelist"))
+  parallel::clusterExport(cl, c("edgelist"), envir=edgelistenv)
   `%dopar%` = foreach::`%dopar%`
   
   #progress bar
@@ -345,7 +348,7 @@ TFCE=function(data,tail=tail)
 
 ##TFCE multicore— for estimating unpermuted TFCE statistics
 ##adapted from nilearn python library: https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8
-TFCE.multicore=function(data,tail=tail,nthread)
+TFCE.multicore=function(data,tail=tail,nthread,envir)
 {
   #selecting tail type
   if (tail==2) 
@@ -384,16 +387,17 @@ TFCE.multicore=function(data,tail=tail,nthread)
     getClusters = utils::getFromNamespace("getClusters", "VertexWiseR")
     
     cl=parallel::makeCluster(nthread)
-    parallel::clusterExport(cl, c("edgelist"))
+    parallel::clusterExport(cl, c("edgelist"), envir=envir)
     doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
     
     #Solves the "no visible binding for global variable" issue
     . <- thresh.no <- NULL 
-    assign("thresh.no", thresh.no, envir = .GlobalEnv)
+    internalenv <- new.env()
+    assign("thresh.no", thresh.no, envir = internalenv)
     
     #parallel loop across different score_threshs values for TFCE estimation
-    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind", .export=c("getClusters","edgelist"))  %dopar%
+    tfce=foreach::foreach(thresh.no=1:length(score_threshs), .combine="rbind")  %dopar%
       {
         temp_data[temp_data < score_threshs[thresh.no]] = 0
         if(length(which(temp_data>0))>1) #if less than 2 vertices, skip the following steps
@@ -473,26 +477,36 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     get(ls()[ls() != "fileName"])
   }
   
+  internalenv <- new.env()
   #check which template is used and load appropriate template files
   n_vert=length(TFCE.output$t_stat)
   if(n_vert==20484) 
   {    
     edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = internalenv)
     ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    assign("ROImap", ROImap, envir = internalenv)
     MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+    assign("MNImap", MNImap, envir = internalenv)
   }
   else if (n_vert==81924) 
   {
     edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = internalenv)
     ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    assign("ROImap", ROImap, envir = internalenv)
     MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
+    assign("MNImap", MNImap, envir = internalenv)
   } 
   else if (n_vert==14524) 
   {
     ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
     ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
+    assign("ROImap", ROImap, envir = internalenv)
     edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    assign("edgelist", edgelist, envir = internalenv)
     MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_hip.rdata?raw=TRUE"))
+    assign("MNImap", MNImap, envir = internalenv)
   } 
   ##generating p map
   tfce.p=rep(NA,n_vert)
@@ -515,13 +529,20 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(which(pos.t_stat.thresholdedP!=0))>1) #skip if no clusters detected
     {
-      pos.clusters0=getClusters(pos.t_stat.thresholdedP) ## 1st getClusters() to identify all clusters with no. vertices > 1
+      #function to make sure edgelist is passed to getcluster
+      with_env <- function(f, e=internalenv) {
+        stopifnot(is.function(f))
+        environment(f) <- e
+        f
+      }
+      
+      pos.clusters0=with_env(getClusters)(pos.t_stat.thresholdedP) ## 1st getClusters() to identify all clusters with no. vertices > 1
       #applying k thresholding
       pos.clustID.remove=which(pos.clusters0[[2]]<k)
       pos.clusters0[[1]][which(!is.na(match(pos.clusters0[[1]],pos.clustID.remove)))]=NA
       
       #generating mask
-      pos.clusters=getClusters(pos.clusters0[[1]]) ## 2nd getClusters() to identify all clusters from the k-thresholded clustermap
+      pos.clusters=with_env(getClusters)(pos.clusters0[[1]]) ## 2nd getClusters() to identify all clusters from the k-thresholded clustermap
       pos.clusters[[1]][is.na(pos.clusters[[1]])]=0
       pos.mask=rep(0,n_vert)
       ROImap[[1]][, atlas]
@@ -583,13 +604,13 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(which(neg.t_stat.thresholdedP!=0))>1) #skip if no clusters detected
     {
-      neg.clusters0=getClusters(neg.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
+      neg.clusters0=with_env(getClusters)(neg.t_stat.thresholdedP) ## 1st getCluster() to identify all clusters with no. vertices > 1
       #applying k thresholding
       neg.clustID.remove=which(neg.clusters0[[2]]<k)
       neg.clusters0[[1]][which(!is.na(match(neg.clusters0[[1]],neg.clustID.remove)))]=NA
       
       #generating mask
-      neg.clusters=getClusters(neg.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
+      neg.clusters=with_env(getClusters)(neg.clusters0[[1]]) ## 2nd getCluster() to identify all clusters from the k-thresholded clustermap
       neg.clusters[[1]][is.na(neg.clusters[[1]])]=0
       neg.mask=rep(0,n_vert)
       

@@ -65,6 +65,12 @@ perm_within_between=function(random)
 smooth_surf=function(surf_data, FWHM)
 {
   
+  #Solves the "no visible binding for global variable" issue
+  . <- mesh_smooth <- NULL 
+  internalenv <- new.env()
+  assign("mesh_smooth", mesh_smooth, envir = internalenv)
+
+  
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
   
@@ -129,24 +135,6 @@ getClusters=function(surf_data)
   
   #listing out non-zero vertices
   vert=which(surf_data!=0)
-  
-  #create function to rename RDA ROImap_fs5 to ROImap
-  loadRData <- function(fileName){
-    #loads and rename rda file
-    load(fileName)
-    get(ls()[ls() != "fileName"])
-  }
-  #Solves the "no visible binding for global variable" issue
-  #by reloading the edgelist
-  if(n_vert==20484)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
-  assign("edgelist", edgelist, envir = .GlobalEnv)
-  }
-  else if (n_vert==81924)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
-  assign("edgelist", edgelist, envir = .GlobalEnv)
-  }
-  else if (n_vert==14524)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
-  assign("edgelist", edgelist, envir = .GlobalEnv)
-  }
   
   #matching non-zero vertices with adjacency matrices to obtain list of edges connecting between the non-zero vertices
   edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
@@ -411,10 +399,18 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
+    
+    #Solves the "no visible binding for global variable" issue
+    . <- surfplot_canonical_foldunfold <- hip_points_cells <- NULL 
+    internalenv <- new.env()
+    assign("surfplot_canonical_foldunfold", surfplot_canonical_foldunfold, envir = internalenv)
+    assign("hip_points_cells ", hip_points_cells, envir = internalenv)
+    
+    
   ##hippocampal plots
     #import python libraries and hippocampal template data
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE", envir = globalenv())
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"), envir = globalenv())
+    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
 
     #reshaping surf_data into a 7262 x 2 x N array
     if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} #if N=1
