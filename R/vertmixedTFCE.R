@@ -43,18 +43,18 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
   #converts the columns to regular data.frame column types
   if ('tbl_df' %in% class(contrast) == TRUE) {
-    if (class(contrast[[1]])=="character") {contrast = contrast[[1]]
+    if (inherits(contrast[[1]],"character")==T) {contrast = contrast[[1]]
     } else {contrast = as.numeric(contrast[[1]])}
   } 
   if ('tbl_df' %in% class(model) == TRUE) {
     model=as.data.frame(model)
     if (NCOL(model)==1) {model = model[[1]]
     } else { for (c in 1:NCOL(model)) { 
-      if(class(model[,c])=="double") {model[,c] = as.numeric(model[,c])}
+      if(inherits(model[,c],"double")==T) {model[,c] = as.numeric(model[,c])}
     }  }
   }
   
-  if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
+  if(inherits(contrast,"integer")==T) {contrast=as.numeric(contrast)}
   
   ##load other TFCE and vertex-wise functions (not needed when package is in library)
   #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/vertTFCE.r?raw=TRUE")
@@ -97,7 +97,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
       {
         if(colno==(NCOL(model)+1))  {warning("contrast is not contained within model")}
         
-        if (class(contrast)=="character") 
+        if (inherits(contrast,"character")==T) 
         {
           if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
         } else 
@@ -107,7 +107,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
       }
     }  else
     {
-      if (class(contrast)=="character") 
+      if (inherits(contrast,"character")==T) 
       {
         if(identical(contrast,model))  {colno=1} 
         else  {warning("contrast is not contained within model")}
@@ -123,7 +123,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     {
       for (column in 1:NCOL(model))
       {
-        if(class(model[,column])=="character") 
+        if(inherits(model[,column],"character")==T)
         {
           if(length(unique(model[,column]))==2)
           {
@@ -139,7 +139,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
       }
     } else
     {
-      if (class(model)=="character") 
+      if (inherits(model,"character")==T) 
       {
         if(length(unique(model))==2)
         {
