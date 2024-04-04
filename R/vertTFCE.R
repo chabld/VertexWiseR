@@ -477,7 +477,16 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     get(ls()[ls() != "fileName"])
   }
   
+  #creating loca env
   internalenv <- new.env()
+  
+  #function to make sure edgelist is passed to getcluster
+  with_env <- function(f, e=internalenv) {
+    stopifnot(is.function(f))
+    environment(f) <- e
+    f
+  }
+  
   #check which template is used and load appropriate template files
   n_vert=length(TFCE.output$t_stat)
   if(n_vert==20484) 
@@ -529,12 +538,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     
     if(length(which(pos.t_stat.thresholdedP!=0))>1) #skip if no clusters detected
     {
-      #function to make sure edgelist is passed to getcluster
-      with_env <- function(f, e=internalenv) {
-        stopifnot(is.function(f))
-        environment(f) <- e
-        f
-      }
       
       pos.clusters0=with_env(getClusters)(pos.t_stat.thresholdedP) ## 1st getClusters() to identify all clusters with no. vertices > 1
       #applying k thresholding

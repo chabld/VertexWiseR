@@ -136,6 +136,9 @@ getClusters=function(surf_data)
   #listing out non-zero vertices
   vert=which(surf_data!=0)
   
+  #visible binding for edgelist object
+  edgelist <- get("edgelist")
+  
   #matching non-zero vertices with adjacency matrices to obtain list of edges connecting between the non-zero vertices
   edgelist0=edgelist[!is.na(match(edgelist[,1],vert)),]
   if(length(edgelist0)>2)  {edgelist1=edgelist0[!is.na(match(edgelist0[,2],vert)),]} 
