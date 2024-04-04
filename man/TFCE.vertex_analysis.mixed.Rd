@@ -45,7 +45,7 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.
 }
 \examples{
-model=TFCE.vertex_analysis.mixed(model = dat_beh[,c(2:4)],contrast = dat_beh$AGE_AT_SCAN,random = dat_beh$SUB_ID,surf_data = dat_CT,nperm = 100,tail = 2, nthread = 10, smooth_FWHM = 0)
+model=TFCE.vertex_analysis.mixed(model,contrast,random,surf_data,nperm = 100,tail = 2, nthread = 10)
 
 results=TFCE.threshold(model)
 results$cluster_level_results

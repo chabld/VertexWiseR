@@ -22,9 +22,9 @@ A list object containing the results at cluster level, the threshold t-test map,
 Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output
 }
 \examples{
-pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
-neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
+neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
+two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
 
 pos.results=TFCE.threshold(pos)
 pos.results$cluster_level_results

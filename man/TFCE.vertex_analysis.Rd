@@ -39,9 +39,9 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.
 }
 \examples{
-pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
-neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
+neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
+two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
 
 pos.results=TFCE.threshold(pos)
 pos.results$cluster_level_results
@@ -54,6 +54,5 @@ plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
 two.results=TFCE.threshold(two)
 two.results$cluster_level_results
 plotCT(two.results$thresholded_tstat_map, filename="two.png")
-vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 
 }

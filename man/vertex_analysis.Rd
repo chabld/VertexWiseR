@@ -39,12 +39,12 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
 }
 \examples{
-model=vertex_analysis(model = dat_beh[,2:3], contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
+model=vertex_analysis(model, contrast, random, surf_data, atlas=1)
 
 model$cluster_level_results
 
-plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos_clusters.png', title='Positive clusters', surface = 'inflated')
+plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos.png', title='Positive clusters')
 
-plot_surf(surf_data = model$bi_clusterIDmap, filename = 'bi_clusters.png', title='Significant clusters', surface = 'inflated', cmap = "seismic")
+plot_surf(surf_data=model$bi_clusterIDmap, filename='bi.png', title='Clusters', cmap="seismic")
 
 }

@@ -20,9 +20,9 @@
 #' @returns A list object containing  the  t-test and the TFCE cluster output
 #'  
 #' @examples
-#'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
-#'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-#'two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
+#'neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
+#'two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
 #'
 #'pos.results=TFCE.threshold(pos)
 #'pos.results$cluster_level_results
@@ -35,7 +35,6 @@
 #'two.results=TFCE.threshold(two)
 #'two.results$cluster_level_results
 #'plotCT(two.results$thresholded_tstat_map, filename="two.png")
-#' vertex_analysis(model = dat_beh, contrast = dat_beh$Age, random = dat_beh$SUB_ID, surf_data = dat_CT,p = 0.01, atlas=1)
 #'
 #' @importFrom reticulate import r_to_py
 #' @importFrom foreach foreach %dopar%
@@ -448,9 +447,9 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
 #'
 #' @returns A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
 #' @examples
-#'pos=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=1, nperm=100, nthread = 10)
-#'neg=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=-1 ,nperm=100, nthread = 10)
-#'two=TFCE.vertex_analysis(model =all_pred, contrast = dat_beh$age, surf_data = dat_CT, tail=2 ,nperm=100, nthread = 10)
+#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
+#'neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
+#'two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
 #'
 #'pos.results=TFCE.threshold(pos)
 #'pos.results$cluster_level_results

@@ -351,7 +351,7 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
-#' plot_surf(CTv, filename = 'output', title = 'Cortical thickness', surface = 'white', cmap = 'RdBu_r', colorbar = FALSE)
+#' plot_surf(CTv, filename='output', title = 'Cortical thickness', surface = 'white', cmap = 'Blues')
 #' @importFrom reticulate tuple import np_array source_python
 #' @export
 

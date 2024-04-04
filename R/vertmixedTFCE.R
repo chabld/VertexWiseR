@@ -22,7 +22,7 @@
 #'
 #' @returns A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
 #' @examples
-#'model=TFCE.vertex_analysis.mixed(model = dat_beh[,c(2:4)],contrast = dat_beh$AGE_AT_SCAN,random = dat_beh$SUB_ID,surf_data = dat_CT,nperm = 100,tail = 2, nthread = 10, smooth_FWHM = 0)
+#'model=TFCE.vertex_analysis.mixed(model,contrast,random,surf_data,nperm = 100,tail = 2, nthread = 10)
 #'
 #'results=TFCE.threshold(model)
 #'results$cluster_level_results
