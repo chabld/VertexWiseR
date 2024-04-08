@@ -11,7 +11,7 @@ HIPvextract(sdirpath, filename, measure = "thickness", subj_ID = T)
 
 \item{filename}{A string object containing the desired name of the output RDS file.}
 
-\item{measure}{A string object containing the name of the measure of interest. Options are thickness and area. Default is thickness.}
+\item{measure}{A string object containing the name of the measure of interest. Options are 'thickness','curvature','gyrification' and 'surfarea' (For more information see \href{https://hippunfold.readthedocs.io/en/latest/outputs/output_files.html#surface-metrics}{the Hippunfold documentation}). Default is thickness.}
 
 \item{subj_ID}{A logical object stating whether to return a list object containing both subject ID and data matrix.}
 }

@@ -5,7 +5,7 @@
 #'
 #' @param sdirpath A string object containing the path to the hipunfold subjects directory.
 #' @param filename A string object containing the desired name of the output RDS file.
-#' @param measure A string object containing the name of the measure of interest. Options are thickness and area. Default is thickness.
+#' @param measure A string object containing the name of the measure of interest. Options are 'thickness','curvature','gyrification' and 'surfarea' (For more information see \href{https://hippunfold.readthedocs.io/en/latest/outputs/output_files.html#surface-metrics}{the Hippunfold documentation}). Default is thickness.
 #' @param subj_ID A logical object stating whether to return a list object containing both subject ID and data matrix.
 #'
 #' @returns A .rds file with a list containing the list of subject IDs (first element) and a surface data matrix object (second element), or a data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
