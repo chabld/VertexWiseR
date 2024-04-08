@@ -160,20 +160,17 @@ If it is your random variable and it is non-binarizable, do not include it in th
       get(ls()[ls() != "fileName"])
     }
     
-    #create internal environment to store fsaverage files in
-    internalenv <- new.env()
-    
-    #check length of CT data and load the appropriate fsaverage files
+    #check length of CT data and load the appropriate edgelist files
     n_vert=ncol(surf_data)
     if(n_vert==20484)
     {
       template="fsaverage5"
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = internalenv)
+      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
     }
     else if (n_vert==81924)
     {
       template="fsaverage6"
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = internalenv)
+      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
     }
     else if (n_vert==14524)
     {
@@ -184,7 +181,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
       } 
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("inst/extdata/hip_template.fs")
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = internalenv)
+      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
     
@@ -249,7 +246,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     #save output from model
     tmap.orig=as.numeric(model.fit$t)
-    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=10)
+    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=10, envir=globalenv())
     
     end=Sys.time()
     
