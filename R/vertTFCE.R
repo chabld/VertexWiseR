@@ -476,7 +476,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     get(ls()[ls() != "fileName"])
   }
   
-  #creating loca env
+  #creating local environment
   internalenv <- new.env()
   
   #function to make sure edgelist is passed to getcluster
