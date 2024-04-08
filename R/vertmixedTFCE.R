@@ -50,7 +50,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
     model=as.data.frame(model)
     if (NCOL(model)==1) {model = model[[1]]
     } else { for (c in 1:NCOL(model)) { 
-      if(inherits(model[,c],"double")==T) {model[,c] = as.numeric(model[,c])}
+      if(inherits(model[,c],"double")==T | inherits(model[,c],"integer")==T) {model[,c] = as.numeric(model[,c])}
     }  }
   }
   
@@ -161,7 +161,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     }
     
     #creating local environment
-    internalenv <- new.env()
+    edgelistenv <- new.env()
     
     #check length of CT data and load the appropriate edgelist files
     n_vert=ncol(surf_data)
@@ -169,13 +169,13 @@ If it is your random variable and it is non-binarizable, do not include it in th
     {
       template="fsaverage5"
       edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
-      assign("edgelist", edgelist, envir = internalenv)
+      assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==81924)
     {
       template="fsaverage6"
       edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
-      assign("edgelist", edgelist, envir = internalenv)
+      assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==14524)
     {
@@ -186,8 +186,9 @@ If it is your random variable and it is non-binarizable, do not include it in th
       } 
       brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
       template=brainspace.mesh.mesh_io$read_surface("inst/extdata/hip_template.fs")
+      assign("template", template, envir = edgelistenv)
       edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
-      assign("edgelist", edgelist, envir = internalenv)
+      assign("edgelist", edgelist, envir = edgelistenv)
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
     
@@ -252,7 +253,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     #save output from model
     tmap.orig=as.numeric(model.fit$t)
-    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=10, envir=internalenv)
+    TFCE.multicore = utils::getFromNamespace("TFCE.multicore", "VertexWiseR")
+    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=nthread, envir=edgelistenv)
     
     end=Sys.time()
     
@@ -274,8 +276,12 @@ If it is your random variable and it is non-binarizable, do not include it in th
     }
     unregister_dopar()
     
+    getClusters = utils::getFromNamespace("getClusters", "VertexWiseR")
+    TFCE = utils::getFromNamespace("TFCE", "VertexWiseR")
+    
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
+    parallel::clusterExport(cl, c("edgelist", "template"), envir=edgelistenv)
     `%dopar%` = foreach::`%dopar%`
     
     #progress bar
@@ -286,7 +292,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     #fitting permuted model and extracting max-TFCE values in parallel streams
     start=Sys.time()
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("TFCE","edgelist","getClusters"), .options.snow = opts)  %dopar%
+    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
       {
         brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
         brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
