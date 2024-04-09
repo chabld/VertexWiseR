@@ -179,14 +179,15 @@ If it is your random variable and it is non-binarizable, do not include it in th
     }
     else if (n_vert==14524)
     {
-      if(file.exists("inst/extdata/hip_template.fs")==F)
-      {
-        cat("\nhip_template.fs is not detected in the current working directory. The hippocampus surface template will be downloaded\n")
-        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/hip_template.fs",destfile ="inst/extdata/hip_template.fs",mode = "wb")
-      } 
-      brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
-      template=brainspace.mesh.mesh_io$read_surface("inst/extdata/hip_template.fs")
-      assign("template", template, envir = edgelistenv)
+      #load hippocampal R-compatible data for making hippocampal template
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE")
+
+        #preparding coord data     
+        right=hip_points_cells[[1]]
+        left=hip_points_cells[[1]] 
+        left[,1]=-left[,1] #flip x coordinate for left hippocampus           
+        coord=rbind(left,right)
+             
       edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
       assign("edgelist", edgelist, envir = edgelistenv)
     }
@@ -242,12 +243,26 @@ If it is your random variable and it is non-binarizable, do not include it in th
     brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
     brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
     terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
-    model.fit=brainstat.stats.SLM$SLM(model = terms,
-                                      contrast=contrast,
-                                      surf = template, 
-                                      mask=mask,
-                                      correction="None",
-                                      cluster_threshold=1)
+      
+      if(n_vert!=14524)
+        { #non-hippocampal template  
+          model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                        contrast=contrast,
+                                        surf = template, 
+                                        mask=mask,
+                                        correction="None",
+                                        cluster_threshold=1)
+        }
+      else
+        { #hippocampal template  
+          model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                        contrast=contrast,
+                                        surf = reticulate::dict(tri=tri,coord=t(coord), convert = F), ##making hippocampal template from R-compatible data
+                                        mask=mask,
+                                        correction="None",
+                                        cluster_threshold=1)
+        }
+
     #fit model
     model.fit$fit(surf_data)
     
@@ -291,38 +306,61 @@ If it is your random variable and it is non-binarizable, do not include it in th
     opts=list(progress = progress)
     
     #fitting permuted model and extracting max-TFCE values in parallel streams
-    start=Sys.time()
-    TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
-      {
-        brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-        brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
-
-      ##commented out alternative method of permutation— permuting only the contrast variable
-        #model.permuted=model
-        #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
-        #terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model.permuted,"_check_categorical" = F)
-        #model.fit=brainstat.stats.SLM$SLM(model = terms,
-        #                                   contrast=contrast,
-        #                                   surf = template, 
-        #                                   mask=mask,
-        #                                   correction="None",
-        #                                   cluster_threshold=1)
-        #model.fit$fit(surf_data)
-
-        terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
-        model.fit=brainstat.stats.SLM$SLM(model = terms,
-                                          contrast=contrast,
-                                          surf = template, 
-                                          mask=mask,
-                                          correction="None",
-                                          cluster_threshold=1)
-        model.fit$fit(surf_data[permseq[,perm],])
-        
-        return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+    if(n_vert!=14524)
+        { #non-hippocampal template  
+          start=Sys.time()
+          TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
+            {
+              brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
+              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+      
+            ##commented out alternative method of permutation— permuting only the contrast variable
+              #model.permuted=model
+              #model.permuted[,colno]=model.permuted[permseq[,perm],colno] ##permute only the contrast
+              #terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model.permuted,"_check_categorical" = F)
+              #model.fit=brainstat.stats.SLM$SLM(model = terms,
+              #                                   contrast=contrast,
+              #                                   surf = template, 
+              #                                   mask=mask,
+              #                                   correction="None",
+              #                                   cluster_threshold=1)
+              #model.fit$fit(surf_data)
+      
+              terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
+              model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                                contrast=contrast,
+                                                surf = template, 
+                                                mask=mask,
+                                                correction="None",
+                                                cluster_threshold=1)
+              model.fit$fit(surf_data[permseq[,perm],])
+              
+              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+            }
+          end=Sys.time()
+          cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+      }   else
+      { #hippocampal template ; requires the template to be made within the foreach loops
+          start=Sys.time()
+          TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
+            {
+              brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
+              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+      
+              terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
+              model.fit=brainstat.stats.SLM$SLM(model = terms,
+                                                contrast=contrast,
+                                                surf = reticulate::dict(tri=tri,coord=t(coord), convert = F), ##making hippocampal template from R-compatible data
+                                                mask=mask,
+                                                correction="None",
+                                                cluster_threshold=1)
+              model.fit$fit(surf_data[permseq[,perm],])
+              
+              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+            }
+          end=Sys.time()
+          cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
       }
-    end=Sys.time()
-    cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-    
   ##saving list objects
   returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
   names(returnobj)=c("t_stat","TFCE.orig","TFCE.max","tail")
