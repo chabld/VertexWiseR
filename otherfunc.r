@@ -50,7 +50,7 @@ perm_within_between=function(random)
 smooth=function(data, FWHM)
 {
   ##source python function
-  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/smooth.py?raw=TRUE")
+  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/python/smooth.py?raw=TRUE")
 
   ##select template, set its FWHM parameter and load its edgelist file
   if(NCOL(data)==20484) 
