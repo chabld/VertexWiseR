@@ -187,7 +187,10 @@ If it is your random variable and it is non-binarizable, do not include it in th
         left=hip_points_cells[[1]] 
         left[,1]=-left[,1] #flip x coordinate for left hippocampus           
         coord=rbind(left,right)
-             
+
+        #preparding tri data    
+        tri=array(as.integer(hip_points_cells[[2]]),dim = c(14266,3))
+           
       edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
       assign("edgelist", edgelist, envir = edgelistenv)
     }
