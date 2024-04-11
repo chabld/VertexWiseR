@@ -180,7 +180,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     else if (n_vert==14524)
     {
       #load hippocampal R-compatible data for making hippocampal template
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE")
+      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
 
         #preparing coord data     
         right=hip_points_cells[[1]]
@@ -299,7 +299,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(cl)
-    parallel::clusterExport(cl, c("edgelist", "template"), envir=edgelistenv)
+    parallel::clusterExport(cl, c("edgelist"), envir=edgelistenv)
     `%dopar%` = foreach::`%dopar%`
     
     #progress bar
