@@ -25,5 +25,7 @@ Extracts hippocampal vertex-wise surface-based measures for each subject in the 
 The function searches for the hippocampal surface data by listing out files with certain suffixes, and then read these files and save both the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix.
 }
 \examples{
+if(interactive()){
 HIPvextract(sdirpath = "./", filename = "hip_data.RDS", measure = "thickness") 
+} 
 }
