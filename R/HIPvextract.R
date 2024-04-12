@@ -10,7 +10,9 @@
 #'
 #' @returns A .rds file with a list containing the list of subject IDs (first element) and a surface data matrix object (second element), or a data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
 #' @examples
+#' if(interactive()){
 #' HIPvextract(sdirpath = "./", filename = "hip_data.RDS", measure = "thickness") 
+#' } 
 #' @importFrom gifti readgii
 #' @export
 
