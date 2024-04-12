@@ -5,3 +5,5 @@
 ^vertwise\.r$
 ^vertTFCE\.r$
 ^vertmixedTFCE\.R$
+inst/demo_data/KLEPITS_ses1_CTv
+inst/demo_data/SPRENG_CTv
