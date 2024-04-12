@@ -180,8 +180,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     else if (n_vert==14524)
     {
       #load hippocampal R-compatible data for making hippocampal template
-      load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
-
+      hip_points_cells<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
         #preparing coord data     
         right=hip_points_cells[[1]]
         left=hip_points_cells[[1]] 
