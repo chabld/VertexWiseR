@@ -37,7 +37,7 @@ Plots surface data in a grid with one or multiple rows, for multiple plots in a 
 }
 \examples{
 if(interactive()){
-results = runif(20484,min=0, max=100)
+results = runif(20484,min=0, max=1)
 plot_surf(results, filename='output.png',title = 
 'Cortical thickness', surface = 'inflated', cmap = 'Blues')
 }

@@ -47,8 +47,10 @@ surf_data = readRDS(file = url(paste0("https://github.com",
 model=demodata[,c(2,7)]
 contrast=demodata[,7]
 
-pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 2)
-pos.results=TFCE.threshold(pos)
-pos.results$cluster_level_results
+TFCE.pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=5, nthread = 2)
+
+#To get significant clusters, you may then run:
+#results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
+#results$cluster_level_results
 
 }

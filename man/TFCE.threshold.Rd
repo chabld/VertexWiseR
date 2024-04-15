@@ -22,16 +22,8 @@ A list object containing the results at cluster level, the threshold t-test map,
 Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output
 }
 \examples{
-demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
-package = 'VertexWiseR'))[1:5,]
-surf_data = readRDS(file = url(paste0("https://github.com",
-"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
-model=demodata[,c(2,7)]
-contrast=demodata[,7]
-
-twotail=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 2)
-results=TFCE.threshold(TFCE.output=twotail, p=0.05, atlas=1)
+if(interactive()){
+TFCEanalysis_output=TFCE.threshold(TFCE.output, p=0.05, atlas=1)
 results$cluster_level_results
-
+}
 }

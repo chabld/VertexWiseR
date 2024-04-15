@@ -379,7 +379,7 @@ fs6_to_fs5=function(surf_data)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
 #'if(interactive()){
-#'results = runif(20484,min=0, max=100)
+#'results = runif(20484,min=0, max=1)
 #'plot_surf(results, filename='output.png',title = 
 #' 'Cortical thickness', surface = 'inflated', cmap = 'Blues')
 #'}
@@ -510,7 +510,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #'
 #' @returns A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
 #' @examples
-#' CTv = runif(20484,min=0, max=100)
+#' CTv = rbinom(20484, 1, 0.001) 
 #' decode_surf_data(CTv, 'positive')
 #' @importFrom reticulate import r_to_py
 #' @export

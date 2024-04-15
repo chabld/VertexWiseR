@@ -28,9 +28,11 @@
 #'model=demodata[,c(2,7)]
 #'contrast=demodata[,7]
 #'
-#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 2)
-#'pos.results=TFCE.threshold(pos)
-#'pos.results$cluster_level_results
+#' TFCE.pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=5, nthread = 2)
+#' 
+#' #To get significant clusters, you may then run:
+#' #results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
+#' #results$cluster_level_results
 #'
 #' @importFrom reticulate import r_to_py
 #' @importFrom foreach foreach %dopar%
@@ -437,18 +439,10 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
 #'
 #' @returns A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
 #' @examples
-#' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
-#'package = 'VertexWiseR'))[1:5,]
-#'surf_data = readRDS(file = url(paste0("https://github.com",
-#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
-#' model=demodata[,c(2,7)]
-#' contrast=demodata[,7]
-#'
-#' twotail=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 2)
-#' results=TFCE.threshold(TFCE.output=twotail, p=0.05, atlas=1)
+#' if(interactive()){
+#' TFCEanalysis_output=TFCE.threshold(TFCE.output, p=0.05, atlas=1)
 #' results$cluster_level_results
-#'
+#' }
 #' @export
 
 TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)

@@ -40,13 +40,13 @@ The function imports and adapts the \href{https://brainstat.readthedocs.io/en/ma
 }
 \examples{
 demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
-package = 'VertexWiseR'))
+package = 'VertexWiseR'))[1:150,]
 CTv = readRDS(file = url(paste0("https://github.com",
 "/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-"SPRENG_CTv.rds?raw=TRUE")))
+"SPRENG_CTv.rds?raw=TRUE")))[1:150,]
 
 vertexwise_model=vertex_analysis(model=demodata[,c(2,7)], 
 contrast=demodata[,7], surf_data = CTv, atlas=1,p = 0.05, 
 smooth_FWHM = 10)
-
+print(vertexwise_model$cluster_level_results)
 }

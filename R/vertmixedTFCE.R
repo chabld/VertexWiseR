@@ -27,15 +27,14 @@
 #'surf_data = readRDS(file = url(paste0("https://github.com",
 #'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
 #'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
-#'model=demodata[,c(2,7)]
-#'contrast=demodata[,7]
-#'random=demodata[,1]
 #'
-#'TFCEtwotailed=TFCE.vertex_analysis.mixed(model,contrast,
-#'surf_data,random, nperm = 100,tail = 2, nthread = 2)
+#'TFCE.pos=TFCE.vertex_analysis.mixed(model=demodata[,c(2,7)],
+#'contrast=demodata[,7], surf_data,random=demodata[,1], 
+#'nperm =5,tail = 1, nthread = 2)
 #'
-#'results=TFCE.threshold(TFCEtwotailed)
-#'results$cluster_level_results
+#' #To get significant clusters, you may then run:
+#' #results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
+#' #results$cluster_level_results
 #'
 #' @importFrom reticulate import r_to_py
 #' @importFrom foreach foreach 
