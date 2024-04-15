@@ -141,14 +141,6 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       }      
     }
     
-    
-    #create function to rename RDA edgelists objects to edgelist
-    loadRData <- function(fileName){
-      #loads and rename rda file
-      load(fileName)
-      get(ls()[ls() != "fileName"])
-    }
-    
     #create function to rename RDA edgelist rda files to edgelist
     loadRData <- function(fileName){
       #loads and rename rda file
