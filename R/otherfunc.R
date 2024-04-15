@@ -303,11 +303,11 @@ fs5_to_fs6=function(surf_data)
   if(length(surf_data)%%20484!=0) {stop("Length of surf_data is not a multiple of 20484")}
   
   #load atlas mapping surf_data
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
+  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5_map.rdata?raw=TRUE"))
   #mapping fsaverage5 to fsaverage6 space if surf_data is a vector length of 20484
-  if(length(surf_data)==20484) {surf_data.fs6=surf_data[fs6_to_fs5]} 
+  if(length(surf_data)==20484) {surf_data.fs6=surf_data[fs6_to_fs5_map]} 
   #mapping fsaverage5 to fsaverage6 space if surf_data is a Nx20484 matrix
-  else {surf_data.fs6=surf_data[,fs6_to_fs5]}
+  else {surf_data.fs6=surf_data[,fs6_to_fs5_map]}
   return(surf_data.fs6)
 }
 
@@ -330,19 +330,26 @@ fs6_to_fs5=function(surf_data)
   #check length of vector
   if(length(surf_data)%%81924!=0) {stop("Length of surf_data is not a multiple of 81924")}
   
+  #create function to assign name to loaded object 
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  
   #load atlas mapping surf_data
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5.rdata?raw=TRUE"))
+  fs6_to_fs5_map <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5_map.rdata?raw=TRUE"))
   
   if(length(surf_data)==81924) #mapping fsaverage6 to fsaverage5 space if surf_data is a Nx81924 matrix
   {
     surf_data=matrix(surf_data,ncol=81924,nrow=1)  
     surf_data.fs5=matrix(NA,ncol=20484,nrow=1)
     
-    for (vert in 1:20484)  {surf_data.fs5[vert]=mean(surf_data[fs6_to_fs5==vert],na.rm = T)} 
+    for (vert in 1:20484)  {surf_data.fs5[vert]=mean(surf_data[fs6_to_fs5_map==vert],na.rm = T)} 
   } else #mapping fsaverage6 to fsaverage5 space if surf_data is a Nx20484 matrix
   {
     surf_data.fs5=matrix(NA,ncol=20484,nrow=NROW(surf_data))
-    for (vert in 1:20484)  {surf_data.fs5[,vert]=rowMeans(surf_data[,fs6_to_fs5==vert],na.rm = T)} 
+    for (vert in 1:20484)  {surf_data.fs5[,vert]=rowMeans(surf_data[,fs6_to_fs5_map==vert],na.rm = T)} 
   }
   return(surf_data.fs5)
 }

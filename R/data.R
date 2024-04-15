@@ -110,3 +110,14 @@
 #' @docType data
 #' @name hip_points_cells
 "hip_points_cells"
+
+
+#' fsaverage6 template object for conversion in fs6_to_fs5()
+#'
+#' @format ## An array of 81924 integers () 
+#' \describe{
+#'   \item{vertices}{81924 integers corresponding to each fsaverage6 vertex}
+#' }
+#' @docType data
+#' @name fs6_to_fs5_map
+"fs6_to_fs5_map"
