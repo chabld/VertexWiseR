@@ -18,5 +18,8 @@ A matrix object with smoothed vertex-wise values
 Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 }
 \examples{
-smooth_surf(CT_data, 10)
+surf_data = readRDS(file = url(paste0("https://github.com",
+"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+smooth_surf(surf_data, 10)
 }

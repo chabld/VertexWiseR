@@ -16,6 +16,7 @@ A matrix object containing vertex-wise surface data mapped in fsaverage6 space
 Remaps vertex-wise surface data in fsaverage5 space to fsaverage6 space
 }
 \examples{
+CTv = runif(20484,min=0, max=100)
 fs5_to_fs6(CTv)
 }
 \seealso{

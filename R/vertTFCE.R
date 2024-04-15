@@ -20,21 +20,17 @@
 #' @returns A list object containing  the  t-test and the TFCE cluster output
 #'  
 #' @examples
-#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
-#'neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
-#'two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
+#' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
+#'package = 'VertexWiseR'))[1:5,]
+#'surf_data = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#'model=demodata[,c(2,7)]
+#'contrast=demodata[,7]
 #'
+#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 2)
 #'pos.results=TFCE.threshold(pos)
 #'pos.results$cluster_level_results
-#'plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
-#'
-#'neg.results=TFCE.threshold(neg)
-#'neg.results$cluster_level_result
-#'plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
-#'
-#'two.results=TFCE.threshold(two)
-#'two.results$cluster_level_results
-#'plotCT(two.results$thresholded_tstat_map, filename="two.png")
 #'
 #' @importFrom reticulate import r_to_py
 #' @importFrom foreach foreach %dopar%
@@ -277,6 +273,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
     }
   end=Sys.time()
   cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+  closeAllConnections()
   
   ##saving list objects
   returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
@@ -432,6 +429,7 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
     }
   }
   parallel::stopCluster(cl)
+  closeAllConnections()
   return(tfce_step_values.all)
 }
 ############################################################################################################################
@@ -447,18 +445,17 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
 #'
 #' @returns A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
 #' @examples
-#'pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
-#'neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
-#'two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
+#' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
+#'package = 'VertexWiseR'))[1:5,]
+#'surf_data = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#' model=demodata[,c(2,7)]
+#' contrast=demodata[,7]
 #'
-#'pos.results=TFCE.threshold(pos)
-#'pos.results$cluster_level_results
-#'
-#'neg.results=TFCE.threshold(neg)
-#'neg.results$cluster_level_result
-#'
-#'two.results=TFCE.threshold(two)
-#'two.results$cluster_level_results
+#' twotail=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 2)
+#' results=TFCE.threshold(TFCE.output=twotail, p=0.05, atlas=1)
+#' results$cluster_level_results
 #'
 #' @export
 

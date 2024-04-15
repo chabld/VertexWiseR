@@ -18,5 +18,8 @@ A .nii volume file
 Converts surface data to volumetric data (.nii file)
 }
 \examples{
+CTv = readRDS(file = url(paste0("https://github.com",
+"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
 surf_to_vol(CTv, filename = 'volume.nii')
 }

@@ -36,5 +36,7 @@ A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
 }
 \examples{
-plot_surf(CTv, filename='output', title = 'Cortical thickness', surface = 'white', cmap = 'Blues')
+results = runif(20484,min=0, max=100)
+plot_surf(results, filename='output.png',title = 
+'Cortical thickness', surface = 'inflated', cmap = 'Blues')
 }

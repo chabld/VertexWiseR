@@ -39,20 +39,16 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.
 }
 \examples{
-pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 10)
-neg=TFCE.vertex_analysis(model, contrast, surf_data, tail=-1 ,nperm=100, nthread = 10)
-two=TFCE.vertex_analysis(model, contrast, surf_data, tail=2 ,nperm=100, nthread = 10)
+demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
+package = 'VertexWiseR'))[1:5,]
+surf_data = readRDS(file = url(paste0("https://github.com",
+"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+model=demodata[,c(2,7)]
+contrast=demodata[,7]
 
+pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=100, nthread = 2)
 pos.results=TFCE.threshold(pos)
 pos.results$cluster_level_results
-plotCT(pos.results$thresholded_tstat_map, filename="pos.png")
-
-neg.results=TFCE.threshold(neg)
-neg.results$cluster_level_result
-plotCT(neg.results$thresholded_tstat_map, filename="neg.png")
-
-two.results=TFCE.threshold(two)
-two.results$cluster_level_results
-plotCT(two.results$thresholded_tstat_map, filename="two.png")
 
 }

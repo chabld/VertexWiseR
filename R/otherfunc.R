@@ -56,7 +56,10 @@ perm_within_between=function(random)
 #'
 #' @returns A matrix object with smoothed vertex-wise values
 #' @examples
-#' smooth_surf(CT_data, 10)
+#' surf_data = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#' smooth_surf(surf_data, 10)
 #' @importFrom reticulate source_python
 #' @export
 
@@ -185,6 +188,9 @@ getClusters=function(surf_data)
 #' @returns A matrix object with ROI as column and corresponding average vertex-wise values as row
 #' @seealso \code{\link{atlas_to_fs5}}
 #' @examples
+#' CTv = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
 #' fs5_to_atlas(CTv, 1)
 #' @export
 
@@ -245,6 +251,9 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
 #' @examples
+#' CTv = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
 #' atlas_to_fs5(CTv, 1)
 #' @export
 
@@ -283,6 +292,7 @@ atlas_to_fs5=function(surf_data,atlas)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage6 space
 #' @seealso \code{\link{fs6_to_fs5}}
 #' @examples
+#' CTv = runif(20484,min=0, max=100)
 #' fs5_to_fs6(CTv)
 #' @export
 
@@ -310,7 +320,9 @@ fs5_to_fs6=function(surf_data)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_fs6}}
 #' @examples
+#' CTv = runif(81924,min=0, max=100);
 #' fs6_to_fs5(CTv)
+#' 
 #' @export
 
 fs6_to_fs5=function(surf_data)
@@ -351,12 +363,12 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
-#' plot_surf(CTv, filename='output', title = 'Cortical thickness', surface = 'white', cmap = 'Blues')
+#'results = runif(20484,min=0, max=100)
+#'plot_surf(results, filename='output.png',title = 
+#' 'Cortical thickness', surface = 'inflated', cmap = 'Blues')
 #' @importFrom reticulate tuple import np_array source_python
 #' @export
 
-##Cortical surface/hippocampal plots
-##input surf_data can be a matrix with multiple rows, for multiple plots in a single .png file
 plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T)
 {
   #format title for single row
@@ -442,6 +454,9 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 #'
 #' @returns A .nii volume file
 #' @examples
+#' CTv = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
 #' surf_to_vol(CTv, filename = 'volume.nii')
 #' @importFrom reticulate import
 #' @export
@@ -478,6 +493,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #'
 #' @returns A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
 #' @examples
+#' CTv = runif(20484,min=0, max=100)
 #' decode_surf_data(CTv, 'positive')
 #' @importFrom reticulate import r_to_py
 #' @export
@@ -518,13 +534,13 @@ decode_surf_data=function(surf_data,contrast="positive")
   stat_nii = interpolate$`_surf2vol`(template, stat_labels)
   
   ##download neurosynth database if necessary 
-  if(file.exists("neurosynth_dataset.pkl.gz")==F)
+  if(file.exists(system.file('extdata','neurosynth_dataset.pkl.gz', package='VertexWiseR'))==F)
   {
-    cat("\neurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
-    download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = "neurosynth_dataset.pkl.gz")
+    cat("\nneurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
+    download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = paste0(system.file(package='VertexWiseR'),'/extdata/neurosynth_dataset.pkl.gz'))
   } 
   ##running the decoding procedure
-  neurosynth_dset = nimare.dataset$dataset$load("neurosynth_dataset.pkl.gz")
+  neurosynth_dset = nimare.dataset$Dataset$load(system.file("extdata/neurosynth_dataset.pkl.gz", package='VertexWiseR'))
   cat("Correlating input image with images in the neurosynth database. This may take a while\n")
   decoder = discrete$ROIAssociationDecoder(stat_nii)
   decoder$fit(neurosynth_dset)
@@ -538,5 +554,3 @@ decode_surf_data=function(surf_data,contrast="positive")
   
   return(result)
 }  
-############################################################################################################################
-############################################################################################################################

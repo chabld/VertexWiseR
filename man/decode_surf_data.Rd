@@ -21,5 +21,6 @@ Correlates the significant clusters of an earlier vertex-wise analysis with a da
 The ]href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
 }
 \examples{
+CTv = runif(20484,min=0, max=100)
 decode_surf_data(CTv, 'positive')
 }

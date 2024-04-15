@@ -21,6 +21,9 @@ Returns the vertex-wise surface data mapped in fsaverage5 space from data parcel
 The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
 }
 \examples{
+CTv = readRDS(file = url(paste0("https://github.com",
+"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
 atlas_to_fs5(CTv, 1)
 }
 \seealso{
