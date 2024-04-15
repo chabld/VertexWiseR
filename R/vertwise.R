@@ -21,14 +21,16 @@
 #' @returns A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive, negative and bidirectional clusters maps, which can be plotted with plot_surf(). 
 #' 
 #' @examples
-#' model=vertex_analysis(model, contrast, random, surf_data, atlas=1)
-#' 
-#' model$cluster_level_results
-#' 
-#' plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos.png', title='Positive clusters')
+#' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
+#'package = 'VertexWiseR'))
+#'CTv = readRDS(file = url(paste0("https://github.com",
+#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+#'"SPRENG_CTv.rds?raw=TRUE")))
 #'
-#' plot_surf(surf_data=model$bi_clusterIDmap, filename='bi.png', title='Clusters', cmap="seismic")
-#' 
+#'vertexwise_model=vertex_analysis(model=demodata[,c(2,7)], 
+#'contrast=demodata[,7], surf_data = CTv, atlas=1,p = 0.05, 
+#'smooth_FWHM = 10)
+#'print(vertexwise_model$cluster_level_results)
 #' @importFrom reticulate import r_to_py
 #' @export
 

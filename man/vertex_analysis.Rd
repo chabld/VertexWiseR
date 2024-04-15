@@ -39,12 +39,14 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
 }
 \examples{
-model=vertex_analysis(model, contrast, random, surf_data, atlas=1)
+demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
+package = 'VertexWiseR'))
+CTv = readRDS(file = url(paste0("https://github.com",
+"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
+"SPRENG_CTv.rds?raw=TRUE")))
 
-model$cluster_level_results
-
-plot_surf(surf_data = model$pos_clusterIDmap, filename = 'pos.png', title='Positive clusters')
-
-plot_surf(surf_data=model$bi_clusterIDmap, filename='bi.png', title='Clusters', cmap="seismic")
+vertexwise_model=vertex_analysis(model=demodata[,c(2,7)], 
+contrast=demodata[,7], surf_data = CTv, atlas=1,p = 0.05, 
+smooth_FWHM = 10)
 
 }

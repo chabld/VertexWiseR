@@ -302,8 +302,16 @@ fs5_to_fs6=function(surf_data)
   #check length of vector
   if(length(surf_data)%%20484!=0) {stop("Length of surf_data is not a multiple of 20484")}
   
+  #create function to assign name to loaded object 
+  loadRData <- function(fileName){
+    #loads and rename rda file
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
+  
   #load atlas mapping surf_data
-  load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5_map.rdata?raw=TRUE"))
+  fs6_to_fs5_map <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/fs6_to_fs5_map.rdata?raw=TRUE"))
+  
   #mapping fsaverage5 to fsaverage6 space if surf_data is a vector length of 20484
   if(length(surf_data)==20484) {surf_data.fs6=surf_data[fs6_to_fs5_map]} 
   #mapping fsaverage5 to fsaverage6 space if surf_data is a Nx20484 matrix
@@ -370,9 +378,11 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
+#'if(interactive()){
 #'results = runif(20484,min=0, max=100)
 #'plot_surf(results, filename='output.png',title = 
 #' 'Cortical thickness', surface = 'inflated', cmap = 'Blues')
+#'}
 #' @importFrom reticulate tuple import np_array source_python
 #' @export
 
@@ -461,10 +471,10 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 #'
 #' @returns A .nii volume file
 #' @examples
-#' CTv = readRDS(file = url(paste0("https://github.com",
-#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#' if(interactive()){
+#' CTv = runif(20484,min=0, max=100);
 #' surf_to_vol(CTv, filename = 'volume.nii')
+#' }
 #' @importFrom reticulate import
 #' @export
 
