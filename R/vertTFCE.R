@@ -17,7 +17,8 @@
 #' @param nthread Maximum number of cpu cores to allocate 
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
-#' @returns A list object containing  the  t-test and the TFCE cluster output
+#' @returns A list object containing the t-test and the TFCE cluster output which can then be thresholded for significance using TFCE.threshold()
+#' @seealso \code{\link{TFCE.threshold}}
 #'  
 #' @examples
 #' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
@@ -437,7 +438,7 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)
 #' @param k Cluster-forming threshold (Default is 20)
 #'
-#' @returns A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
+#' @returns A list object containing the results at cluster level, the threshold t-test map, and positive, negative and bidirectional cluster maps.
 #' @examples
 #' if(interactive()){
 #' TFCEanalysis_output=TFCE.threshold(TFCE.output, p=0.05, atlas=1)
@@ -646,14 +647,31 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     neg.clustermap="No significant clusters"
     neg.mask=rep(0,n_vert)
   } 
+  
+  ##combining positive and negative cluster maps
+  #when significant clusters exist in both directions
+  if (class(pos.clustermap) != 'character' & class(neg.clustermap) != 'character') {
+    posc = as.matrix(as.numeric(pos.clustermap))
+    negc = as.matrix(as.numeric(neg.clustermap))*-1
+    posc[negc!=0,] <- negc[negc!=0,]
+    posc[posc==0 & negc==0,] <- NA
+    bi.clusterIDmap = posc
+  } else if (class(pos.clustermap) != 'character') {
+    bi.clusterIDmap=pos.clustermap
+  } else if (class(neg.clustermap) != 'character') {
+    bi.clusterIDmap=neg.clustermap 
+  } else if (class(pos.clustermap) == 'character' & class(neg.clustermap) == 'character') {
+    bi.clusterIDmap="No significant clusters"
+  }
+  
   ##saving list objects
   cluster_level_results=list(pos.clust.results,neg.clust.results)
   names(cluster_level_results)=c("Positive contrast", "Negative contrasts")
   
   t_stat.thresholdedPK=TFCE.output$t_stat*(pos.mask+neg.mask)
   
-  returnobj=list(cluster_level_results, t_stat.thresholdedPK,pos.mask,neg.mask, pos.clustermap, neg.clustermap)  
-  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap")
+  returnobj=list(cluster_level_results, t_stat.thresholdedPK,pos.mask,neg.mask, pos.clustermap, neg.clustermap, bi.clusterIDmap)  
+  names(returnobj)=c("cluster_level_results","thresholded_tstat_map","pos_mask","neg_mask","pos_clusterIDmap","neg_clusterIDmap", "bi_clusterIDmap")
   returnobj$cluster_level_results
   
   return(returnobj)

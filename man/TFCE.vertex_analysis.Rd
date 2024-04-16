@@ -30,7 +30,7 @@ TFCE.vertex_analysis(
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }
 \value{
-A list object containing  the  t-test and the TFCE cluster output
+A list object containing the t-test and the TFCE cluster output which can then be thresholded for significance using TFCE.threshold()
 }
 \description{
 Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps and cluster maps generated with threshold-free cluster enhancement.
@@ -53,4 +53,7 @@ TFCE.pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=5, nthre
 #results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
 #results$cluster_level_results
 
+}
+\seealso{
+\code{\link{TFCE.threshold}}
 }

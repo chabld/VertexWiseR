@@ -16,7 +16,7 @@ TFCE.threshold(TFCE.output, p = 0.05, atlas = 1, k = 20)
 \item{k}{Cluster-forming threshold (Default is 20)}
 }
 \value{
-A list object containing the results at cluster level, the threshold t-test map, and positive and negative cluster maps.
+A list object containing the results at cluster level, the threshold t-test map, and positive, negative and bidirectional cluster maps.
 }
 \description{
 Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output
