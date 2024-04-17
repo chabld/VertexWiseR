@@ -72,7 +72,10 @@ smooth_surf=function(surf_data, FWHM)
   . <- mesh_smooth <- NULL 
   internalenv <- new.env()
   assign("mesh_smooth", mesh_smooth, envir = internalenv)
-
+  
+  #mesh_smooth() fails if surf_data is not a matrix object
+  if (class(surf_data)[1] != 'matrix') {
+  surf_data = as.matrix(surf_data) }
   
   ##source python function
   reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/python/smooth.py?raw=TRUE")
