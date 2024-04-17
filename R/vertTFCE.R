@@ -650,17 +650,17 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   
   ##combining positive and negative cluster maps
   #when significant clusters exist in both directions
-  if (class(pos.clustermap) != 'character' & class(neg.clustermap) != 'character') {
+  if (inherits(pos.clustermap,"character")!=T & inherits(neg.clustermap,"character")!=T) {
     posc = as.matrix(as.numeric(pos.clustermap))
     negc = as.matrix(as.numeric(neg.clustermap))*-1
     posc[negc!=0,] <- negc[negc!=0,]
     posc[posc==0 & negc==0,] <- NA
     bi.clusterIDmap = posc
-  } else if (class(pos.clustermap) != 'character') {
+  } else if (inherits(pos.clustermap,"character")!=T) {
     bi.clusterIDmap=pos.clustermap
-  } else if (class(neg.clustermap) != 'character') {
+  } else if (inherits(neg.clustermap,"character")!=T) {
     bi.clusterIDmap=neg.clustermap 
-  } else if (class(pos.clustermap) == 'character' & class(neg.clustermap) == 'character') {
+  } else if (inherits(pos.clustermap,"character")==T & inherits(neg.clustermap,"character")==T) {
     bi.clusterIDmap="No significant clusters"
   }
   
