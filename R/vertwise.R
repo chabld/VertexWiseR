@@ -135,13 +135,6 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
       }      
     }
     
-    #create function to rename RDA roimaps objects to "ROImap"
-    loadRData <- function(fileName){
-      #loads and rename rda file
-      load(fileName)
-      get(ls()[ls() != "fileName"])
-    }
-    
     #check length of CT data and load the appropriate fsaverage files
     n_vert=ncol(surf_data)
     if(n_vert==20484)
@@ -155,7 +148,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
     } else if (n_vert==14524)
     {
       #load hippocampal R-compatible data for making hippocampal template
-      hip_points_cells<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
+       hip_points_cells <- get('hip_points_cells') 
         #preparing coord data     
         right=hip_points_cells[[1]]
         left=hip_points_cells[[1]] 
