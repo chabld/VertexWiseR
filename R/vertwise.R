@@ -166,6 +166,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
         #preparing coord data     
         tri=array(as.integer(hip_points_cells[[2]]),dim = c(14266,3))
         template=reticulate::dict(tri=tri,coord=t(coord), convert = F)
+        ROImap <- ROImap_HIP;
     } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
   ##smoothing
