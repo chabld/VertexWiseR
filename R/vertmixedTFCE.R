@@ -97,6 +97,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
       model=model[-idxF,]
       contrast=contrast[-idxF]
       surf_data=surf_data[-idxF,]
+      random=random[-idxF]
     }
     
     #check contrast
