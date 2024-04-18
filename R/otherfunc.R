@@ -474,6 +474,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #' CTv = rbinom(20484, 1, 0.001) 
 #' decode_surf_data(CTv, 'positive')
 #' @importFrom reticulate import r_to_py
+#' @importFrom RCurl url.exists
 #' @export
 
 ##CT image decoding
@@ -514,9 +515,17 @@ decode_surf_data=function(surf_data,contrast="positive")
   ##download neurosynth database if necessary 
   if(file.exists(system.file('extdata','neurosynth_dataset.pkl.gz', package='VertexWiseR'))==F)
   {
-    cat("\nneurosynth_surf_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
-    download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = paste0(system.file(package='VertexWiseR'),'/extdata/neurosynth_dataset.pkl.gz'))
-  } 
+    cat("\nneurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
+    
+    #Check if URL works and avoid returning error but only print message as requested by CRAN:
+    url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz"
+    if(RCurl::url.exists(url)) {
+        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = paste0(system.file(package='VertexWiseR'),'/extdata/neurosynth_dataset.pkl.gz'))
+    } else { 
+      return("The neurosynth database (neurosynth_dataset.pkl.gz) could not be downloaded from the github VertexWiseR directory. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.") #ends function
+    } 
+  }
+  
   ##running the decoding procedure
   neurosynth_dset = nimare.dataset$Dataset$load(system.file("extdata/neurosynth_dataset.pkl.gz", package='VertexWiseR'))
   cat("Correlating input image with images in the neurosynth database. This may take a while\n")
