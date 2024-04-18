@@ -78,7 +78,7 @@ smooth_surf=function(surf_data, FWHM)
   surf_data = as.matrix(surf_data) }
   
   ##source python function
-  reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/python/smooth.py?raw=TRUE")
+  reticulate::source_python(paste0(system.file(package='VertexWiseR'),'/python/smooth.py'))
   
   n_vert=ncol(surf_data)
   ##select template, set its FWHM parameter and load its edgelist file
@@ -402,8 +402,8 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     
   ##hippocampal plots
     #import python libraries and hippocampal template data
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/inst/python/hipp_plot.py?raw=TRUE")
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
+    reticulate::source_python(paste0(system.file(package='VertexWiseR'),'/python/hipp_plot.py'))
+    hip_points_cells <- get('hip_points_cells') 
 
     #reshaping surf_data into a 7262 x 2 x N array
     if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} #if N=1
