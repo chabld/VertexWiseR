@@ -1,6 +1,5 @@
 Package: VertexWiseR
-Title: Run Vertex-Wise Statistical Analyses in Whole-Brain and Hippocampal Surface
-Objects
+Title: Run Vertex-Wise Statistical Analyses in Whole-Brain and Hippocampal Surface Objects
 Version: 0.0.1
 Date: 2023-12-11
 Authors@R: c(
