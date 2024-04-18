@@ -5,8 +5,9 @@
 \alias{hip_points_cells}
 \title{Hippocampus surface template}
 \format{
-\subsection{A list object with two data frame objects: ()}{
+\subsection{\code{hip_points_cells}}{
 
+A list object with two data frame objects: ()
 \describe{
 \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
 \item{vertices}{data frame with 14266 rows (vertices), 3 columns (atlases)}

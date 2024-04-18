@@ -5,8 +5,9 @@
 \alias{fs6_to_fs5_map}
 \title{fsaverage6 template object for conversion in fs6_to_fs5()}
 \format{
-\subsection{An array of 81924 integers ()}{
+\subsection{\code{fs6_to_fs5_map}}{
 
+An array of 81924 integers ()
 \describe{
 \item{vertices}{81924 integers corresponding to each fsaverage6 vertex}
 }

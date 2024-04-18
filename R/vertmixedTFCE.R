@@ -163,13 +163,6 @@ If it is your random variable and it is non-binarizable, do not include it in th
       }      
     }
     
-    #creating function to rename RDA edgelist objects to "edgelist"
-    loadRData <- function(fileName){
-      #loads and rename rda file
-      load(fileName)
-      get(ls()[ls() != "fileName"])
-    }
-    
     #creating local environment
     edgelistenv <- new.env()
     
@@ -178,19 +171,19 @@ If it is your random variable and it is non-binarizable, do not include it in th
     if(n_vert==20484)
     {
       template="fsaverage5"
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+      edgelist<- get('edgelistfs5') 
       assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==81924)
     {
       template="fsaverage6"
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+      edgelist <- get('edgelistfs6') 
       assign("edgelist", edgelist, envir = edgelistenv)
     }
     else if (n_vert==14524)
     {
       #load hippocampal R-compatible data for making hippocampal template
-      hip_points_cells<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
+        hip_points_cells<- get('hip_points_cells') 
         #preparing coord data     
         right=hip_points_cells[[1]]
         left=hip_points_cells[[1]] 
@@ -200,7 +193,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
         #preparing coord data     
         tri=array(as.integer(hip_points_cells[[2]]),dim = c(14266,3))
              
-      edgelist<- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+      edgelist <- get('edgelistHIP') 
       assign("edgelist", edgelist, envir = edgelistenv)
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}

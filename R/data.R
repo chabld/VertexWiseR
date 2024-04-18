@@ -101,23 +101,23 @@
 
 #' Hippocampus surface template
 #'
-#' @format ## A list object with two data frame objects: () 
+#' @format ## `hip_points_cells` 
+#' A list object with two data frame objects: () 
 #' \describe{
 #'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
 #'   \item{vertices}{data frame with 14266 rows (vertices), 3 columns (atlases)}
 #'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
 #' }
 #' @docType data
-#' @name hip_points_cells
 "hip_points_cells"
 
 
 #' fsaverage6 template object for conversion in fs6_to_fs5()
 #'
-#' @format ## An array of 81924 integers () 
+#' @format ## `fs6_to_fs5_map` 
+#' An array of 81924 integers () 
 #' \describe{
 #'   \item{vertices}{81924 integers corresponding to each fsaverage6 vertex}
 #' }
 #' @docType data
-#' @name fs6_to_fs5_map
 "fs6_to_fs5_map"

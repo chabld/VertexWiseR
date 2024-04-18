@@ -144,25 +144,21 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
       }      
     }
     
-    #create function to rename RDA edgelist rda files to edgelist
-    loadRData <- function(fileName){
-      #loads and rename rda file
-      load(fileName)
-      get(ls()[ls() != "fileName"])
-    }
-    
     #make internal invironment to save edgelist
     edgelistenv <- new.env()
     
     #check length of surface data and load the appropriate edgelist files
     n_vert=ncol(surf_data)
-    if(n_vert==20484)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    if(n_vert==20484)  {
+    edgelist <- get('edgelistfs5')
     assign("edgelist", edgelist, envir = edgelistenv)
     }
-    else if (n_vert==81924)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    else if (n_vert==81924)  {
+    edgelist <- get('edgelistfs6')
     assign("edgelist", edgelist, envir = edgelistenv)
     }
-    else if (n_vert==14524)  {edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    else if (n_vert==14524)  {
+    edgelist <- get('edgelistHIP')
     assign("edgelist", edgelist, envir = edgelistenv)
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
@@ -453,13 +449,6 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   #check if number of permutations is adequate
   if(nperm<1/p)  {warning(paste("Not enough permutations were carried out to estimate the p<",p," threshold precisely\nConsider setting an nperm to at least ",ceiling(1/p),sep=""))}
   
-  #create function to rename RDA objects
-  loadRData <- function(fileName){
-    #loads and rename rda file
-    load(fileName)
-    get(ls()[ls() != "fileName"])
-  }
-  
   #creating local environment
   internalenv <- new.env()
   
@@ -474,30 +463,36 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   n_vert=length(TFCE.output$t_stat)
   if(n_vert==20484) 
   {    
-    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    edgelist <- get('edgelistfs5')
     assign("edgelist", edgelist, envir = internalenv)
-    ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
+    
+    ROImap <- get('ROImap_fs5')
     assign("ROImap", ROImap, envir = internalenv)
-    MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+    
+    MNImap <- get('MNImap_fs5')
     assign("MNImap", MNImap, envir = internalenv)
   }
   else if (n_vert==81924) 
   {
-    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    edgelist <- get('edgelistfs6')
     assign("edgelist", edgelist, envir = internalenv)
-    ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
+    
+    ROImap <- get('ROImap_fs6')
     assign("ROImap", ROImap, envir = internalenv)
-    MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
+    
+    MNImap <- get('MNImap_fs6')
     assign("MNImap", MNImap, envir = internalenv)
   } 
   else if (n_vert==14524) 
   {
-    ROImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
+    ROImap <- get('ROImap_HIP')
     ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
     assign("ROImap", ROImap, envir = internalenv)
-    edgelist <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    
+    edgelist <- get('edgelistHIP')
     assign("edgelist", edgelist, envir = internalenv)
-    MNImap <- loadRData(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_hip.rdata?raw=TRUE"))
+    
+    MNImap <- get('MNImap_hip')
     assign("MNImap", MNImap, envir = internalenv)
   } 
   ##generating p map
