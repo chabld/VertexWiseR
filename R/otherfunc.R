@@ -464,7 +464,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
 #'
 #' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates
 #'
-#' @details The ]href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
+#' @details The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param contrast A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')
