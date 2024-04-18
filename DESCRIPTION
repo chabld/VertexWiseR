@@ -1,6 +1,6 @@
 Package: VertexWiseR
-Title: Run vertex-wise statistical analyses in whole-brain and hippocampal
-    surface objects
+Title: Run Vertex-Wise Statistical Analyses in Whole-Brain and Hippocampal Surface
+Objects
 Version: 0.0.1
 Date: 2023-12-11
 Authors@R: c(
@@ -33,5 +33,6 @@ Imports:
     freesurferformats,
     gifti,
     igraph,
+    RCurl,
     reticulate,
     utils
