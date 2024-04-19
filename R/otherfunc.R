@@ -58,7 +58,7 @@ perm_within_between=function(random)
 #' @examples
 #' surf_data = readRDS(file = url(paste0("https://github.com",
 #'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#'"SPRENG_CTv.rds?raw=TRUE")))[1:3,]
 #' smooth_surf(surf_data, 10)
 #' @importFrom reticulate source_python
 #' @export
@@ -184,9 +184,7 @@ getClusters=function(surf_data)
 #' @returns A matrix object with ROI as column and corresponding average vertex-wise values as row
 #' @seealso \code{\link{atlas_to_fs5}}
 #' @examples
-#' CTv = readRDS(file = url(paste0("https://github.com",
-#'"/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-#'"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+#' CTv = runif(20484,min=0, max=100)
 #' fs5_to_atlas(CTv, 1)
 #' @export
 

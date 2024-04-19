@@ -20,6 +20,6 @@ Smooths surface data at defined full width at half maximum (FWHM) as per the cor
 \examples{
 surf_data = readRDS(file = url(paste0("https://github.com",
 "/CogBrainHealthLab/VertexWiseR/blob/main/inst/demo_data/",
-"SPRENG_CTv.rds?raw=TRUE")))[1:5,]
+"SPRENG_CTv.rds?raw=TRUE")))[1:3,]
 smooth_surf(surf_data, 10)
 }
