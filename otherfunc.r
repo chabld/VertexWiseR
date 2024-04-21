@@ -57,19 +57,19 @@ smooth=function(data, FWHM)
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
     edgelist=edgelistfs5
-    remove(edgelistfs5)
+    remove(edgelistfs5,envir = globalenv())
     FWHM=FWHM/3.5 #converting mm to mesh units
   } else if(NCOL(data)==81924) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
     edgelist=edgelistfs6
-    remove(edgelistfs6)
+    remove(edgelistfs6,envir = globalenv())
     FWHM=FWHM/2 #converting mm to mesh units
   } else if(NCOL(data)==14524) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
     edgelist=edgelistHIP
-    remove(edgelistHIP)
+    remove(edgelistHIP,envir = globalenv())
     FWHM=FWHM/0.5 #converting m to mesh units
   } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
