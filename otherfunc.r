@@ -55,19 +55,19 @@ smooth=function(data, FWHM)
   ##select template, set its FWHM parameter and load its edgelist file
   if(NCOL(data)==20484) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
     edgelist=edgelistfs5
     remove(edgelistfs5)
     FWHM=FWHM/3.5 #converting mm to mesh units
   } else if(NCOL(data)==81924) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
     edgelistf=edgelistfs6
     remove(edgelistfs6)
     FWHM=FWHM/2 #converting mm to mesh units
   } else if(NCOL(data)==14524) 
   {
-    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
+    load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
     edgelist=edgelistHIP
     remove(edgelistHIP)
     FWHM=FWHM/0.5 #converting m to mesh units
