@@ -62,7 +62,7 @@ smooth=function(data, FWHM)
   } else if(NCOL(data)==81924) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
-    edgelistf=edgelistfs6
+    edgelist=edgelistfs6
     remove(edgelistfs6)
     FWHM=FWHM/2 #converting mm to mesh units
   } else if(NCOL(data)==14524) 
