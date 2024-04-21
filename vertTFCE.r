@@ -100,19 +100,19 @@ TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthrea
     if(n_vert==20484)  
     {
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"),envir = globalenv())
-      edgelistfs5=edgelist
+      edgelist=edgelistfs5
       remove(edgelistfs5)
     }
     else if (n_vert==81924)  
     {
         load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"),envir = globalenv())
-        edgelistfs6=edgelist
+        edgelist=edgelistfs6
         remove(edgelistfs6)
     }
     else if (n_vert==14524)  
     {
       load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"),envir = globalenv())
-      edgelistHIP=edgelist
+      edgelist=edgelistHIP
       remove(edgelistHIP)
     }
     else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
