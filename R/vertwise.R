@@ -147,17 +147,22 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
     ROImap <- get('ROImap_fs6')
     } else if (n_vert==14524)
     {
-      #load hippocampal R-compatible data for making hippocampal template
-       hip_points_cells <- get('hip_points_cells') 
-        #preparing coord data     
-        right=hip_points_cells[[1]]
-        left=hip_points_cells[[1]] 
-        left[,1]=-left[,1] #flip x coordinate for left hippocampus           
-        coord=rbind(left,right)
-
-        #preparing coord data     
-        tri=array(as.integer(hip_points_cells[[2]]),dim = c(14266,3))
-        template=reticulate::dict(tri=tri,coord=t(coord), convert = F)
+      if(file.exists(system.file('extdata','hip_template.fs', package='VertexWiseR'))==F)
+      {
+        cat("\nhip_template.fs is not detected in the current working directory. The hippocampus surface template will be downloaded\n\n")
+        
+        #Check if URL works and avoid returning error but only print message as requested by CRAN:
+        url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/hip_template.fs"
+        if(RCurl::url.exists(url)) {
+          download.file(url, destfile=paste0(system.file(package='VertexWiseR'),'/extdata/hip_template.fs'),mode = "wb")
+        } else { 
+          cat("\nhip_template.fs could not be downloaded from the github VertexWiseR directory and the url may be broken. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.")
+          return() #ends function
+        }
+      }
+        
+        brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
+        template=brainspace.mesh.mesh_io$read_surface(paste0(system.file(package='VertexWiseR'),'/extdata/hip_template.fs'))
         ROImap <- get('ROImap_HIP')
     } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
   
