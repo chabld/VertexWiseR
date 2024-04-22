@@ -3,8 +3,14 @@
 
 ############################################################################################################################
 ############################################################################################################################
+loadRData <- function(fileName){
+    #loads an RData file, and returns it
+    load(fileName)
+    get(ls()[ls() != "fileName"])
+  }
 ##Main function
 
+  
 TFCE.vertex_analysis=function(model,contrast, CT_data, nperm=100, tail=2, nthread=10, smooth_FWHM)
 {
   if(class(contrast)=="integer") {contrast=as.numeric(contrast)}
