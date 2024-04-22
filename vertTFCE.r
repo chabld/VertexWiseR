@@ -371,19 +371,33 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs5.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs5.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs5.rdata?raw=TRUE"))
+
+    edgelist=edgelistfs5    
+    ROImap=ROImap_fs5
+    MNImap=MNImap_fs5
+    remove(edgelistfs5,ROImap_fs5,MNImap_fs5)
   }
   else if (n_vert==81924) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistfs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_fs6.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_fs6.rdata?raw=TRUE"))
+
+    edgelist=edgelistfs6   
+    ROImap=ROImap_fs6
+    MNImap=MNImap_fs6
+    remove(edgelistfs6,ROImap_fs6,MNImap_fs6)
   } 
   else if (n_vert==14524) 
   {
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/ROImap_hip.rdata?raw=TRUE"))
-    ROImap=list(data.matrix(ROImap[[1]]),ROImap[[2]])
+    ROImap=list(data.matrix(ROImap_HIP[[1]]),ROImap_HIP[[2]])
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/edgelistHIP.rdata?raw=TRUE"))
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/MNImap_hip.rdata?raw=TRUE"))
+    
+    edgelist=edgelistHIP  
+    MNImap=MNImap_hip
+    remove(edgelistHIP,ROImap_HIP,MNImap_hip)
   } 
   ##generating p map
   tfce.p=rep(NA,n_vert)
