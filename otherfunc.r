@@ -277,7 +277,7 @@ plotCT=function(data, filename,title="",surface="inflated",cmap,fs_path, limits,
   {
   ##hippocampal plots
     #import python libraries and hippocampal template data
-    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/python/hipp_plot.py?raw=TRUE")
+    reticulate::source_python("https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/python/hipp_plot.py?raw=TRUE")
     load(file = url("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/data/hip_points_cells.rdata?raw=TRUE"))
     
     #reshaping data into a 7262 x 2 x N array
