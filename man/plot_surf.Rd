@@ -19,7 +19,7 @@ plot_surf(
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 
-\item{title}{A string object containing the title wanted in the plot. Default is none.}
+\item{title}{A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\n".}
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
