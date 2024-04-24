@@ -302,6 +302,8 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   tstat[intersect(which(neg_clusterIDmap==0),which(pos_clusterIDmap==0))]=NA
   tstat[is.na(tstat)]=0
   tstat[maskNA]=NA
+  #setting 0s to NA to make vertices with t=0 empty in plots
+  tstat[tstat==0]=NA
   
   ##generating positive and negative masks
   posmask=array(rep(0,NCOL(surf_data)))
