@@ -354,14 +354,17 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     rows=1
     surf_data=as.numeric(surf_data)
   } else {rows=nrow(surf_data)}
-  
+
+  #insert a dummy title if title is missing in a multi-row data scenario
+  if(rows>1 & missing("title")) {title=rep(NULL,rows)
+				}
   #check length of vector
   n_vert=length(surf_data)
   if(n_vert%%20484==0) {template="fsaverage5"}
   else if (n_vert%%81924==0) {template="fsaverage6"} 
   else if (n_vert%%14524!=0) {stop("surf_data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
 
-  #setting color maps
+  #if cmap is missing, select cmaps depending on whether the image contains positive only or negative only values
   if(missing("cmap"))
   {
     if(range(surf_data,na.rm = T)[1]>=0)  {cmap="Reds"}
@@ -369,9 +372,18 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     else  {cmap="RdBu_r"}  
   }
   
-  #setting limits
-  if(missing("limits")) {limits=NULL}
-  else {limits=reticulate::tuple(limits[1],limits[2])}
+  #if cmap is missing, set appropriate default limits depending on whether the image contains positive only or negative only values
+  if(missing("limits")) 
+  {
+    if(range(surf_data,na.rm = T)[1]>=0)  
+    {
+      limits=c(0,range(surf_data,na.rm = T)[2])
+    }
+    else if(range(surf_data,na.rm = T)[2]<=0)
+    {
+      limits=c(range(surf_data,na.rm = T)[1],0)
+    } 
+  }
   
   if(n_vert%%14524!=0)
   {
