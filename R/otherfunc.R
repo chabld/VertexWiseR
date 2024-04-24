@@ -355,9 +355,13 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     surf_data=as.numeric(surf_data)
   } else {rows=nrow(surf_data)}
 
-  #insert a dummy title if title is missing in a multi-row data scenario
-  if(rows>1 & missing("title")) {title=rep(NULL,rows)
-				}
+  #in a multi-row data scenario: insert a dummy title if title is missing  or repeat the title nrow times
+  if(rows>1) 
+    {
+       if(missing("title")) {title=rep(NULL,rows)}
+       else if (missing("title")) {title=rep(title,rows)
+    }
+	  
   #check length of vector
   n_vert=length(surf_data)
   if(n_vert%%20484==0) {template="fsaverage5"}
@@ -375,14 +379,8 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   #if cmap is missing, set appropriate default limits depending on whether the image contains positive only or negative only values
   if(missing("limits")) 
   {
-    if(range(surf_data,na.rm = T)[1]>=0)  
-    {
-      limits=c(0,range(surf_data,na.rm = T)[2])
-    }
-    else if(range(surf_data,na.rm = T)[2]<=0)
-    {
-      limits=c(range(surf_data,na.rm = T)[1],0)
-    } 
+    if(range(surf_data,na.rm = T)[1]>=0)  {limits=c(0,range(surf_data,na.rm = T)[2])}
+    else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} 
   }
   
   if(n_vert%%14524!=0)
