@@ -359,7 +359,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   if(rows>1) 
     {
        if(missing("title")) {title=rep(NULL,rows)}
-       else if (missing("title")) {title=rep(title,rows)
+       else if (missing("title")) {title=rep(title,rows)}
     }
 	  
   #check length of vector
@@ -376,13 +376,23 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     else  {cmap="RdBu_r"}  
   }
   
-  #if cmap is missing, set appropriate default limits depending on whether the image contains positive only or negative only values
-  if(missing("limits")) 
-  {
-    if(range(surf_data,na.rm = T)[1]>=0)  {limits=c(0,range(surf_data,na.rm = T)[2])}
-    else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} 
-  }
-  
+  #setting color scal limits
+    if(rows==1)
+    {
+      if(missing("limits")) 
+      {
+        if(range(surf_data,na.rm = T)[1]>=0)  {limits=c(0,range(surf_data,na.rm = T)[2])}
+        else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} 
+        else {limits="sym"} #symmetrical limits
+      }
+      limits=reticulate::tuple(limits[1],limits[2])
+    } else 
+    { ##in multirow data scenarios
+      if(missing("limits")) 
+      {limits="sym"} #allow each row to have its own symmetrical limits
+      else(limits=reticulate::tuple(limits[1],limits[2])) #fixed limits across all rows
+    }
+	
   if(n_vert%%14524!=0)
   {
   ##cortical surface fplots
