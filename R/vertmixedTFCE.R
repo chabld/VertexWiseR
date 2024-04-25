@@ -46,7 +46,7 @@
 
 ##Main function
 
-TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_type="row")
+TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_type="between")
 {
   
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
