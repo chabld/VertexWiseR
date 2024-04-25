@@ -3,7 +3,7 @@
 ############################################################################################################################
 ############################################################################################################################
 	
-## permutation function for random subject effects
+## permutation functions for random subject effects
 ## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
 perm_within_between=function(random)
 {
@@ -11,7 +11,7 @@ perm_within_between=function(random)
   perm.idx=rep(NA, length(random))
   for(count in 2:max(table(random)))
   {
-    if(length(which(table(random)==count)>0))
+    if(length(which(table(random)==count))>0)
     {
       sub.id=as.numeric(which(table(random)==count))
         if(length(sub.id)>1)
@@ -44,6 +44,7 @@ perm_within_between=function(random)
   return(perm.idx)
 }
 
+## Paired/grouped data points are shuffled within subjects, order of subjects in the dataset remains unchanged
 perm_within=function(random)
 {
   ##for groups of 2 or more (subjects with 2 or more measurements)
@@ -56,9 +57,45 @@ perm_within=function(random)
       sub.id=as.numeric(which(table(random)==count))
       for(sub in sub.id)
       {
-        perm.idx[which(random==sub)]=sample(which(random==sub)) ##sample— within subject shuffling
+        perm.idx[which(random==sub)]=sample(which(random==sub))
       }  
     }
+  }
+  return(perm.idx)
+}
+
+## Paired/grouped data points are shuffled between subjects, order of data points within subjects remains unchanged.
+perm_between=function(random)
+{
+  ##for groups of 2 or more (subjects with 2 or more measurements)
+  perm.idx=rep(NA, length(random))
+  for(count in 2:max(table(random)))
+  {
+    if(length(which(table(random)==count))>0)
+    {
+      sub.id=as.numeric(which(table(random)==count))
+      if(length(sub.id)>1)
+      {
+        ##between group shuffling
+        recode.vec=sample(sub.id)
+        vec.idx=1
+        for(sub in sub.id)
+        {
+          perm.idx[which(random==sub)]=which(random==recode.vec[vec.idx])
+          vec.idx=vec.idx+1
+        }   
+        remove(vec.idx,recode.vec)  
+      }
+    }
+  }
+  ##for subjects with a single measurement
+  sub.idx=which(is.na(perm.idx))
+  if(length(sub.idx)>1)
+  {
+    perm.idx[sub.idx]=sample(sub.idx)  
+  } else 
+  {
+    perm.idx[sub.idx]=sub.idx
   }
   return(perm.idx)
 }
