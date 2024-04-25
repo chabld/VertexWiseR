@@ -46,7 +46,7 @@
 
 ##Main function
 
-TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_within_between=F)
+TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_type="row")
 {
   
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
@@ -274,8 +274,9 @@ If it is your random variable and it is non-binarizable, do not include it in th
     set.seed(123)
     permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
     
-    if(perm_within_between==T) {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(random)}} 
-    else if(perm_within_between==F) {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
+    if(perm_type=="within_between") {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(random)}} 
+    else if(perm_type=="within") {for (perm in 1:nperm)  {permseq[,perm]=perm_within(random)}} 
+    else if(perm_type=="beween") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
     
     #activate parallel processing
     unregister_dopar = function() {
