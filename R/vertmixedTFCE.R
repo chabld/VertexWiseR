@@ -214,21 +214,10 @@ If it is your random variable and it is non-binarizable, do not include it in th
     n_vert=NCOL(surf_data)
     if(missing("smooth_FWHM"))
     {
-      if(n_vert==20484) 
-      {
-        cat("surf_data will be smoothed using the default 10mm FWHM kernel for fsaverage5 images\n")
-        surf_data=smooth_surf(surf_data, FWHM=10)
-      }
-      else if(n_vert==81924) 
-      {
-        cat("surf_data will be smoothed using the default 5mm FWHM kernel for fsaverage6 images\n")
-        surf_data=smooth_surf(surf_data, FWHM=5)
-      }
-      else if(n_vert==14524) 
-      {
-        cat("surf_data will be smoothed using the default 5mm FWHM kernel for hippocampal maps\n")
-        surf_data=smooth_surf(surf_data, FWHM=5)
-      }
+      cat("smooth_FWHM argument was not given. surf_data will not be smoothed here.\n")
+    } else if(smooth_FWHM==0)   
+    {
+      cat("smooth_FWHM set to 0: surf_data will not be smoothed here.\n")
     } else if(smooth_FWHM>0) 
     {
       cat(paste("surf_data will be smoothed using a ", smooth_FWHM,"mm FWHM kernel\n", sep=""))
