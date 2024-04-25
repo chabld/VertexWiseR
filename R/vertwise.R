@@ -57,6 +57,11 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   ##load other vertex-wise functions (not needed when package is in library)
   #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
 
+  #recode random variale to numeric
+    if(!missing("random"))
+    { #recoding subject variable
+      random=match(random,unique(random))
+    }
   
   ##checks
     #check contrast
