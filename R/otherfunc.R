@@ -48,11 +48,12 @@ perm_within=function(random)
 {
   ##for groups of 2 or more (subjects with 2 or more measurements)
   perm.idx=rep(NA, length(random))
-  sub.id=as.numeric(which(table(random)==count))
+
   for(count in 2:max(table(random)))
   {
     if(length(which(table(random)==count)>0))
     {
+      sub.id=as.numeric(which(table(random)==count))
       for(sub in sub.id)
       {
         perm.idx[which(random==sub)]=sample(which(random==sub)) ##sample— within subject shuffling
