@@ -236,7 +236,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     cat("Estimating unpermuted TFCE image...")
     brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
     brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
-    terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
+    terms=brainstat.stats.terms$MixedEffect(ran = as.factor(random),fix = model,"_check_categorical" = F)
       
       if(n_vert!=14524)
         { #non-hippocampal template  
