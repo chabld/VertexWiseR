@@ -263,7 +263,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     #save output from model
     tmap.orig=as.numeric(model.fit$t)
     TFCE.multicore = utils::getFromNamespace("TFCE.multicore", "VertexWiseR")
-    TFCE.orig=TFCE.multicore(tmap.orig,tail=2,nthread=nthread, envir=edgelistenv)
+    TFCE.orig=TFCE.multicore(tmap.orig,tail=tail,nthread=nthread, envir=edgelistenv)
     
     end=Sys.time()
     
@@ -329,7 +329,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
                                                 cluster_threshold=1)
               model.fit$fit(surf_data[permseq[,perm],])
               
-              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = tail)))))
             }
           end=Sys.time()
           cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
@@ -350,7 +350,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
                                                 cluster_threshold=1)
               model.fit$fit(surf_data[permseq[,perm],])
               
-              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = 2)))))
+              return(max(abs(suppressWarnings(TFCE(data = as.numeric(model.fit$t),tail = tail)))))
             }
           end=Sys.time()
           cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
