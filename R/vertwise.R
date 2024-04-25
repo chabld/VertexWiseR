@@ -199,7 +199,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   
   #fit model
   if(missing("random")) {model0=brainstat.stats.terms$FixedEffect(model, "_check_categorical" = F)}
-  else {model0=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)}
+  else {model0=brainstat.stats.terms$MixedEffect(ran = as.factor(random),fix = model,"_check_categorical" = F)}
   model=brainstat.stats.SLM$SLM(model = model0,
                                 contrast=contrast,
                                 surf = template,
