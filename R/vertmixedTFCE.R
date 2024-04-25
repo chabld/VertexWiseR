@@ -17,7 +17,7 @@
 #' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
 #' @param nthread Maximum number of cpu cores to allocate 
 #' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
-#' @param perm_within_between A logical object stating whether to implement a permutation function for random subject effects 
+#' @param perm_type A string object stating whether to permutate the rows ("row"), between subjects ("between"), within subjects ("within subjects) or between and within subjects ("within_between") function for random subject effects 
 #'
 #'
 #' @returns A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
@@ -46,7 +46,7 @@
 
 ##Main function
 
-TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_type="between")
+TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100, tail=2, nthread=10, smooth_FWHM, perm_type="row")
 {
   
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
@@ -276,7 +276,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     if(perm_type=="within_between") {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(random)}} 
     else if(perm_type=="within") {for (perm in 1:nperm)  {permseq[,perm]=perm_within(random)}} 
-    else if(perm_type=="beween") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
+    else if(perm_type=="beween") {for (perm in 1:nperm)  {permseq[,perm]=perm_between(random)}} 
+    else if(perm_type=="row") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
     
     #activate parallel processing
     unregister_dopar = function() {
