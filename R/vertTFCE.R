@@ -637,7 +637,7 @@ TFCE.threshold=function(TFCE.output, p=0.05, atlas=1, k=20)
   if (inherits(pos.clustermap,"character")!=T & inherits(neg.clustermap,"character")!=T) {
     posc = as.matrix(as.numeric(pos.clustermap))
     negc = as.matrix(as.numeric(neg.clustermap))*-1
-    posc[negc!=0,] <- negc[negc!=0,]
+    posc[!is.na(negc!=0),] <- negc[!is.na(negc!=0),]
     posc[posc==0 & negc==0,] <- NA
     bi.clusterIDmap = posc
   } else if (inherits(pos.clustermap,"character")!=T) {
