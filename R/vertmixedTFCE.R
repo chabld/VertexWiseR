@@ -276,7 +276,7 @@ If it is your random variable and it is non-binarizable, do not include it in th
     
     if(perm_type=="within_between") {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(random)}} 
     else if(perm_type=="within") {for (perm in 1:nperm)  {permseq[,perm]=perm_within(random)}} 
-    else if(perm_type=="beween") {for (perm in 1:nperm)  {permseq[,perm]=perm_between(random)}} 
+    else if(perm_type=="between") {for (perm in 1:nperm)  {permseq[,perm]=perm_between(random)}} 
     else if(perm_type=="row") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
     
     #activate parallel processing
