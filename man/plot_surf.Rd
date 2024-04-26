@@ -11,7 +11,9 @@ plot_surf(
   surface = "inflated",
   cmap,
   limits,
-  colorbar = T
+  colorbar = T,
+  size,
+  zoom
 )
 }
 \arguments{
@@ -19,7 +21,7 @@ plot_surf(
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 
-\item{title}{A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\n".}
+\item{title}{A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\\n".}
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
@@ -28,6 +30,10 @@ plot_surf(
 \item{limits}{Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data.}
 
 \item{colorbar}{A logical object stating whether to include a color bar in the plot or not (default is TRUE).}
+
+\item{size}{A vector of two numbers indicating the image dimensions (width and height in pixels). Default is 1920x400 for whole-brain surface and 400*200 for hippocampal surface.}
+
+\item{zoom}{A numeric vector indicating how much zoom on the figures too add. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.}
 }
 \value{
 A matrix object containing vertex-wise surface data mapped in fsaverage5 space
