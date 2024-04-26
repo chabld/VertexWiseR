@@ -390,6 +390,8 @@ fs6_to_fs5=function(surf_data)
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
 #' @param limits Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data. 
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
+#' @param size A vector of two numbers indicating the image dimensions (width and height in pixels). Default is 1920x400 for whole-brain surface and 400*200 for hippocampal surface.
+#' @param zoom A numeric vector indicating how much zoom on the figures too add. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @examples
@@ -401,7 +403,7 @@ fs6_to_fs5=function(surf_data)
 #' @importFrom reticulate tuple import np_array source_python
 #' @export
 
-plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T)
+plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T, size, zoom)
 {
   #format title for single row
   if(is.null(nrow(surf_data)))
@@ -432,7 +434,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     else  {cmap="RdBu_r"}  
   }
   
-  #setting color scal limits
+  #setting color scale limits
     if(rows==1)
     {
       if(missing("limits")) 
@@ -448,7 +450,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
       {limits="sym"} #allow each row to have its own symmetrical limits
       else(limits=reticulate::tuple(limits[1],limits[2])) #fixed limits across all rows
     }
-	
+  
   if(n_vert%%14524!=0)
   {
   ##cortical surface fplots
@@ -460,9 +462,13 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
     right=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[2]
     
+    #default cortical size and zoom parametes
+    if(missing("size")) { size=c(1920,rows*400)}
+    if(missing("zoom")) { zoom=1.25 }
+    
     surf_plot=brainspace.plotting$plot_hemispheres(left[[1]], right[[1]],  array_name=reticulate::np_array(surf_data),cmap=cmap, 
-                                                size=reticulate::tuple(as.integer(c(1920,rows*400))),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
-                                                return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=1.25,color_range=limits,
+                                                size=reticulate::tuple(as.integer(size)),nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),
+                                                return_plotter=T,background=reticulate::tuple(as.integer(c(1,1,1))),zoom=zoom,color_range=limits,
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
@@ -475,6 +481,10 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   ##hippocampal plots
     #import python libraries
     reticulate::source_python(paste0(system.file(package='VertexWiseR'),'/python/hipp_plot.py'))
+    
+    #default hippocampal size and zoom parametes
+    if(missing("size")) { size=c(400,200)}
+    if(missing("zoom")) { zoom=1.2 }
 
     #reshaping surf_data into a 7262 x 2 x N array
     if(is.null(nrow(surf_data)))  {surf_data=cbind(surf_data[1:7262],surf_data[7263:14524])} #if N=1
@@ -485,7 +495,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
         surf_data=surf_data.3d
       }
     
-    surf_plot=surfplot_canonical_foldunfold(surf_data,hipdat =get('hip_points_cells'),color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(c(350,300)),
+    surf_plot=surfplot_canonical_foldunfold(surf_data,hipdat =get('hip_points_cells'),color_bar=colorbar,share="row",nan_color=reticulate::tuple(0.7, 0.7, 0.7, 1),size=as.integer(size), zoom=zoom,
                                          cmap=cmap,color_range=limits,label_text=title, return_plotter=T,interactive=F) ##disabling interactive mode because this causes RStudio to hang
   }
   #output plot as a .png image
