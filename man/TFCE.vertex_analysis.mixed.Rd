@@ -13,7 +13,7 @@ TFCE.vertex_analysis.mixed(
   tail = 2,
   nthread = 10,
   smooth_FWHM,
-  perm_within_between = F
+  perm_type = "row"
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ TFCE.vertex_analysis.mixed(
 
 \item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
 
-\item{perm_within_between}{A logical object stating whether to implement a permutation function for random subject effects}
+\item{perm_type}{A string object stating whether to permutate the rows ("row"), between subjects ("between"), within subjects ("within subjects) or between and within subjects ("within_between") function for random subject effects}
 }
 \value{
 A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps.
