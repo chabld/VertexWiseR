@@ -442,8 +442,8 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
    maxlimit=max(abs(range(surf_data,na.rm = T)))
     if(missing("limits")) 
     {
-      if(range(surf_data,na.rm = T)[1]>=0) {limits=c(0,range(surf_data,na.rm = T)[2])} ##if image contains all positive values
-      else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} ##if image contains all negative values
+      if(range(surf_data,na.rm = T)[1]>=0) {limits=reticulate::tuple(0,range(surf_data,na.rm = T)[2])} ##if image contains all positive values
+      else if(range(surf_data,na.rm = T)[2]<=0) {limits=reticulate::tuple(range(surf_data,na.rm = T)[1],0)} ##if image contains all negative values
       else {limits=reticulate::tuple(-maxlimit,maxlimit)} ##symmetrical limits will be used if image contains both positive and negative values
     } else {
       ##user specified limits
