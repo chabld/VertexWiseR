@@ -539,12 +539,12 @@ surf_to_vol=function(surf_data, filename="output.nii")
 ############################################################################################################################
 #' @title Decode surface data
 #'
-#' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates
+#' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates.
 #'
-#' @details The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. It also downloads the \href{https://neurosynth.org/}{neurosynth} database (~9 Mb) for correlation.
+#' @details The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. The function alsodownloads the \href{https://github.com/neurosynth/neurosynth-data}{neurosynth} database in the package's inst/extdata direcotry (~8 Mb) for correlation.
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
-#' @param contrast A string object indicating whether to decode positive or negative clusters ('positive' or 'negative')
+#' @param contrast A string object indicating whether to decode positive or negative associations ('positive' or 'negative')
 #'
 #' @returns A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
 #' @examples
