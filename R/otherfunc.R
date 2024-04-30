@@ -431,21 +431,24 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   }
   
   #setting color scale limits
-    if(rows==1)
+  maxlimit=max(abs(range(surf_data,na.rm = T)))
+  if(rows==1)
+  {
+    if(missing("limits")) 
     {
-      if(missing("limits")) 
-      {
-        if(range(surf_data,na.rm = T)[1]>=0)  {limits=c(0,range(surf_data,na.rm = T)[2])}
-        else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} 
-        else {limits="sym"} #symmetrical limits
-      }
+      if(range(surf_data,na.rm = T)[1]>=0) {limits=c(0,range(surf_data,na.rm = T)[2])} ##if image contains all positive values
+      else if(range(surf_data,na.rm = T)[2]<=0) {limits=c(range(surf_data,na.rm = T)[1],0)} ##if image contains all negative values
+      else {limits=reticulate::tuple(-maxlimit,maxlimit)} ##symmetrical limits will be used if image contains both positive and negative values
+    } else {
+      ##user specified limits
       limits=reticulate::tuple(limits[1],limits[2])
-    } else 
-    { ##in multirow data scenarios
-      if(missing("limits")) 
-      {limits="sym"} #allow each row to have its own symmetrical limits
-      else(limits=reticulate::tuple(limits[1],limits[2])) #fixed limits across all rows
     }
+    
+  } else 
+  { ##in multirow data scenarios
+    if(missing("limits")) {limits=reticulate::tuple(-maxlimit,maxlimit)} #set the same symmetrical limits across all rows
+    else(limits=reticulate::tuple(limits[1],limits[2])) #set the same user-specified limits for all rows
+  }
   
   if(n_vert%%14524!=0)
   {
@@ -468,7 +471,6 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
                                                 label_text=title,interactive=F, color_bar=colorbar,  transparent_bg=FALSE)  ##disabling interactive mode because this causes RStudio to hang
   } else
   {
-    
     #Solves the "no visible binding for global variable" issue
     . <- surfplot_canonical_foldunfold  <- NULL 
     internalenv <- new.env()
