@@ -91,7 +91,7 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
         
         if (inherits(contrast, "character")== T) 
         {
-          if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
+          if(identical(contrast,model[,colno]))  {break} 
         } else 
         {
           if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(model[,colno]))))  {break}

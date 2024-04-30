@@ -80,7 +80,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
         
         if(inherits(contrast,"character")==T) 
         {
-          if(identical(contrast,data.matrix(model)[,colno]))  {break} 
+          if(identical(contrast,model[,colno]))  {break} 
         } else 
         {
           if(identical(suppressWarnings(as.numeric(contrast)),suppressWarnings(as.numeric(model[,colno]))))  {break}

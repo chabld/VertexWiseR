@@ -109,7 +109,7 @@ TFCE.vertex_analysis.mixed=function(model,contrast, surf_data, random, nperm=100
         
         if (inherits(contrast,"character")==T) 
         {
-          if(identical(data.matrix(contrast),data.matrix(model)[,colno]))  {break} 
+          if(identical(contrast,model[,colno]))  {break} 
         } else 
         {
           if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
