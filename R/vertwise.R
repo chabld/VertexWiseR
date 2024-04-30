@@ -9,6 +9,13 @@
 #' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps. 
 #'
 #' @details The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}. 
+#' 
+#' Output definitions:
+#' - `nverts`: number of vertices in the cluster
+#' - `P`: p-value of the cluster
+#' - `X, Y and Z`: MNI coordinates of the vertex with the highest t-stat in the cluster.
+#' - `tstat`: t statistic of the vertex with the highest t-stat in the cluster
+#' - `region`: the region this highest t-stat vertex is located in, as determined/labelled by the selected atlas 
 #'
 #' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
 #' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
