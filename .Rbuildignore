@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^images$
 ^otherfunc\.r$
 ^vertwise\.r$
 ^vertTFCE\.r$
