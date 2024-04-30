@@ -276,11 +276,10 @@ fs5_to_atlas=function(surf_data,atlas)
 
 #' @title Atlas to fsaverage5
 #'
-#' @description Maps average parcellation data from a selected atlas to a surface in fsaverage5
-#' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
+#' @description Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() function) to a surface in fsaverage5 space
+#' @details The function currently works with the Desikan-Killiany (70 labels from enigma toolbox), Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigma toolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
 #'
-#' @param surf_data A matrix object containing average surface measure for each region of interest, see fs5_to_atlas() output format. 
-#' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
+#' @param parcel_data A matrix object containing average surface measures for each region of interest, see the fs5_to_atlas() output format. 
 #'
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
@@ -290,18 +289,25 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @export
 
 
-atlas_to_fs5=function(surf_data,atlas) 
+atlas_to_fs5=function(parcel_data) 
   {
   
-    #load atlas mapping surf_data
+    #load atlas mapping surface data
     ROImap <- get('ROImap_fs5')
-  
+    
+    if (ncol(parcel_data) == 70) {atlas=1} 
+    else if (ncol(parcel_data) == 100) {atlas=2} 
+    else if (ncol(parcel_data) == 200) {atlas=3} 
+    else if (ncol(parcel_data) == 360) {atlas=4} 
+    else if (ncol(parcel_data) == 148) {atlas=5} 
+    else { stop('The function could not identify what atlas your data was parcellated with, based on the number of columns (parcels). The function currently works with the Desikan-Killiany (70 labels from the enigma toolbox), Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases.')}
+    
     #init variables
     nregions=max(ROImap[[1]][,atlas])
     fs5_dat=rep(NA,20484)
   
     #mapping atlas label to fsaverage5 space
-    for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=surf_data[region]}
+    for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=parcel_data[region]}
     return(as.numeric(fs5_dat))
   }
 ############################################################################################################################
@@ -379,11 +385,13 @@ fs6_to_fs5=function(surf_data)
 #'
 #' @description Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
 #'
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
+#' @param surf_data A matrix object containing the surface data (N rows for participants and M columns for vertices). It can be the output from SURFvextract() as well as masks outputted by analyses functions.
 #' @param filename A string object containing the desired name of the output .png file.
 #' @param title A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\\n".
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
+#' 
+#' Default cmap is set to `"Reds"` for positive values, `"Blues_r"` for negative values and `"RdBu"` when both positive and negative values exist. 
 #' @param limits Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data. 
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
 #' @param size A vector of two numbers indicating the image dimensions (width and height in pixels). Default is 1920x400 for whole-brain surface and 400*200 for hippocampal surface.

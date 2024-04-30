@@ -37,6 +37,15 @@ Fits a model with the whole-brain and hippocampal surface data in template space
 }
 \details{
 The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
+
+Output definitions:
+\itemize{
+\item \code{nverts}: number of vertices in the cluster
+\item \code{P}: p-value of the cluster
+\item \verb{X, Y and Z}: MNI coordinates of the vertex with the highest t-stat in the cluster.
+\item \code{tstat}: t statistic of the vertex with the highest t-stat in the cluster
+\item \code{region}: the region this highest t-stat vertex is located in, as determined/labelled by the selected atlas
+}
 }
 \examples{
 demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',

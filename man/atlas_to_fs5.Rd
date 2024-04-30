@@ -4,21 +4,19 @@
 \alias{atlas_to_fs5}
 \title{Atlas to fsaverage5}
 \usage{
-atlas_to_fs5(surf_data, atlas)
+atlas_to_fs5(parcel_data)
 }
 \arguments{
-\item{surf_data}{A matrix object containing average surface measure for each region of interest, see fs5_to_atlas() output format.}
-
-\item{atlas}{A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.}
+\item{parcel_data}{A matrix object containing average surface measures for each region of interest, see the fs5_to_atlas() output format.}
 }
 \value{
 A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 }
 \description{
-Maps average parcellation data from a selected atlas to a surface in fsaverage5
+Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() function) to a surface in fsaverage5 space
 }
 \details{
-The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
+The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
 }
 \examples{
 CTv = runif(100,min=0, max=100)

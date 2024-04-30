@@ -17,7 +17,7 @@ plot_surf(
 )
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data (N rows for participants and M columns for vertices). It can be the output from SURFvextract() as well as masks outputted by analyses functions.}
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 
@@ -25,7 +25,9 @@ plot_surf(
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
-\item{cmap}{A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}.}
+\item{cmap}{A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}.
+
+Default cmap is set to \code{"Reds"} for positive values, \code{"Blues_r"} for negative values and \code{"RdBu"} when both positive and negative values exist.}
 
 \item{limits}{Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data.}
 
