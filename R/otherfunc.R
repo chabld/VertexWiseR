@@ -431,9 +431,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   }
   
   #setting color scale limits
-  maxlimit=max(abs(range(surf_data,na.rm = T)))
-  if(rows==1)
-  {
+   maxlimit=max(abs(range(surf_data,na.rm = T)))
     if(missing("limits")) 
     {
       if(range(surf_data,na.rm = T)[1]>=0) {limits=c(0,range(surf_data,na.rm = T)[2])} ##if image contains all positive values
@@ -441,14 +439,11 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
       else {limits=reticulate::tuple(-maxlimit,maxlimit)} ##symmetrical limits will be used if image contains both positive and negative values
     } else {
       ##user specified limits
-      limits=reticulate::tuple(limits[1],limits[2])
+      if(!is.null(limits))
+      {
+        limits=reticulate::tuple(limits[1],limits[2])  
+      }   
     }
-    
-  } else 
-  { ##in multirow data scenarios
-    if(missing("limits")) {limits=reticulate::tuple(-maxlimit,maxlimit)} #set the same symmetrical limits across all rows
-    else(limits=reticulate::tuple(limits[1],limits[2])) #set the same user-specified limits for all rows
-  }
   
   if(n_vert%%14524!=0)
   {
