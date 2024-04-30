@@ -284,8 +284,8 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
 #' @examples
-#' CTv = runif(100,min=0, max=100)
-#' atlas_to_fs5(CTv, 2)
+#' atlas_data = runif(100,min=0, max=100)
+#' atlas_to_fs5(atlas_data)
 #' @export
 
 
