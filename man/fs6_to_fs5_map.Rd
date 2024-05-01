@@ -3,7 +3,7 @@
 \docType{data}
 \name{fs6_to_fs5_map}
 \alias{fs6_to_fs5_map}
-\title{fsaverage6 template object for conversion in fs6_to_fs5()}
+\title{fsaverage6 template object for nearest neighbor conversion in fs6_to_fs5()}
 \format{
 \subsection{\code{fs6_to_fs5_map}}{
 
@@ -17,6 +17,6 @@ An array of 81924 integers ()
 fs6_to_fs5_map
 }
 \description{
-fsaverage6 template object for conversion in fs6_to_fs5()
+fsaverage6 template object for nearest neighbor conversion in fs6_to_fs5()
 }
 \keyword{datasets}

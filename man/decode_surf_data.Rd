@@ -7,18 +7,18 @@
 decode_surf_data(surf_data, contrast = "positive")
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
+\item{surf_data}{a numeric vector with a length of 20484}
 
-\item{contrast}{A string object indicating whether to decode positive or negative associations ('positive' or 'negative')}
+\item{contrast}{A string object indicating whether to decode the positive or negative mask ('positive' or 'negative')}
 }
 \value{
-A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
+A data.frame object listing the keywords and their Pearson's R values
 }
 \description{
-Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates.
+Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric statistical maps and associate them with relevant key words
 }
 \details{
-The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. The function alsodownloads the \href{https://github.com/neurosynth/neurosynth-data}{neurosynth} database in the package's inst/extdata direcotry (~8 Mb) for correlation.
+The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. The function also downloads the \href{https://github.com/neurosynth/neurosynth-data}{neurosynth} database in the package's inst/extdata direcotry (~8 Mb) for the analysis.
 }
 \examples{
 CTv = rbinom(20484, 1, 0.001) 

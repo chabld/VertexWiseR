@@ -17,11 +17,11 @@ plot_surf(
 )
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data (N rows for participants and M columns for vertices). It can be the output from SURFvextract() as well as masks outputted by analyses functions.}
+\item{surf_data}{A numeric vector (length of V) or a matrix (N rows x V columns), where N is the number of subplots, and V is the number of vertices. It can be the output from SURFvextract() as well as masks or vertex-wise results outputted by analyses functions.}
 
 \item{filename}{A string object containing the desired name of the output .png file.}
 
-\item{title}{A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\\n".}
+\item{title}{A string object for setting the title in the plot. Default is none. For titles that too long to be fully displayed within the plot, we recommend splitting them into multiple lines by inserting "\\n".}
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
@@ -29,19 +29,19 @@ plot_surf(
 
 Default cmap is set to \code{"Reds"} for positive values, \code{"Blues_r"} for negative values and \code{"RdBu"} when both positive and negative values exist.}
 
-\item{limits}{Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data.}
+\item{limits}{A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the same symmetrical limits c(-max(abs(surf_dat),max(abs(surf_dat))) will be used for all subplots. If set to NULL, each subplot will have its own limits corresponding to their min and max values}
 
 \item{colorbar}{A logical object stating whether to include a color bar in the plot or not (default is TRUE).}
 
-\item{size}{A vector of two numbers indicating the image dimensions (width and height in pixels). Default is 1920x400 for whole-brain surface and 400*200 for hippocampal surface.}
+\item{size}{A combined pair of numeric vector indicating the image dimensions (width and height in pixels). Default is c(1920,400) for whole-brain surface and c(400,200) for hippocampal surface.}
 
-\item{zoom}{A numeric vector indicating how much zoom on the figures too add. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.}
+\item{zoom}{A numeric value for adjusting the level of zoom on the figures. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.}
 }
 \value{
-A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+Outputs the plot as a .png image
 }
 \description{
-Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
+Plots surface data in a grid with one or multiple rows in a .png file
 }
 \examples{
 if(interactive()){

@@ -5,22 +5,22 @@
 ############################################################################################################################
 #' @title Vertex-wise analysis with TFCE (mixed effect)
 #'
-#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as cluster-corrected maps with threshold-free cluster enhancement.
+#' @description Fits a linear mixed effects model with the cortical or hippocampal surface data as the predicted outcome, and returns t-stat and TFCE statistical maps for the selected contrast.
 #' 
-#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' @details This TFCE method is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
 #' 
-#' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
-#' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
-#' @param random An object containing the values of the random variable 
-#' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
-#' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
-#' @param nthread Maximum number of cpu cores to allocate 
-#' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
-#' @param perm_type A string object stating whether to permutate the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") function for random subject effects. Default is "row". 
+#' @param model An N X V data.frame object containing N rows for each subject and V columns for each predictor included in the model.This data.frame should not include the random effects variable.
+#' @param contrast A numeric vector or object containing the values of the predictor of interest. The t-stat and TFCE maps will be estimated only for this predictor
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() or HIPvextract()  output format. 
+#' @param random An object or vector containing the values of the random variable 
+#' @param nperm A numeric integer object specifying the number of permutations generated for the subsequent thresholding procedures (default = 100)
+#' @param tail A numeric integer object specifying whether to test a one-sided positive (1), one-sided negative (-1) or two-sided (2) hypothesis
+#' @param nthread A numeric integer object specifying the number of CPU threads to allocate 
+#' @param smooth_FWHM A numeric vector object specifying the desired smoothing width in mm 
+#' @param perm_type A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row". 
 #'
 #'
-#' @returns A list object containing  the threshold t-test, the TFCE cluster output, and permuted TFCE cluster maps. 
+#' @returns A list object containing the t-stat and the TFCE statistical maps which can then be subsequently thresholded using TFCE.threshold()
 #' @examples
 #' demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
 #' package = 'VertexWiseR'))[1:5,]

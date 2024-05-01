@@ -15,25 +15,25 @@ vertex_analysis(
 )
 }
 \arguments{
-\item{model}{A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.}
+\item{model}{An N X V data.frame object containing N rows for each subject and V columns for each predictor included in the model. This data.frame should not include the random effects variable.}
 
-\item{contrast}{An object containing the values of the independent variable of interest for which to fit a contrast}
+\item{contrast}{A numeric vector or object containing the values of the predictor of interest. The cluster-thresholded t-stat maps will be estimated only for this predictor}
 
 \item{random}{An object containing the values of the random variable (optional)}
 
-\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() or HIPvextract() output format.}
 
-\item{p}{A numeric object stating the p-value threshold for the linear model and cluster-correction}
+\item{p}{A numeric object specifying the p-value to threshold the results (Default is 0.05)}
 
 \item{atlas}{A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148.}
 
-\item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
+\item{smooth_FWHM}{A numeric vector object specifying the desired smoothing width in mm}
 }
 \value{
-A list object containing summary statistics for each significant cluster, a threshold t value map, positive and negative results maps, positive, negative and bidirectional clusters maps, which can be plotted with plot_surf().
+A list object containing the cluster level results, thresholded t-stat map, and positive, negative and bidirectional cluster maps.
 }
 \description{
-Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed or mixed effects, and returns a brain-wide or hippocampal t-value maps, as well as random field theory cluster maps.
+Fits a linear or linear mixed model with the cortical or hippocampal surface data as the predicted outcome, and returns cluster-thresholded (Random field theory) t-stat map selected contrast.
 }
 \details{
 The function imports and adapts the \href{https://brainstat.readthedocs.io/en/master/_modules/brainstat/stats/SLM.html#SLM)}{brainstat python library}.
@@ -42,9 +42,9 @@ Output definitions:
 \itemize{
 \item \code{nverts}: number of vertices in the cluster
 \item \code{P}: p-value of the cluster
-\item \verb{X, Y and Z}: MNI coordinates of the vertex with the highest t-stat in the cluster.
-\item \code{tstat}: t statistic of the vertex with the highest t-stat in the cluster
-\item \code{region}: the region this highest t-stat vertex is located in, as determined/labelled by the selected atlas
+\item \verb{X, Y and Z}: MNI coordinates of the vertex with the highest t-statistic in the cluster.
+\item \code{tstat}: t statistic of the vertex with the highest t-statistic in the cluster
+\item \code{region}: the region this highest -statistic vertex is located in, as determined/labelled by the selected atlas
 }
 }
 \examples{

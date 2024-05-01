@@ -8,7 +8,7 @@
 \subsection{\code{edgelistfs5}}{
 
 \describe{
-\item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the 20484 vertices and the amout of  vertices for each vertex}
+\item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the unique edges in the fsaverage5 surface}
 }
 }
 }

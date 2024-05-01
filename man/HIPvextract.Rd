@@ -16,13 +16,13 @@ HIPvextract(sdirpath, filename, measure = "thickness", subj_ID = T)
 \item{subj_ID}{A logical object stating whether to return a list object containing both subject ID and data matrix.}
 }
 \value{
-A .rds file with a list containing the list of subject IDs (first element) and a surface data matrix object (second element), or a data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
+A .RDSfile with a list containing 1. the list of subject IDs (first element) and 2. a surface data matrix object (second element), or a data matrix object. The matrix can be readily used by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
 }
 \description{
-Extracts hippocampal vertex-wise surface-based measures for each subject in the hippunfold subjects directory, and stores it into a single matrix.
+Extracts hippocampal vertex-wise surface-based measures for each subject in the hippunfold subjects directory, and stores it as a single .RDS file.
 }
 \details{
-The function searches for the hippocampal surface data by listing out files with certain suffixes, and then read these files and save both the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix.
+The function searches for the hippocampal surface data by listing out files with certain suffixes, extract the data from these files, and organize the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix within a .rds object.
 }
 \examples{
 if(interactive()){

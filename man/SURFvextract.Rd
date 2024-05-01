@@ -19,15 +19,15 @@ SURFvextract(
 
 \item{template}{A string object containing the name of surface template (available: 'fsaverage5', 'fsaverage6'). Default is fsaverage5.}
 
-\item{measure}{A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area. Default is thickness.}
+\item{measure}{A string object containing the name of the measure of interest. Options are thickness, curv, sulc, area, and volume (for freesurfer 7.4.1 or later). Default is thickness.}
 
 \item{subj_ID}{A logical object stating whether to include subject IDs (folder names in the subjects directory) as a first column to the output matrix. Default is TRUE.}
 }
 \value{
-A .rds file with a list containing 1 the list of subject IDs and 2 a surface data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
+A .RDSfile with a list containing 1. the list of subject IDs (first element) and 2. a surface data matrix object (second element), or a data matrix object. The matrix can be used readily by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
 }
 \description{
-Extracts whole-brain vertex-wise surface-based measures for each subject in a Freesurfer output subjects directory, resamples the data to a common surface template, and stores it into a single matrix. This function requires the Freesurfer environment to be preset.
+Extracts whole-brain vertex-wise surface-based measures for each subject in a Freesurfer output subjects directory, resamples the data to a common surface template, and stores it as a .RDSs file. This function requires the Freesurfer environment to be preset.
 }
 \details{
 The function runs system shell commands that will produce in the set subjects directory: 1) a sorted list of subjects "sublist.txt"; 2) a link file to the selected surface fsaverage template. 3) left and right hemisphere .mgh maps outputted by FreeSurfer's mris_preproc.

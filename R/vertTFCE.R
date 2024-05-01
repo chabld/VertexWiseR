@@ -5,19 +5,19 @@
 ############################################################################################################################
 #' @title Vertex-wise analysis with TFCE (fixed effect)
 #'
-#' @description Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps and cluster maps generated with threshold-free cluster enhancement.
+#' @description Fits a linear model with the cortical or hippocampal surface data as the predicted outcome, and returns t-stat and TFCE statistical maps for the selected contrast.
 #' 
-#' @details The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
+#' @details This TFCE method is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}. 
 #' 
-#' @param model A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.
-#' @param contrast An object containing the values of the independent variable of interest for which to fit a contrast
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
-#' @param nperm A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)
-#' @param tail A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model
-#' @param nthread Maximum number of cpu cores to allocate 
-#' @param smooth_FWHM A numeric vector object containing the desired smoothing width in mm 
+#' @param model An N X V data.frame object containing N rows for each subject and V columns for each predictor included in the model
+#' @param contrast A numeric vector or object containing the values of the predictor of interest. The t-stat and TFCE maps will be estimated only for this predictor
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() or HIPvextract() output format. 
+#' @param nperm A numeric integer object specifying the number of permutations generated for the subsequent thresholding procedures (default = 100)
+#' @param tail A numeric integer object specifying whether to test a one-sided positive (1), one-sided negative (-1) or two-sided (2) hypothesis
+#' @param nthread A numeric integer object specifying the number of CPU threads to allocate 
+#' @param smooth_FWHM A numeric vector object specifying the desired smoothing width in mm 
 #'
-#' @returns A list object containing the t-test and the TFCE cluster output which can then be thresholded for significance using TFCE.threshold()
+#' @returns A list object containing the t-stat and the TFCE statistical maps which can then be subsequently thresholded using TFCE.threshold()
 #' @seealso \code{\link{TFCE.threshold}}
 #'  
 #' @examples
@@ -31,7 +31,7 @@
 #'
 #' TFCE.pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=5, nthread = 2)
 #' 
-#' #To get significant clusters, you may then run:
+#' #To threshold the results, you may then run:
 #' #results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
 #' #results$cluster_level_results
 #'
@@ -416,14 +416,14 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
 ############################################################################################################################
 #' @title Thresholding TFCE output
 #'
-#' @description Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output 
+#' @description Threshold TFCE maps from the TFCE.vertex_analysis() output and identifies significant clusters at the desired threshold. 
 #' 
 #' @param TFCE.output An object containing the output from TFCE.vertex_analysis()
-#' @param p A numeric object stating whether the p-value at which to threshold the results (Default is 0.05)
+#' @param p A numeric object specifying the p-value to threshold the results (Default is 0.05)
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)
 #' @param k Cluster-forming threshold (Default is 20)
 #'
-#' @returns A list object containing the results at cluster level, the threshold t-test map, and positive, negative and bidirectional cluster maps.
+#' @returns A list object containing the cluster level results, thresholded t-stat map, and positive, negative and bidirectional cluster maps.
 #' @examples
 #' if(interactive()){
 #' TFCEanalysis_output=TFCE.threshold(TFCE.output, p=0.05, atlas=1)

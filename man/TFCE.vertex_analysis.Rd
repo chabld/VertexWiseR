@@ -15,28 +15,28 @@ TFCE.vertex_analysis(
 )
 }
 \arguments{
-\item{model}{A data.frame object containing the variables to include in the model at each column, and rows of values assigned to each participant.}
+\item{model}{An N X V data.frame object containing N rows for each subject and V columns for each predictor included in the model}
 
-\item{contrast}{An object containing the values of the independent variable of interest for which to fit a contrast}
+\item{contrast}{A numeric vector or object containing the values of the predictor of interest. The t-stat and TFCE maps will be estimated only for this predictor}
 
-\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format.}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() or HIPvextract() output format.}
 
-\item{nperm}{A numeric integer object stating the number of permutations wanted for the cluster-correction (default = 100)}
+\item{nperm}{A numeric integer object specifying the number of permutations generated for the subsequent thresholding procedures (default = 100)}
 
-\item{tail}{A numeric integer object stating whether to test a one-sided (1,-1) or two-sided (2) model}
+\item{tail}{A numeric integer object specifying whether to test a one-sided positive (1), one-sided negative (-1) or two-sided (2) hypothesis}
 
-\item{nthread}{Maximum number of cpu cores to allocate}
+\item{nthread}{A numeric integer object specifying the number of CPU threads to allocate}
 
-\item{smooth_FWHM}{A numeric vector object containing the desired smoothing width in mm}
+\item{smooth_FWHM}{A numeric vector object specifying the desired smoothing width in mm}
 }
 \value{
-A list object containing the t-test and the TFCE cluster output which can then be thresholded for significance using TFCE.threshold()
+A list object containing the t-stat and the TFCE statistical maps which can then be subsequently thresholded using TFCE.threshold()
 }
 \description{
-Fits a model with the whole-brain and hippocampal surface data in template space. The data is smoothed and fit to a linear model with fixed effects, and returns a brain-wide or hippocampal t-value maps and cluster maps generated with threshold-free cluster enhancement.
+Fits a linear model with the cortical or hippocampal surface data as the predicted outcome, and returns t-stat and TFCE statistical maps for the selected contrast.
 }
 \details{
-The TFCE method for estimating unpermuted TFCE statistics is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.
+This TFCE method is adapted from the \href{https://github.com/nilearn/nilearn/blob/main/nilearn/mass_univariate/_utils.py#L7C8-L7C8}{nilearn python library}.
 }
 \examples{
 demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
@@ -49,7 +49,7 @@ contrast=demodata[,7]
 
 TFCE.pos=TFCE.vertex_analysis(model, contrast, surf_data, tail=1, nperm=5, nthread = 2)
 
-#To get significant clusters, you may then run:
+#To threshold the results, you may then run:
 #results=TFCE.threshold(TFCE.output=TFCE.pos, p=0.05, atlas=1)
 #results$cluster_level_results
 

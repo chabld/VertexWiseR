@@ -3,15 +3,15 @@
 \docType{data}
 \name{hip_points_cells}
 \alias{hip_points_cells}
-\title{Hippocampus surface template}
+\title{points and cells data required to build the hippocampus surface template}
 \format{
 \subsection{\code{hip_points_cells}}{
 
 A list object with two data frame objects: ()
 \describe{
-\item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
-\item{vertices}{data frame with 14266 rows (vertices), 3 columns (atlases)}
-\item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
+\item{vertices}{data frame with 7262 rows (vertices), 3 columns (MNI coordinates X, y, Z)}
+\item{vertices}{data frame with 14266 rows (vertices), 3 columns (vertices of all unique triangles}
+\item{vertices}{data frame with 7262 rows (vertices), 3 columns (MNI coordinates X, y, Z for unfolded hippocampal surface)}
 }
 }
 }
@@ -19,6 +19,6 @@ A list object with two data frame objects: ()
 hip_points_cells
 }
 \description{
-Hippocampus surface template
+points and cells data required to build the hippocampus surface template
 }
 \keyword{datasets}

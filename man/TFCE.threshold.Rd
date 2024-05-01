@@ -9,17 +9,17 @@ TFCE.threshold(TFCE.output, p = 0.05, atlas = 1, k = 20)
 \arguments{
 \item{TFCE.output}{An object containing the output from TFCE.vertex_analysis()}
 
-\item{p}{A numeric object stating whether the p-value at which to threshold the results (Default is 0.05)}
+\item{p}{A numeric object specifying the p-value to threshold the results (Default is 0.05)}
 
 \item{atlas}{A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148 (Default is 1)}
 
 \item{k}{Cluster-forming threshold (Default is 20)}
 }
 \value{
-A list object containing the results at cluster level, the threshold t-test map, and positive, negative and bidirectional cluster maps.
+A list object containing the cluster level results, thresholded t-stat map, and positive, negative and bidirectional cluster maps.
 }
 \description{
-Identifies significant clusters at desired threshold from the TFCE.vertex_analysis() output
+Threshold TFCE maps from the TFCE.vertex_analysis() output and identifies significant clusters at the desired threshold.
 }
 \examples{
 if(interactive()){

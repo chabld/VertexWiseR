@@ -7,7 +7,7 @@
 smooth_surf(surf_data, FWHM)
 }
 \arguments{
-\item{surf_data}{A matrix object containing the surface data, see SURFvextract() output format}
+\item{surf_data}{A matrix object containing the surface data, see SURFvextract() or HIPvextract() output format}
 
 \item{FWHM}{A numeric vector object containing the desired smoothing width in mm}
 }

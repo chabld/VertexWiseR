@@ -13,7 +13,7 @@ fs6_to_fs5(surf_data)
 A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 }
 \description{
-Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space
+Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space using the nearest neighbor approach
 }
 \examples{
 CTv = runif(81924,min=0, max=100);
