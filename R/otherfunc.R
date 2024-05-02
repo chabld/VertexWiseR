@@ -1,19 +1,78 @@
 ## OTHER VERTEX-WISE FUNCTIONS
-## FOR USE IN THE COGNITIVE AND BRAIN HEALTH LABORATORY
 ############################################################################################################################
 ############################################################################################################################
 	
 ## permutation functions for random subject effects
-## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
-perm_within_between=function(random)
-{
-  ##for groups of 2 or more (subjects with 2 or more measurements)
-  perm.idx=rep(NA, length(random))
-  for(count in 2:max(table(random)))
+  ## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
+  perm_within_between=function(random)
   {
-    if(length(which(table(random)==count))>0)
+    ##for groups of 2 or more (subjects with 2 or more measurements)
+    perm.idx=rep(NA, length(random))
+    for(count in 2:max(table(random)))
     {
-      sub.id=as.numeric(which(table(random)==count))
+      if(length(which(table(random)==count))>0)
+      {
+        sub.id=as.numeric(which(table(random)==count))
+          if(length(sub.id)>1)
+          {
+            ##between group shuffling
+            recode.vec=sample(sub.id)
+            vec.idx=1
+            for(sub in sub.id)
+            {
+              perm.idx[which(random==sub)]=sample(which(random==recode.vec[vec.idx])) ##sample— within subject shuffling
+              vec.idx=vec.idx+1
+            }   
+            remove(vec.idx,recode.vec)  
+          } else 
+          {
+            ##if only one subject has a certain count, between subject shuffling will not be possible, only within-subject shuffling will be carried out
+            perm.idx[which(random==sub.id)]=sample(which(random==sub.id)) ##sample— within subject shuffling
+          }
+      }
+    }
+    ##for subjects with a single measurement
+    sub.idx=which(is.na(perm.idx))
+    if(length(sub.idx)>1)
+    {
+      perm.idx[sub.idx]=sample(sub.idx)  
+    } else 
+    {
+      perm.idx[sub.idx]=sub.idx
+    }
+    return(perm.idx)
+  }
+
+  ## Paired/grouped data points are shuffled within subjects, order of subjects in the dataset remains unchanged
+  perm_within=function(random)
+  {
+    ##for groups of 2 or more (subjects with 2 or more measurements)
+    perm.idx=rep(NA, length(random))
+  
+    for(count in 2:max(table(random)))
+    {
+      if(length(which(table(random)==count)>0))
+      {
+        sub.id=as.numeric(which(table(random)==count))
+        for(sub in sub.id)
+        {
+          perm.idx[which(random==sub)]=sample(which(random==sub))
+        }  
+      }
+    }
+    return(perm.idx)
+  }
+
+  ## Paired/grouped data points are shuffled between subjects, order of data points within subjects remains unchanged.
+  perm_between=function(random)
+  {
+    ##for groups of 2 or more (subjects with 2 or more measurements)
+    perm.idx=rep(NA, length(random))
+    for(count in 2:max(table(random)))
+    {
+      if(length(which(table(random)==count))>0)
+      {
+        sub.id=as.numeric(which(table(random)==count))
         if(length(sub.id)>1)
         {
           ##between group shuffling
@@ -21,84 +80,24 @@ perm_within_between=function(random)
           vec.idx=1
           for(sub in sub.id)
           {
-            perm.idx[which(random==sub)]=sample(which(random==recode.vec[vec.idx])) ##sample— within subject shuffling
+            perm.idx[which(random==sub)]=which(random==recode.vec[vec.idx])
             vec.idx=vec.idx+1
           }   
           remove(vec.idx,recode.vec)  
-        } else 
-        {
-          ##if only one subject has a certain count, between subject shuffling will not be possible, only within-subject shuffling will be carried out
-          perm.idx[which(random==sub.id)]=sample(which(random==sub.id)) ##sample— within subject shuffling
         }
-    }
-  }
-  ##for subjects with a single measurement
-  sub.idx=which(is.na(perm.idx))
-  if(length(sub.idx)>1)
-  {
-    perm.idx[sub.idx]=sample(sub.idx)  
-  } else 
-  {
-    perm.idx[sub.idx]=sub.idx
-  }
-  return(perm.idx)
-}
-
-## Paired/grouped data points are shuffled within subjects, order of subjects in the dataset remains unchanged
-perm_within=function(random)
-{
-  ##for groups of 2 or more (subjects with 2 or more measurements)
-  perm.idx=rep(NA, length(random))
-
-  for(count in 2:max(table(random)))
-  {
-    if(length(which(table(random)==count)>0))
-    {
-      sub.id=as.numeric(which(table(random)==count))
-      for(sub in sub.id)
-      {
-        perm.idx[which(random==sub)]=sample(which(random==sub))
-      }  
-    }
-  }
-  return(perm.idx)
-}
-
-## Paired/grouped data points are shuffled between subjects, order of data points within subjects remains unchanged.
-perm_between=function(random)
-{
-  ##for groups of 2 or more (subjects with 2 or more measurements)
-  perm.idx=rep(NA, length(random))
-  for(count in 2:max(table(random)))
-  {
-    if(length(which(table(random)==count))>0)
-    {
-      sub.id=as.numeric(which(table(random)==count))
-      if(length(sub.id)>1)
-      {
-        ##between group shuffling
-        recode.vec=sample(sub.id)
-        vec.idx=1
-        for(sub in sub.id)
-        {
-          perm.idx[which(random==sub)]=which(random==recode.vec[vec.idx])
-          vec.idx=vec.idx+1
-        }   
-        remove(vec.idx,recode.vec)  
       }
     }
+    ##for subjects with a single measurement
+    sub.idx=which(is.na(perm.idx))
+    if(length(sub.idx)>1)
+    {
+      perm.idx[sub.idx]=sample(sub.idx)  
+    } else 
+    {
+      perm.idx[sub.idx]=sub.idx
+    }
+    return(perm.idx)
   }
-  ##for subjects with a single measurement
-  sub.idx=which(is.na(perm.idx))
-  if(length(sub.idx)>1)
-  {
-    perm.idx[sub.idx]=sample(sub.idx)  
-  } else 
-  {
-    perm.idx[sub.idx]=sub.idx
-  }
-  return(perm.idx)
-}
 
 ############################################################################################################################
 ############################################################################################################################
@@ -107,7 +106,7 @@ perm_between=function(random)
 #'
 #' @description Smooths surface data at defined full width at half maximum (FWHM) as per the corresponding template of surface data
 #'
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format
+#' @param surf_data A matrix object containing the surface data, see SURFvextract() or HIPvextract() output format
 #' @param FWHM A numeric vector object containing the desired smoothing width in mm 
 #'
 #' @returns A matrix object with smoothed vertex-wise values
@@ -232,7 +231,7 @@ getClusters=function(surf_data)
 #' @title Fs5 to atlas
 #'
 #' @description Returns the mean vertex-wise surface data in fsaverage5 space for each ROI of a selected atlas
-#' @details The function currently works with the Desikan-Killiany, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
+#' @details The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
@@ -276,8 +275,8 @@ fs5_to_atlas=function(surf_data,atlas)
 
 #' @title Atlas to fsaverage5
 #'
-#' @description Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() function) to a surface in fsaverage5 space
-#' @details The function currently works with the Desikan-Killiany (70 labels from enigma toolbox), Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigma toolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
+#' @description Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() function) to the fsaverage5 space
+#' @details The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigma toolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
 #'
 #' @param parcel_data A matrix object containing average surface measures for each region of interest, see the fs5_to_atlas() output format. 
 #'
@@ -300,7 +299,7 @@ atlas_to_fs5=function(parcel_data)
     else if (ncol(parcel_data) == 200) {atlas=3} 
     else if (ncol(parcel_data) == 360) {atlas=4} 
     else if (ncol(parcel_data) == 148) {atlas=5} 
-    else { stop('The function could not identify what atlas your data was parcellated with, based on the number of columns (parcels). The function currently works with the Desikan-Killiany (70 labels from the enigma toolbox), Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases.')}
+    else { stop('The function could not identify what atlas your data was parcellated with, based on the number of columns (parcels). The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases.')}
     
     #init variables
     nregions=max(ROImap[[1]][,atlas])
@@ -316,7 +315,7 @@ atlas_to_fs5=function(parcel_data)
 
 #' @title fsaverage5 to fsaverage6
 #'
-#' @description Remaps vertex-wise surface data in fsaverage5 space to fsaverage6 space 
+#' @description Remaps vertex-wise surface data in fsaverage5 space to fsaverage6 space using the nearest neighbor approach 
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
@@ -345,7 +344,7 @@ fs5_to_fs6=function(surf_data)
 
 #' @title fsaverage6 to fsaverage5
 #'
-#' @description Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space 
+#' @description Remaps vertex-wise surface data in fsaverage6 space to fsaverage5 space using the nearest neighbor approach
 #'
 #' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
 #'
@@ -383,21 +382,21 @@ fs6_to_fs5=function(surf_data)
 
 #' @title Surface plotter
 #'
-#' @description Plots surface data in a grid with one or multiple rows, for multiple plots in a .png file
+#' @description Plots surface data in a grid with one or multiple rows in a .png file
 #'
-#' @param surf_data A matrix object containing the surface data (N rows for participants and M columns for vertices). It can be the output from SURFvextract() as well as masks outputted by analyses functions.
+#' @param surf_data  A numeric vector (length of V) or a matrix (N rows x V columns), where N is the number of subplots, and V is the number of vertices. It can be the output from SURFvextract() as well as masks or vertex-wise results outputted by analyses functions.
 #' @param filename A string object containing the desired name of the output .png file.
-#' @param title A string object containing the title wanted in the plot. Default is none. For titles that are exceeding the image size, we recommend splitting them into lines by inserting "\\n".
+#' @param title A string object for setting the title in the plot. Default is none. For titles that too long to be fully displayed within the plot, we recommend splitting them into multiple lines by inserting "\\n".
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
 #' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
 #' 
 #' Default cmap is set to `"Reds"` for positive values, `"Blues_r"` for negative values and `"RdBu"` when both positive and negative values exist. 
-#' @param limits Combined pair of numeric vectors composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the limits for each subplot are set to the min and max values from each row of the surf_data. 
+#' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the same symmetrical limits c(-max(abs(surf_dat),max(abs(surf_dat))) will be used for all subplots. If set to NULL, each subplot will have its own limits corresponding to their min and max values
 #' @param colorbar A logical object stating whether to include a color bar in the plot or not (default is TRUE).
-#' @param size A vector of two numbers indicating the image dimensions (width and height in pixels). Default is 1920x400 for whole-brain surface and 400*200 for hippocampal surface.
-#' @param zoom A numeric vector indicating how much zoom on the figures too add. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.
+#' @param size A combined pair of numeric vector indicating the image dimensions (width and height in pixels). Default is c(1920,400) for whole-brain surface and c(400,200) for hippocampal surface.
+#' @param zoom A numeric value for adjusting the level of zoom on the figures. Default is 1.25 for whole-brain surface and 1.20 for hippocampal surface.
 #'
-#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @returns Outputs the plot as a .png image
 #' @examples
 #'if(interactive()){
 #'results = runif(20484,min=0, max=1)
@@ -544,14 +543,14 @@ surf_to_vol=function(surf_data, filename="output.nii")
 ############################################################################################################################
 #' @title Decode surface data
 #'
-#' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric studies and identifies their neuropsychological correlates.
+#' @description Correlates the significant clusters of an earlier vertex-wise analysis with a database of task-based fMRI and voxel-based morphometric statistical maps and associate them with relevant key words
 #'
-#' @details The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. The function alsodownloads the \href{https://github.com/neurosynth/neurosynth-data}{neurosynth} database in the package's inst/extdata direcotry (~8 Mb) for correlation.
+#' @details The \href{https://nimare.readthedocs.io/en/stable/index.html}{NiMARE} python module is used for the imaging decoding and is imported via the reticulate package. The function also downloads the \href{https://github.com/neurosynth/neurosynth-data}{neurosynth} database in the package's inst/extdata direcotry (~8 Mb) for the analysis.
 #'
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
-#' @param contrast A string object indicating whether to decode positive or negative associations ('positive' or 'negative')
+#' @param surf_data a numeric vector with a length of 20484
+#' @param contrast A string object indicating whether to decode the positive or negative mask ('positive' or 'negative')
 #'
-#' @returns A data.frame object listing the images that correlate the most with the clusters, indicating the pearson r and names their neuropsychological correlate
+#' @returns A data.frame object listing the keywords and their Pearson's R values
 #' @examples
 #' CTv = rbinom(20484, 1, 0.001) 
 #' decode_surf_data(CTv, 'positive')
