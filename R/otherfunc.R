@@ -622,3 +622,91 @@ decode_surf_data=function(surf_data,contrast="positive")
   
   return(result)
 }  
+
+
+############################################################################################################################
+############################################################################################################################
+#' @title VertexWiseR system requirements installation
+#'
+#' @description Helps the user install all system requirements for VertexWiseR functions to work (miniconda, brainstat toolbox and libraries). If they are installed already nothing will be overwritten. 
+#'
+#' @details VertexWiseR imports and makes use of the R package reticulate. reticulate is a package that allows R to borrow or translate python functions into R. Using reticulate, the package calls functions from the brainstat python module. For reticulate to work properly with VertexWiseR, the latest version of miniconda needs to be installed with it — miniconda is a lightweight version of python, specifically for use within RStudio. Likewise, analyses of cortical surface require fsaverage templates as imported by brainstat.
+#'
+#' @examples
+#' VWRfirstrun()
+#' @importFrom reticulate conda_binary py_module_available
+#' @importFrom fs path_home
+#' @export
+
+VWRfirstrun=function() 
+{
+  cat('Checking for VertexWiseR system requirements ... \n')
+  if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
+  {
+    cat('Miniconda could not be found in the environment. \n')
+    prompt = utils::menu(c("Yes", "No"), title=" Do you want miniconda to be installed now?")
+    if (prompt==1){reticulate::install_miniconda()} else {stop('VertexWiseR will not work properly without miniconda. reticulate::conda_list() should detect it on your system.')}
+
+    
+  } else if(!reticulate::py_module_available("brainstat")) 
+  {
+    cat('Brainstat could not be found in the environment. \n')
+    prompt = utils::menu(c("Yes", "No"), title=" Do you want brainstat to be installed now?")
+    if (prompt==1){reticulate::py_install("brainstat",pip=TRUE)} else {stop('VertexWiseR will not work properly without brainstat.')}
+    
+    
+  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) 
+  {     
+    cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/.')  
+    prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
+    if (prompt==1){    
+      brainstat.datasets.base=reticulate::import("brainstat.datasets.base")
+      brainstat.datasets.base$fetch_template_surface("fsaverage5")
+    } else {stop('VertexWiseR will not be able to analyse fsaverage5 data without the brainstat templates.')}
+    
+  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
+  {
+    cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/..')
+    prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
+    if (prompt==1){    
+      brainstat.datasets.base=reticulate::import("brainstat.datasets.base")
+      brainstat.datasets.base$fetch_template_surface("fsaverage6")
+    } else {stop('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.')}
+  } else
+  {
+    cat('All system requirements are installed.')
+  }
+}
+
+############################################################################################################################
+############################################################################################################################
+#This function checks that any external system requirement is fulfilled before using the functions that need python libraries
+#' @importFrom utils menu
+
+VWRrequirements=function() 
+{
+  if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
+  {
+    cat('VertexWiseR requires miniconda to be installed on your system for this function to run.')
+    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
+    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without miniconda. reticulate::conda_list() should detect it on your system.')}
+    
+  } else if(!reticulate::py_module_available("brainstat")) 
+  {
+    cat('VertexWiseR requires brainstat to be installed on your system for this function to run.')
+    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
+    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat.')}
+    
+  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5')))
+  {
+    cat('VertexWiseR requires fsaverage5 templates to be imported by brainstat in $home/brainstat_data/ for this function to run.')
+    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
+    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat fsaverage templates.')}
+      
+} else if  (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
+{
+  cat('VertexWiseR requires fsaverage6 templates to be imported by brainstat in $home/brainstat_data/ for this function to run.')
+  prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
+  if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat fsaverage6 templates.')} 
+}
+}

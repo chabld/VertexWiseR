@@ -15,13 +15,14 @@ install.packages('VertexWiseR')
 library(VertexWiseR)
 ``` 
 
-VertexWiseR imports and makes use of the R package `reticulate`. `reticulate` is a package that allows R to borrow or translate python functions into R. Using reticulate, the package calls functions from the `brainstat` python module.
+VertexWiseR imports and makes use of the R package `reticulate`. `reticulate` is a package that allows R to borrow or translate python functions into R. Using reticulate, the package calls functions from the `brainstat` python module. Brainstat also comes with a number of fsaverage templates that need to be downloaded for use with VertexWiseR cortical analyses.
 
+For reticulate to work properly with VertexWiseR, the latest version of `miniconda` needs to be installed with it — miniconda is a lightweight version of python, specifically for use within RStudio. 
 
-For reticulate to work properly with VertexWiseR, the latest version of `miniconda` needs to be installed with it — miniconda is a lightweight version of python, specifically for use within RStudio. This can be done as follows: 
+A function can be run to download and install all the system requirements (miniconda, brainstat, brainstat's fsaverage templates) if they are not installed yet:
 
 ``` r
-reticulate::py_install("brainstat",pip=TRUE)
+VWRfirstrun()
 ```
 
 #### Load datasets
