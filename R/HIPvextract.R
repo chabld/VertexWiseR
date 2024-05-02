@@ -1,14 +1,14 @@
 #' @title HIPvextract
 #'
-#' @description Extracts hippocampal vertex-wise surface-based measures for each subject in the hippunfold subjects directory, and stores it into a single matrix.
-#' @details The function searches for the hippocampal surface data by listing out files with certain suffixes, and then read these files and save both the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix. 
+#' @description Extracts hippocampal vertex-wise surface-based measures for each subject in the hippunfold subjects directory, and stores it as a single .RDS file.
+#' @details The function searches for the hippocampal surface data by listing out files with certain suffixes, extract the data from these files, and organize the left and right hippocampal vertex data for each subject as rows in a N x 14524 data matrix within a .rds object. 
 #'
 #' @param sdirpath A string object containing the path to the hipunfold subjects directory.
 #' @param filename A string object containing the desired name of the output RDS file.
 #' @param measure A string object containing the name of the measure of interest. Options are 'thickness','curvature','gyrification' and 'surfarea' (For more information see \href{https://hippunfold.readthedocs.io/en/latest/outputs/output_files.html#surface-metrics}{the Hippunfold documentation}). Default is thickness.
 #' @param subj_ID A logical object stating whether to return a list object containing both subject ID and data matrix.
 #'
-#' @returns A .rds file with a list containing the list of subject IDs (first element) and a surface data matrix object (second element), or a data matrix object. The matrix can be used independently by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
+#' @returns A .RDSfile with a list containing 1. the list of subject IDs (first element) and 2. a surface data matrix object (second element), or a data matrix object. The matrix can be readily used by VertexWiseR statistical analysis functions. Each row corresponds to a subject (in the same order as 1) and contains the left to right hemispheres' vertex-wise values.
 #' @examples
 #' if(interactive()){
 #' HIPvextract(sdirpath = "./", filename = "hip_data.RDS", measure = "thickness") 

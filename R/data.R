@@ -75,7 +75,7 @@
 #'
 #' @format ## `edgelistfs5`
 #' \describe{
-#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the 20484 vertices and the amout of  vertices for each vertex}
+#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the unique edges in the fsaverage5 surface}
 #' }
 "edgelistfs5"
 
@@ -85,7 +85,7 @@
 #'
 #' @format ## `edgelistfs6`
 #' \describe{
-#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the 81924 vertices and the amout of  vertices for each vertex}
+#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the unique edges in the fsaverage6 surface}
 #' }
 "edgelistfs6"
 
@@ -95,24 +95,24 @@
 #'
 #' @format ## `edgelistHIP`
 #' \describe{
-#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the 14524 vertices and the amout of  vertices for each vertex}
+#'   \item{Nx2 matrix object}{Matrix with two columns and N rows corresponding to the unique edges in the fsaverage5 surface}
 #' }
 "edgelistHIP"
 
-#' Hippocampus surface template
+#' points and cells data required to build the hippocampus surface template
 #'
 #' @format ## `hip_points_cells` 
 #' A list object with two data frame objects: () 
 #' \describe{
-#'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
-#'   \item{vertices}{data frame with 14266 rows (vertices), 3 columns (atlases)}
-#'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (atlases)}
+#'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (MNI coordinates X, y, Z)}
+#'   \item{vertices}{data frame with 14266 rows (vertices), 3 columns (vertices of all unique triangles}
+#'   \item{vertices}{data frame with 7262 rows (vertices), 3 columns (MNI coordinates X, y, Z for unfolded hippocampal surface)}
 #' }
 #' @docType data
 "hip_points_cells"
 
 
-#' fsaverage6 template object for conversion in fs6_to_fs5()
+#' fsaverage6 template object for nearest neighbor conversion in fs6_to_fs5()
 #'
 #' @format ## `fs6_to_fs5_map` 
 #' An array of 81924 integers () 
