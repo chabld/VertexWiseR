@@ -653,61 +653,76 @@ decode_surf_data=function(surf_data,contrast="positive")
 #' @description Helps the user install all system requirements for VertexWiseR functions to work (miniconda, brainstat toolbox and libraries). If they are installed already nothing will be overwritten. 
 #'
 #' @details VertexWiseR imports and makes use of the R package reticulate. reticulate is a package that allows R to borrow or translate python functions into R. Using reticulate, the package calls functions from the brainstat python module. For reticulate to work properly with VertexWiseR, the latest version of miniconda needs to be installed with it — miniconda is a lightweight version of python, specifically for use within RStudio. Likewise, analyses of cortical surface require fsaverage templates as imported by brainstat.
-#'
+#' @param requirement String that specifies a requirement to enquire about (for specific brainstat libraries: 'fsaverage5', 'fsaverage6', 'yeo_parcels'). Default is 'any' requirement and checks everything.
 #' @examples
 #' VWRfirstrun()
 #' @importFrom reticulate conda_binary py_module_available
 #' @importFrom fs path_home
 #' @export
 
-VWRfirstrun=function() 
+VWRfirstrun=function(requirement="any") 
 {
-  cat('Checking for VertexWiseR system requirements ... \n')
+  cat('Checking for VertexWiseR system requirements ...\n\n')
+  
+  #check if miniconda is installed
   if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
   {
     cat('Miniconda could not be found in the environment. \n')
     prompt = utils::menu(c("Yes", "No"), title=" Do you want miniconda to be installed now?")
-    if (prompt==1){reticulate::install_miniconda()} else {stop('VertexWiseR will not work properly without miniconda. reticulate::conda_list() should detect it on your system.')}
-
-    
-  } else if(!reticulate::py_module_available("brainstat")) 
+    if (prompt==1) {reticulate::install_miniconda()} else {stop('VertexWiseR will not work properly without miniconda. reticulate::conda_list() should detect it on your system.\n\n')}
+  } 
+  
+  #check if brainstat is installed
+  if(!reticulate::py_module_available("brainstat")) 
   {
     cat('Brainstat could not be found in the environment. \n')
     prompt = utils::menu(c("Yes", "No"), title=" Do you want brainstat to be installed now?")
-    if (prompt==1){reticulate::py_install("brainstat",pip=TRUE)} else {stop('VertexWiseR will not work properly without brainstat.')}
-    
-    
-  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) 
+    if (prompt==1){reticulate::py_install("brainstat",pip=TRUE)} else {stop('VertexWiseR will not work properly without brainstat.\n\n')}
+  } 
+  
+  
+  #check if brainstat fsaverage/parcellation templates are installed (stops only if function needs it)
+  if ((requirement=="any" | requirement=='fsaverage5')==T 
+      & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) 
   {     
     cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage5 space.')  
     prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     if (prompt==1){    
       brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
       brainstat.datasets.base$fetch_template_surface("fsaverage5")
-    } else {stop('VertexWiseR will not be able to analyse fsaverage5 data without the brainstat templates.')}
+    } else if (requirement=='fsaverage5') {stop('VertexWiseR will not be able to analyse fsaverage5 data without the brainstat templates.\n\n')
+    } else if (requirement=='any') {cat('VertexWiseR will not be able to analyse fsaverage5 data without the brainstat templates.\n\n')}
+  } 
+  
+  if ((requirement=="any" | requirement=='fsaverage6')==T 
+      & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6'))) 
+  { cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage6 space.')
+   prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     
-  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
-  {
-    cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage6 space.')
-    prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
-    if (prompt==1){    
-      brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
-      brainstat.datasets.base$fetch_template_surface("fsaverage6")
-    } else {stop('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.')}
-  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
+     if (prompt==1)
+      { brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
+        brainstat.datasets.base$fetch_template_surface("fsaverage6")
+      } else if (requirement=='fsaverage6') { stop('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.\n\n')
+      } else if (requirement=="any") {cat('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.\n\n')}
+   
+  } 
+  
+  if ((requirement=="any" | requirement=='fsaverage6' | requirement=='fsaverage5' | requirement=='yeo_parcels')==T 
+      & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
   {
       cat('VertexWiseR could not find brainstat yeo parcellation data in $home/brainstat_data/. They are fetched by brainstat for vertex-wise linear models to run.')
       prompt = utils::menu(c("Yes", "No"), title=" Do you want the parcellation data to be downloaded now?")
       if (prompt==1){    
         brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
-        try(brainstat.datasets.base$fetch_parcellation(template="fsaverage",atlas="yeo", n_regions=7), silent=T)  
-      } else {stop('VertexWiseR will not be able to analyse cortical data without the parcellation data.')}
-  } else
-  {
-    cat('All system requirements are installed.')
-  }
+        try(brainstat.datasets.base$fetch_parcellation(template="fsaverage",atlas="yeo", n_regions=7), silent=T)}  
+        else if  (requirement=='fsaverage6' | requirement=='fsaverage5' | requirement=='yeo_parcels') 
+        {stop('VertexWiseR will not be able to analyse cortical data without the parcellation data.\n\n')}
+        else if (requirement=="any") 
+        {cat('VertexWiseR will not be able to analyse cortical data without the parcellation data.\n\n')}
+  
+  
+  } else { cat('All system requirements are installed.\n') }
 }
-
 ############################################################################################################################
 ############################################################################################################################
 #This function checks that any external system requirement is fulfilled before using the functions that need python libraries
@@ -715,21 +730,19 @@ VWRfirstrun=function()
 #' @importFrom utils menu
 
 VWRrequirements=function(n_vert="") 
-{
-  if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
-  {
-   VWRfirstrun()
-  } else if(!reticulate::py_module_available("brainstat")) 
-  {
-   VWRfirstrun()
-  } else if (n_vert==20484 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5')))
-  {
-   VWRfirstrun()
-} else if  (n_vert==81924 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
-{
-  VWRfirstrun() 
-} else if (n_vert>0 & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
-{
-  VWRfirstrun()
-}
+{ #is miniconda installed?
+  if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError') 
+  {VWRfirstrun()} 
+  #is brainstat installed?
+  if(!reticulate::py_module_available("brainstat")) 
+  {VWRfirstrun()} 
+  #are fsaverage5 templates in brainstat_data?
+  if (n_vert==20484 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5')))
+  { VWRfirstrun(requirement='fsaverage5') }  
+  #are fsaverage6 templates in brainstat_data?
+  if  (n_vert==81924 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
+  {VWRfirstrun(requirement='fsaverage6')  }
+  #is yeo parcellation data in brainstat_data?
+  if (n_vert>0 & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
+  {VWRfirstrun(requirement='yeo_parcels')} 
 }
