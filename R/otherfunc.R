@@ -679,7 +679,7 @@ VWRfirstrun=function()
     
   } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) 
   {     
-    cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/.')  
+    cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage5 space.')  
     prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     if (prompt==1){    
       brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
@@ -688,12 +688,20 @@ VWRfirstrun=function()
     
   } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
   {
-    cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/..')
+    cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage6 space.')
     prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     if (prompt==1){    
       brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
       brainstat.datasets.base$fetch_template_surface("fsaverage6")
     } else {stop('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.')}
+  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
+  {
+      cat('VertexWiseR could not find brainstat yeo parcellation data in $home/brainstat_data/. They are fetched by brainstat for vertex-wise linear models to run.')
+      prompt = utils::menu(c("Yes", "No"), title=" Do you want the parcellation data to be downloaded now?")
+      if (prompt==1){    
+        brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
+        try(brainstat.datasets.base$fetch_parcellation(template="fsaverage",atlas="yeo", n_regions=7), silent=T)  
+      } else {stop('VertexWiseR will not be able to analyse cortical data without the parcellation data.')}
   } else
   {
     cat('All system requirements are installed.')
@@ -703,32 +711,25 @@ VWRfirstrun=function()
 ############################################################################################################################
 ############################################################################################################################
 #This function checks that any external system requirement is fulfilled before using the functions that need python libraries
+#the n_vert argument ensures only the necessary fsaverage data is demanded 
 #' @importFrom utils menu
 
-VWRrequirements=function() 
+VWRrequirements=function(n_vert="") 
 {
   if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
   {
-    cat('VertexWiseR requires miniconda to be installed on your system for this function to run.')
-    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
-    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without miniconda. reticulate::conda_list() should detect it on your system.')}
-    
+   VWRfirstrun()
   } else if(!reticulate::py_module_available("brainstat")) 
   {
-    cat('VertexWiseR requires brainstat to be installed on your system for this function to run.')
-    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
-    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat.')}
-    
-  } else if (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5')))
+   VWRfirstrun()
+  } else if (n_vert==20484 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5')))
   {
-    cat('VertexWiseR requires fsaverage5 templates to be imported by brainstat in $home/brainstat_data/ for this function to run.')
-    prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
-    if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat fsaverage templates.')}
-      
-} else if  (!file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
+   VWRfirstrun()
+} else if  (n_vert==81924 & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))
 {
-  cat('VertexWiseR requires fsaverage6 templates to be imported by brainstat in $home/brainstat_data/ for this function to run.')
-  prompt = utils::menu(c("Yes", "No"), title=" VWRfirstrun() let you install all VertexWiseR requirements automatically. Do you want to run it?")
-  if (prompt==1){VWRfirstrun()} else {stop('VertexWiseR cannot run this function without brainstat fsaverage6 templates.')} 
+  VWRfirstrun() 
+} else if (n_vert>0 & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
+{
+  VWRfirstrun()
 }
 }

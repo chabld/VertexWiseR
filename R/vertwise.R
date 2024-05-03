@@ -42,7 +42,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
 {
   
   #Check if required python dependencies and libraries are  imported
-  VWRrequirements()
+  VWRrequirements(ncol(surf_data))
   
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
   #converts the columns to regular data.frame column types
