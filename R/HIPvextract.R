@@ -20,6 +20,11 @@ HIPvextract=function(sdirpath, filename, measure="thickness", subj_ID = T)
 {
   setwd(sdirpath)
   
+  if (missing("filename")) {
+    cat(paste0('No filename argument was given. The matrix object "hip_', measure,'.rds will be saved in R temporary directory (tempdir()).\n'))
+    filename=paste0(tempdir(),'/hip_',measure,'.rds')
+  }
+  
   ## get filelists and subject lists
   lh.filelist=list.files(pattern=paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""), recursive=T)
   rh.filelist=gsub(paste("_hemi-L_space-T1w_den-0p5mm_label-hipp_",measure,".shape.gii",sep=""),
