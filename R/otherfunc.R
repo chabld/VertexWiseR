@@ -532,7 +532,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 
 ##converting surface to volumetric data and exporting it as a .nii file
 
-surf_to_vol=function(surf_data, filename="output.nii")
+surf_to_vol=function(surf_data, filename)
   {
   #Check if required python dependencies and libraries are  imported
   VWRrequirements()
