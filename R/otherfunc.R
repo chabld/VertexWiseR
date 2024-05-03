@@ -122,6 +122,8 @@
 ## FWHM input is measured in mm, which is subsequently converted into mesh units
 smooth_surf=function(surf_data, FWHM)
 {
+  #Check if required python dependencies and libraries are  imported
+  VWRrequirements()
   
   #Solves the "no visible binding for global variable" issue
   . <- mesh_smooth <- NULL 
@@ -408,6 +410,9 @@ fs6_to_fs5=function(surf_data)
 
 plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T, size, zoom)
 {
+  #Check if required python dependencies and libraries are  imported
+  VWRrequirements()
+  
   #format title for single row
   if(is.null(nrow(surf_data)))
   {
@@ -524,6 +529,9 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
 
 surf_to_vol=function(surf_data, filename="output.nii")
   {
+  #Check if required python dependencies and libraries are  imported
+  VWRrequirements()
+  
   #check length of vector
     n_vert=length(surf_data)
     if(n_vert==20484) {template="fsaverage5"}
@@ -561,6 +569,9 @@ surf_to_vol=function(surf_data, filename="output.nii")
 ##CT image decoding
 decode_surf_data=function(surf_data,contrast="positive")
 {
+  #Check if required python dependencies and libraries are  imported
+  VWRrequirements()
+  
   ##checks
     #check length of vector
     n_vert=length(surf_data)

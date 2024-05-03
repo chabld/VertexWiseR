@@ -41,6 +41,9 @@
 vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smooth_FWHM)  ## atlas: 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148; ignored for hippocampal surfaces
 {
   
+  #Check if required python dependencies and libraries are  imported
+  VWRrequirements()
+  
   #If the contrast/model is a tibble (e.g., taken from a read_csv output)
   #converts the columns to regular data.frame column types
   if ('tbl_df' %in% class(contrast) == TRUE) {
@@ -57,9 +60,6 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
   
   if(inherits(contrast,"integer")==T) {contrast=as.numeric(contrast)}
   
-  ##load other vertex-wise functions (not needed when package is in library)
-  #source("https://github.com/CogBrainHealthLab/VertexWiseR/blob/main/R/otherfunc.r?raw=TRUE")
-
   #recode random variale to numeric
     if(!missing("random"))
     { #recoding subject variable
