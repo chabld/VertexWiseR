@@ -4,7 +4,7 @@
 \alias{surf_to_vol}
 \title{Surface to volume}
 \usage{
-surf_to_vol(surf_data, filename = "output.nii")
+surf_to_vol(surf_data, filename)
 }
 \arguments{
 \item{surf_data}{A matrix object containing the surface data, either in fsaverage5 or fsaverage6 space. See SURFvextract() output format.}
