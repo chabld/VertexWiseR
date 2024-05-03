@@ -236,8 +236,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
     #construct model
     start=Sys.time()
     cat("Estimating unpermuted TFCE image...")
-    brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-    brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+    brainstat.stats.terms=reticulate::import("brainstat.stats.terms", delay_load = TRUE)
+    brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM", delay_load = TRUE)
     terms=brainstat.stats.terms$MixedEffect(ran = as.factor(random),fix = model,"_check_categorical" = F)
       
       if(n_vert!=14524)
@@ -309,8 +309,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
           start=Sys.time()
           TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
             {
-              brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+              brainstat.stats.terms=reticulate::import("brainstat.stats.terms", delay_load = TRUE)
+              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM", delay_load = TRUE)
       
             ##commented out alternative method of permutation— permuting only the contrast variable
               #model.permuted=model
@@ -342,8 +342,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
           start=Sys.time()
           TFCE.max=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("edgelist","getClusters"), .options.snow = opts)  %dopar%
             {
-              brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
+              brainstat.stats.terms=reticulate::import("brainstat.stats.terms", delay_load = TRUE)
+              brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM", delay_load = TRUE)
       
               terms=brainstat.stats.terms$MixedEffect(ran = random,fix = model,"_check_categorical" = F)
               model.fit=brainstat.stats.SLM$SLM(model = terms,

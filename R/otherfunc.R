@@ -466,8 +466,8 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   {
   ##cortical surface fplots
     #import python libraries
-    brainstat.datasets=reticulate::import("brainstat.datasets")  
-    brainspace.plotting=reticulate::import("brainspace.plotting")  
+    brainstat.datasets=reticulate::import("brainstat.datasets", delay_load = TRUE)  
+    brainspace.plotting=reticulate::import("brainspace.plotting", delay_load = TRUE)  
     
     #loading fsaverage surface
     left=brainstat.datasets$fetch_template_surface(template, join=F, layer=surface)[1]
@@ -549,8 +549,8 @@ surf_to_vol=function(surf_data, filename)
     else {stop("Only an surf_data vector with a length of 20484 (fsaverage5) or 81924 (fsaverage6) is accepted")}
   
   #load python libraries
-    interpolate=reticulate::import("brainstat.mesh.interpolate")
-    nibabel=reticulate::import("nibabel")
+    interpolate=reticulate::import("brainstat.mesh.interpolate", delay_load = TRUE)
+    nibabel=reticulate::import("nibabel", delay_load = TRUE)
 
   #convert and export .nii file
     stat_nii = interpolate$`_surf2vol`(template, surf_data)
@@ -594,9 +594,9 @@ decode_surf_data=function(surf_data,contrast="positive")
     if(contrast != "positive" & contrast != "negative")  {stop("contrast has to be either positive or negative")} 
   
   ##import python libraries
-  interpolate=reticulate::import("brainstat.mesh.interpolate")
-  discrete=reticulate::import("nimare.decode")
-  nimare.dataset=reticulate::import("nimare.dataset")
+  interpolate=reticulate::import("brainstat.mesh.interpolate", delay_load = TRUE)
+  discrete=reticulate::import("nimare.decode", delay_load = TRUE)
+  nimare.dataset=reticulate::import("nimare.dataset", delay_load = TRUE)
   
   ##selecting contrasts
   if(contrast=="positive")
@@ -682,7 +682,7 @@ VWRfirstrun=function()
     cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/.')  
     prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     if (prompt==1){    
-      brainstat.datasets.base=reticulate::import("brainstat.datasets.base")
+      brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
       brainstat.datasets.base$fetch_template_surface("fsaverage5")
     } else {stop('VertexWiseR will not be able to analyse fsaverage5 data without the brainstat templates.')}
     
@@ -691,7 +691,7 @@ VWRfirstrun=function()
     cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/..')
     prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
     if (prompt==1){    
-      brainstat.datasets.base=reticulate::import("brainstat.datasets.base")
+      brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
       brainstat.datasets.base$fetch_template_surface("fsaverage6")
     } else {stop('VertexWiseR will not be able to analyse fsaverage6 data without the brainstat templates.')}
   } else

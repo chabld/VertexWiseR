@@ -169,7 +169,7 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
         }
       }
         
-        brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io")
+        brainspace.mesh.mesh_io=reticulate::import("brainspace.mesh.mesh_io", delay_load = TRUE)
         template=brainspace.mesh.mesh_io$read_surface(paste0(system.file(package='VertexWiseR'),'/extdata/hip_template.fs'))
         ROImap <- get('ROImap_HIP')
     } else {stop("data vector should only contain 20484 (fsaverage5), 81924 (fsaverage6) or 14524 (hippocampal vertices) columns")}
@@ -190,9 +190,9 @@ vertex_analysis=function(model,contrast, random, surf_data, p=0.05, atlas=1, smo
     surf_data[is.na(surf_data)]=0
   
   ##import python libaries
-  brainstat.stats.terms=reticulate::import("brainstat.stats.terms")
-  brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM")
-  brainstat.datasets=reticulate::import("brainstat.datasets")  
+  brainstat.stats.terms=reticulate::import("brainstat.stats.terms", delay_load = TRUE)
+  brainstat.stats.SLM=reticulate::import("brainstat.stats.SLM", delay_load = TRUE)
+  brainstat.datasets=reticulate::import("brainstat.datasets", delay_load = TRUE)  
   
   ##fitting model
   #preparing mask for model
