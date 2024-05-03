@@ -4,7 +4,10 @@
 \alias{VWRfirstrun}
 \title{VertexWiseR system requirements installation}
 \usage{
-VWRfirstrun()
+VWRfirstrun(requirement = "any")
+}
+\arguments{
+\item{requirement}{String that specifies a requirement to enquire about (for specific brainstat libraries: 'fsaverage5', 'fsaverage6', 'yeo_parcels'). Default is 'any' requirement and checks everything.}
 }
 \description{
 Helps the user install all system requirements for VertexWiseR functions to work (miniconda, brainstat toolbox and libraries). If they are installed already nothing will be overwritten.
