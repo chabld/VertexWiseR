@@ -413,6 +413,11 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   #Check if required python dependencies and libraries are  imported
   VWRrequirements()
   
+  if (missing("filename")) {
+    cat('No filename argument was given. The plot will be saved as "plot.png" in R temporary directory (tempdir()).\n')
+    filename=paste0(tempdir(),'/plot.png')
+  }
+  
   #format title for single row
   if(is.null(nrow(surf_data)))
   {
@@ -532,8 +537,13 @@ surf_to_vol=function(surf_data, filename="output.nii")
   #Check if required python dependencies and libraries are  imported
   VWRrequirements()
   
+  if (missing("filename")) {
+    cat('No filename argument was given. The volume will be saved as "vol.nii" in R temporary directory (tempdir()).\n')
+    filename=paste0(tempdir(),'/vol.nii')
+  }
+  
   #check length of vector
-    n_vert=length(surf_data)
+    n_vert=ncol(surf_data)
     if(n_vert==20484) {template="fsaverage5"}
     else if (n_vert==81924) {template="fsaverage6"} 
     else {stop("Only an surf_data vector with a length of 20484 (fsaverage5) or 81924 (fsaverage6) is accepted")}
@@ -545,6 +555,7 @@ surf_to_vol=function(surf_data, filename="output.nii")
   #convert and export .nii file
     stat_nii = interpolate$`_surf2vol`(template, surf_data)
     nibabel$save(stat_nii,filename)
+    cat(filename)
   }
 
 ############################################################################################################################
