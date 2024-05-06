@@ -677,10 +677,12 @@ decode_surf_data=function(surf_data,contrast="positive")
         return("The neurosynth database (neurosynth_dataset.pkl.gz) could not be downloaded from the github VertexWiseR directory. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.") #ends function
       } 
     } else  {stop("\nThis function can only work with the neurosynth database.\n") }
-    } else  {stop("\nThis function can only work with the neurosynth database. Please run decode_surf_data() in an interactive R session so you can be prompted to download it.\n") }
+    } else  {return("\nThis function can only work with the neurosynth database. Please run decode_surf_data() in an interactive R session so you can be prompted to download it.\n") }
     
   }
   
+  if(file.exists(system.file('extdata','neurosynth_dataset.pkl.gz', package='VertexWiseR'))==T)
+  {
   ##running the decoding procedure
   neurosynth_dset = nimare.dataset$Dataset$load(system.file("extdata/neurosynth_dataset.pkl.gz", package='VertexWiseR'))
   cat("Correlating input image with images in the neurosynth database. This may take a while\n")
@@ -693,6 +695,7 @@ decode_surf_data=function(surf_data,contrast="positive")
   result=data.frame(row.names(decoder_df),round(as.numeric(decoder_df),3))
   colnames(result)=c("keyword","r")
   result=result[order(-result$r),]
+  } 
   
   return(result)
 }  
@@ -784,7 +787,7 @@ else #if not interactive and any required file is missing, the script requires t
       ((requirement=="any" | requirement=='fsaverage5')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) |
       ((requirement=="any" | requirement=='fsaverage6')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))  |
       ((requirement=="any" | requirement=='fsaverage6' | requirement=='fsaverage5' | requirement=='yeo_parcels')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
-    ) { stop('Please run VWRfirstrun() in an interactive R session to check for system requirements and install them.\n')}
+    ) { return('Please run VWRfirstrun() in an interactive R session to check for system requirements and install them.\n')}
 }
 
 }
