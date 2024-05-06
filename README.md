@@ -1,6 +1,6 @@
 Vertex-wise R functions for analyzing and visualizing cortical thickness 
 
-![](inst/images/flowchart.png)<!-- -->
+![](inst/images/flowchart.jpg)<!-- -->
 
 ================
 Cognitive and Brain Health Laboratory
@@ -111,10 +111,10 @@ In the above results, the clusters that appear under the
 #### Plotting
 
 ``` r
-plot_surf(surf_data = results$thresholded_tstat_map, filename = 'sigcluster.png', surface = 'inflated', cmap = 'seismic')
+plot_surf(surf_data = results$thresholded_tstat_map, filename = 'sigcluster.jpg', surface = 'inflated', cmap = 'seismic')
 ```
 
-    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\sigcluster.png"
+    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\sigcluster.jpg"
 
 - `surf_data`: A matrix object containing the surface data (N rows for participants and M columns for vertices). It can be the output from SURFvextract() as well as masks outputted by analyses functions.
 
@@ -132,7 +132,7 @@ plot_surf(surf_data = results$thresholded_tstat_map, filename = 'sigcluster.png'
   Possible options include `"white"`, `"smoothwm"`,`"pial"` and
   `"inflated"` (default)
   
-![](inst/images/sigcluster.png)
+![](inst/images/sigcluster.jpg)
 
 #### Extracting the CT values for each subject
 
@@ -234,12 +234,12 @@ results$cluster_level_results
     ## 3      3    103  0.009 -19.3  57.2 -6.2 -3.19 lh-rostralmiddlefrontal
 
 ``` r
-plot_surf(surf_data = results$thresholded_tstat_map,filename = "sexdiff.png")
+plot_surf(surf_data = results$thresholded_tstat_map,filename = "sexdiff.jpg")
 ```
 
-    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\sexdiff.png"
+    ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\sexdiff.jpg"
 
-![](inst/images/sexdiff.png)
+![](inst/images/sexdiff.jpg)
 
 According to these results, since the female sex is coded as 1 and males as 0, the regions colored in cyan are thicker in males
 
@@ -305,6 +305,6 @@ wordcloud(words = keywords$keyword, ##keyword input
           par(mar = rep(0, 4))
 ```
 
-![](inst/images/wordcloud.png)<!-- -->
+![](inst/images/wordcloud.jpg)<!-- -->
 
 These keywords may not be very accurate but they should give a rough idea for interpreting your results. Take note that these keywords are specific to the negative clusters.
