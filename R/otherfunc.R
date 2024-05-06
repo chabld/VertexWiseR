@@ -285,7 +285,7 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
 #' @examples
-#' parcel_data = t(runif(100,min=0, max=100))
+#' parcel_data = t(runif(100,min=0, max=100)
 #' atlas_to_fs5(parcel_data)
 #' @export
 
@@ -665,6 +665,7 @@ decode_surf_data=function(surf_data,contrast="positive")
   {
     cat("\nneurosynth_dataset.pkl.gz is not detected in the package's external data directory (/inst/extdata). The neurosynth database can be downloaded there.\n")
     
+    if (interactive()==T) { #only works in interactive session
     prompt = utils::menu(c("Yes", "No"), title="Do you want the neurosynth database (7.9 MB) to be downloaded now?")
     if (prompt==1) {
       
@@ -675,8 +676,9 @@ decode_surf_data=function(surf_data,contrast="positive")
       } else { 
         return("The neurosynth database (neurosynth_dataset.pkl.gz) could not be downloaded from the github VertexWiseR directory. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.") #ends function
       } 
-    } else 
-    {stop("\nThis function can only work with the neurosynth database.\n") }
+    } else  {stop("\nThis function can only work with the neurosynth database.\n") }
+    } else  {stop("\nThis function can only work with the neurosynth database. Please run decode_surf_data() in an interactive R session so you can be prompted to download it.\n") }
+    
   }
   
   ##running the decoding procedure
