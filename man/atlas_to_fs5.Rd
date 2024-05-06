@@ -19,8 +19,8 @@ Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() 
 The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigma toolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
 }
 \examples{
-atlas_data = runif(100,min=0, max=100)
-atlas_to_fs5(atlas_data)
+parcel_data = t(runif(100,min=0, max=100))
+atlas_to_fs5(parcel_data)
 }
 \seealso{
 \code{\link{fs5_to_atlas}}
