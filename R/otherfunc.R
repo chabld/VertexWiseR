@@ -713,8 +713,9 @@ decode_surf_data=function(surf_data,contrast="positive")
 
 VWRfirstrun=function(requirement="any") 
 {
-  cat('Checking for VertexWiseR system requirements ...\n\n')
+if (interactive()==T) { #can only run interactively as it requires user's action
   
+  cat('Checking for VertexWiseR system requirements ...\n\n')
   #check if miniconda is installed
   if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError')
   {
@@ -737,7 +738,7 @@ VWRfirstrun=function(requirement="any")
       & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) 
   {     
     cat('VertexWiseR could not find brainstat fsaverage5 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage5 space.')  
-    prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
+    prompt = utils::menu(c("Yes", "No"), title=" Do you want the fsaverage5 templates (~7.81 MB) to be downloaded now?")
     if (prompt==1){    
       brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
       brainstat.datasets.base$fetch_template_surface("fsaverage5")
@@ -748,7 +749,7 @@ VWRfirstrun=function(requirement="any")
   if ((requirement=="any" | requirement=='fsaverage6')==T 
       & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6'))) 
   { cat('VertexWiseR could not find brainstat fsaverage6 templates in $home/brainstat_data/. They are needed if you want to analyse cortical surface in fsaverage6 space.')
-   prompt = utils::menu(c("Yes", "No"), title=" Do you want the templates to be downloaded now?")
+   prompt = utils::menu(c("Yes", "No"), title=" Do you want the fsaverage6 templates (~31.2 MB) to be downloaded now?")
     
      if (prompt==1)
       { brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
@@ -762,7 +763,7 @@ VWRfirstrun=function(requirement="any")
       & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
   {
       cat('VertexWiseR could not find brainstat yeo parcellation data in $home/brainstat_data/. They are fetched by brainstat for vertex-wise linear models to run.')
-      prompt = utils::menu(c("Yes", "No"), title=" Do you want the parcellation data to be downloaded now?")
+      prompt = utils::menu(c("Yes", "No"), title=" Do you want the yeo parcellation data (~1.01 MB) to be downloaded now?")
       if (prompt==1){    
         brainstat.datasets.base=reticulate::import("brainstat.datasets.base", delay_load = TRUE)
         try(brainstat.datasets.base$fetch_parcellation(template="fsaverage",atlas="yeo", n_regions=7), silent=T)}  
@@ -770,9 +771,20 @@ VWRfirstrun=function(requirement="any")
         {stop('VertexWiseR will not be able to analyse cortical data without the parcellation data.\n\n')}
         else if (requirement=="any") 
         {cat('VertexWiseR will not be able to analyse cortical data without the parcellation data.\n\n')}
+  }
   
   
-  } else { cat('All system requirements are installed.\n') }
+} 
+else #if not interactive and any required file is missing, the script requires the user to run VWR interactively
+{ 
+  if (is(tryCatch(reticulate::conda_binary(), error=function(e) e))[1] == 'simpleError' | 
+      !reticulate::py_module_available("brainstat") |
+      ((requirement=="any" | requirement=='fsaverage5')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage5'))) |
+      ((requirement=="any" | requirement=='fsaverage6')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/surface_data/tpl-fsaverage/fsaverage6')))  |
+      ((requirement=="any" | requirement=='fsaverage6' | requirement=='fsaverage5' | requirement=='yeo_parcels')==T & !file.exists(paste0(fs::path_home(),'/brainstat_data/parcellation_data/')))
+    ) { stop('Please run VWRfirstrun() in an interactive R session to check for system requirements and install them.\n')}
+}
+
 }
 ############################################################################################################################
 ############################################################################################################################
