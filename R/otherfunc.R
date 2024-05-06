@@ -232,10 +232,10 @@ getClusters=function(surf_data)
 
 #' @title Fs5 to atlas
 #'
-#' @description Returns the mean vertex-wise surface data in fsaverage5 space for each ROI of a selected atlas
+#' @description Returns the mean vertex-wise surface data in fsaverage5 space (20484 vertices) for each ROI of a selected atlas
 #' @details The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigmatoolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux}
 #'
-#' @param surf_data A matrix object containing the surface data, see SURFvextract() output format. 
+#' @param surf_data A matrix object containing the surface data in fsaverage5 space (20484 vertices), see SURFvextract() output format. 
 #' @param atlas A numeric integer object corresponding to the atlas of interest. 1=Desikan, 2=Schaefer-100, 3=Schaefer-200, 4=Glasser-360, 5=Destrieux-148. 
 #'
 #' @returns A matrix object with ROI as column and corresponding average vertex-wise values as row
@@ -310,7 +310,52 @@ atlas_to_fs5=function(parcel_data)
     #mapping atlas label to fsaverage5 space
     for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=parcel_data[region]}
     return(as.numeric(fs5_dat))
+}
+
+############################################################################################################################
+############################################################################################################################
+
+#' @title Hippocampal surface to atlas
+#'
+#' @description Returns the mean vertex-wise surface data for each ROI of the bigbrain hippocampal atlas
+#' @details The function currently only works with the "bigbrain" atlas integrated in Hippunfold. See also \href{https://www.sciencedirect.com/science/article/pii/S105381191930919X}{DeKraker et al., 2020}.
+#'
+#' @param surf_data A matrix object containing the hippocampal surface data  (14524 vertices), see HIPvextract() output format. 
+#'
+#' @returns A matrix object with ROI as column and corresponding average vertex-wise values as row
+#' @seealso \code{\link{fs5_to_atlas}}
+#' @examples
+#' CTv = runif(14524,min=0, max=100)
+#' hip_to_atlas(CTv)
+#' @export
+
+hip_to_atlas=function(surf_data) 
+{  
+  #check length of vector
+  if(length(surf_data)%%14524!=0) {stop("Length of surf_data is not a multiple of 14524")}
+  
+  #load atlas mapping surf_data
+  ROImap <- get('ROImap_HIP')
+  
+  #init variables
+  nregions=max(ROImap[[1]][,1])
+  surf_data[is.na(surf_data)]=0
+  
+  #mapping fsaverage5 space vertice to atlas regions if surf_data is a 1x14524 vector
+  if(length(surf_data)==14524) 
+  {
+    surf_data=matrix(surf_data,ncol=14524,nrow=1)  
+    ROI=rep(NA,nregions)
+    for (region in 1:nregions)  {ROI[region]=mean(surf_data[which(ROImap[[1]][,1]==region)])} #vertices are averaged within the atlas ROI
+  } else 
+  {
+    #mapping hippocampal space vertice to atlas regions if surf_data is a Nx14524 matrix
+    ROI=matrix(NA, nrow=NROW(surf_data), ncol=nregions)
+    for (region in 1:nregions)  {ROI[,region]=rowMeans(surf_data[,which(ROImap[[1]][,1]==region)])} #vertices are averaged within the atlas ROI
   }
+  return(ROI)
+}
+
 ############################################################################################################################
 ############################################################################################################################
 
@@ -618,15 +663,20 @@ decode_surf_data=function(surf_data,contrast="positive")
   ##download neurosynth database if necessary 
   if(file.exists(system.file('extdata','neurosynth_dataset.pkl.gz', package='VertexWiseR'))==F)
   {
-    cat("\nneurosynth_dataset.pkl.gz is not detected in the current working directory. The neurosynth database will be downloaded\n")
+    cat("\nneurosynth_dataset.pkl.gz is not detected in the package's external data directory (/inst/extdata). The neurosynth database can be downloaded there.\n")
     
-    #Check if URL works and avoid returning error but only print message as requested by CRAN:
-    url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz"
-    if(RCurl::url.exists(url)) {
-        download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = paste0(system.file(package='VertexWiseR'),'/extdata/neurosynth_dataset.pkl.gz'))
-    } else { 
-      return("The neurosynth database (neurosynth_dataset.pkl.gz) could not be downloaded from the github VertexWiseR directory. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.") #ends function
-    } 
+    prompt = utils::menu(c("Yes", "No"), title="Do you want the neurosynth database (7.9 MB) to be downloaded now?")
+    if (prompt==1) {
+      
+      #Check if URL works and avoid returning error but only print message as requested by CRAN:
+      url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz"
+      if(RCurl::url.exists(url)) {
+          download.file(url="https://raw.githubusercontent.com/CogBrainHealthLab/VertexWiseR/main/inst/extdata/neurosynth_dataset.pkl.gz",destfile = paste0(system.file(package='VertexWiseR'),'/extdata/neurosynth_dataset.pkl.gz'))
+      } else { 
+        return("The neurosynth database (neurosynth_dataset.pkl.gz) could not be downloaded from the github VertexWiseR directory. Please check your internet connection or visit https://github.com/CogBrainHealthLab/VertexWiseR/tree/main/inst/extdata to download the object.") #ends function
+      } 
+    } else 
+    {stop("\nThis function can only work with the neurosynth database.\n") }
   }
   
   ##running the decoding procedure
