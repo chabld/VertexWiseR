@@ -708,6 +708,7 @@ decode_surf_data=function(surf_data,contrast="positive")
 #' VWRfirstrun()
 #' @importFrom reticulate conda_binary py_module_available
 #' @importFrom fs path_home
+#' @importFrom methods is 
 #' @export
 
 VWRfirstrun=function(requirement="any") 
