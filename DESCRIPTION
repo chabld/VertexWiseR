@@ -33,6 +33,7 @@ Imports:
     doSNOW,
     foreach,
     freesurferformats,
+    fs,
     gifti,
     igraph,
     RCurl,
