@@ -34,7 +34,7 @@ demodata = read.csv(system.file('demo_data/SPRENG_behdata.csv',
 package = 'VertexWiseR'))
 ``` 
 
-The dataset T1 weighted images were preprocessed using the recon-all [Freesurfer]({https://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki) pipeline. This tutorial will not reiterate these steps and simply explain how, from a given Freesurfer subject directory, VertexWiseR extracts surface-based measures and synthesies the whole-sample data into a compact matrix object (.rds) for later analyses. 
+The dataset T1 weighted images were preprocessed using the recon-all [Freesurfer](https://surfer.nmr.mgh.harvard.edu/fswiki/FreeSurferWiki) pipeline. This tutorial will not reiterate these steps and simply explain how, from a given Freesurfer subject directory, VertexWiseR extracts surface-based measures and synthesies the whole-sample data into a compact matrix object (.rds) for later analyses. 
 
 HIPvextract() gives the opportuntity to extract surface-based measures including 'thickness', 'curv', 'sulc', and 'area'. Here, we are intersted in cortical thickness:
 
