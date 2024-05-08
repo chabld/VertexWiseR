@@ -5,7 +5,7 @@
 \title{SURFvextract}
 \usage{
 SURFvextract(
-  sdirpath,
+  sdirpath = "./",
   filename,
   template = "fsaverage5",
   measure = "thickness",
@@ -13,7 +13,7 @@ SURFvextract(
 )
 }
 \arguments{
-\item{sdirpath}{A string object containing the path to the Freesurfer subjects directory.}
+\item{sdirpath}{A string object containing the path to the Freesurfer subjects directory. Default is the current working directory ("./").}
 
 \item{filename}{A string object containing the desired name of the output RDS file.}
 

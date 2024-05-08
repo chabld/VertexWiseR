@@ -4,10 +4,10 @@
 \alias{HIPvextract}
 \title{HIPvextract}
 \usage{
-HIPvextract(sdirpath, filename, measure = "thickness", subj_ID = T)
+HIPvextract(sdirpath = "./", filename, measure = "thickness", subj_ID = T)
 }
 \arguments{
-\item{sdirpath}{A string object containing the path to the hipunfold subjects directory.}
+\item{sdirpath}{A string object containing the path to the hipunfold subjects directory. Default is the current working directory ("./").}
 
 \item{filename}{A string object containing the desired name of the output RDS file.}
 
