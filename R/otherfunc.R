@@ -435,7 +435,7 @@ fs6_to_fs5=function(surf_data)
 #' @param filename A string object containing the desired name of the output .png file.
 #' @param title A string object for setting the title in the plot. Default is none. For titles that too long to be fully displayed within the plot, we recommend splitting them into multiple lines by inserting "\\n".
 #' @param surface A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.
-#' @param cmap A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
+#' @param cmap A string object specifying the name of an existing colormap or a vector of hexadecimal color codes to be used as a custom colormap. The names of existing colormaps are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}. 
 #' 
 #' Default cmap is set to `"Reds"` for positive values, `"Blues_r"` for negative values and `"RdBu"` when both positive and negative values exist. 
 #' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. If the limits are specified, the same limits will be applied to all subplots. When left unspecified, the same symmetrical limits c(-max(abs(surf_dat),max(abs(surf_dat))) will be used for all subplots. If set to NULL, each subplot will have its own limits corresponding to their min and max values
@@ -491,7 +491,21 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
     else if (range(surf_data,na.rm = T)[2]<=0)  {cmap="Blues_r"}
     else  {cmap="RdBu_r"}  
   }
-  
+	
+  #custom cmap— if a vector of hex color codes is specified
+  if(class(cmap)=="colors")
+  {
+    matplotlib=reticulate::import("matplotlib")
+    
+    custom_colors=t(col2rgb(cmap)/255) # convert hex color codes to RGB codes, then divide by 255 to convert to RGBA codes
+    
+    #save as python cmap object
+    mymap = matplotlib$colors$LinearSegmentedColormap$from_list('my_colormap', custom_colors)
+    matplotlib$colormaps$unregister(name = "custom_cmap")
+    matplotlib$colormaps$register(cmap = mymap,name="custom_cmap")
+    cmap="custom_cmap"  
+  }
+	
   #setting color scale limits
    maxlimit=max(abs(range(surf_data,na.rm = T)))
     if(missing("limits")) 
