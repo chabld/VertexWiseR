@@ -25,7 +25,7 @@ plot_surf(
 
 \item{surface}{A string object containing the name of the type of cortical surface background rendered. Possible options include "white", "smoothwm","pial" and "inflated" (default). The surface parameter is ignored for hippocampal surface data.}
 
-\item{cmap}{A string object containing the colormap for the plot. Options are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}.
+\item{cmap}{A string object specifying the name of an existing colormap or a vector of hexadecimal color codes to be used as a custom colormap. The names of existing colormaps are listed in the \href{https://matplotlib.org/stable/gallery/color/colormap_reference.html}{Matplotlib plotting library}.
 
 Default cmap is set to \code{"Reds"} for positive values, \code{"Blues_r"} for negative values and \code{"RdBu"} when both positive and negative values exist.}
 
