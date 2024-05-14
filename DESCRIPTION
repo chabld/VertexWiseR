@@ -1,15 +1,15 @@
 Package: VertexWiseR
 Title: Run Vertex-Wise Statistical Analyses in Whole-Brain and Hippocampal
     Surface Objects
-Version: 0.0.1
-Date: 2023-12-11
+Version: 1.0.0
+Date: 2024-05-14
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2563-9658")),
     person("Charly", "Billaud", , "charly.billaud@ntu.edu.sg", role = "ctb",
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
-Maintainer: Junhong Yu <junhong.yu@ntu.edu.sg>
+Maintainer: Charly Billaud <charly.billaud@ntu.edu.sg>
 Description: Provides functions to run statistical analyses on
     surface-based neuroimaging data, computing measures including cortical
     thickness and surface area of the whole-brain and of the hippocampi.
