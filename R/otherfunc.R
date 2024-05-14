@@ -451,6 +451,7 @@ fs6_to_fs5=function(surf_data)
 #' 'Cortical thickness', surface = 'inflated', cmap = 'Blues')
 #'}
 #' @importFrom reticulate tuple import np_array source_python
+#' @importFrom grDevices col2rgb
 #' @export
 
 plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits, colorbar=T, size, zoom)
@@ -493,7 +494,7 @@ plot_surf=function(surf_data, filename, title="",surface="inflated",cmap,limits,
   }
 	
   #custom cmap— if a vector of hex color codes is specified
-  if(class(cmap)=="colors")
+  if(inherits(cmap,"colors")==T)
   {
     matplotlib=reticulate::import("matplotlib")
     
