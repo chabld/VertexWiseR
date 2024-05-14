@@ -1,6 +1,6 @@
 Vertex-wise R functions for analyzing and visualizing cortical thickness 
 
-![](inst/images/flowchart.jpg)<!-- -->
+![](man/figures/flowchart.jpg)<!-- -->
 
 ================
 Cognitive and Brain Health Laboratory
@@ -136,7 +136,7 @@ plot_surf(surf_data = results$thresholded_tstat_map, filename = 'sigcluster.jpg'
   Possible options include `"white"`, `"smoothwm"`,`"pial"` and
   `"inflated"` (default)
   
-![](inst/images/sigcluster.jpg)
+![](man/figures/sigcluster.jpg)
 
 #### Extracting the CT values for each subject
 
@@ -243,7 +243,7 @@ plot_surf(surf_data = results$thresholded_tstat_map,filename = "sexdiff.jpg")
 
     ## [1] "C:\\Users\\Admin\\My Drive\\workspace for analyses\\sexdiff.jpg"
 
-![](inst/images/sexdiff.jpg)
+![](man/figures/sexdiff.jpg)
 
 According to these results, since the female sex is coded as 1 and males as 0, the regions colored in cyan are thicker in males
 
@@ -309,6 +309,6 @@ wordcloud(words = keywords$keyword, ##keyword input
           par(mar = rep(0, 4))
 ```
 
-![](inst/images/wordcloud.jpg)<!-- -->
+![](man/figures/wordcloud.jpg)<!-- -->
 
 These keywords may not be very accurate but they should give a rough idea for interpreting your results. Take note that these keywords are specific to the negative clusters.
