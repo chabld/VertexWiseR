@@ -253,7 +253,8 @@ TFCE.vertex_analysis=function(model,contrast, surf_data, nperm=100, tail=2, nthr
     }
   end=Sys.time()
   cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
-  closeAllConnections()
+  unregister_dopar()
+  
   
   ##saving list objects
   returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
@@ -409,7 +410,7 @@ TFCE.multicore=function(data,tail=tail,nthread,envir)
     }
   }
   parallel::stopCluster(cl)
-  closeAllConnections()
+  unregister_dopar()
   return(tfce_step_values.all)
 }
 ############################################################################################################################

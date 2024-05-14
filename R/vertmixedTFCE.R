@@ -359,7 +359,8 @@ If it is your random variable and it is non-binarizable, do not include it in th
           end=Sys.time()
           cat(paste("\nCompleted in ",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
       }
-  closeAllConnections()
+    unregister_dopar()
+    
     
   ##saving list objects
   returnobj=list(tmap.orig,TFCE.orig, TFCE.max,tail)
