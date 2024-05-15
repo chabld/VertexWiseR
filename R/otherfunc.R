@@ -280,22 +280,22 @@ fs5_to_atlas=function(surf_data,atlas)
 #' @description Maps average parcellation surface values (e.g. produced with the fs5_to_atlas() function) to the fsaverage5 space
 #' @details The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases. ROI to vertex mapping data for 1 to 4 were obtained from the \href{https://github.com/MICA-MNI/ENIGMA/tree/master/enigmatoolbox/datasets/parcellations}{enigma toolbox} ; and data for 5 from \href{https://github.com/nilearn/nilearn/blob/a366d22e426b07166e6f8ce1b7ac6eb732c88155/nilearn/datasets/atlas.py}{nilearn.datasets.fetch_atlas_surf_destrieux} . atlas_to_fs5() will automatically detect the atlas based on the number of columns.
 #'
-#' @param parcel_data A matrix object containing average surface measures for each region of interest, see the fs5_to_atlas() output format. 
+#' @param parcel_data A matrix or vector object containing average surface measures for each region of interest, see the fs5_to_atlas() output format. 
 #'
-#' @returns A matrix object containing vertex-wise surface data mapped in fsaverage5 space
+#' @returns A matrix or vector object containing vertex-wise surface data mapped in fsaverage5 space
 #' @seealso \code{\link{fs5_to_atlas}}
 #' @examples
 #' parcel_data = t(runif(100,min=0, max=100))
 #' atlas_to_fs5(parcel_data)
 #' @export
 
-
 atlas_to_fs5=function(parcel_data) 
   {
-  
     #load atlas mapping surface data
     ROImap <- get('ROImap_fs5')
     
+ if(length(dim(parcel_data))==2) #if parcel_data is a matrix
+  {
     if (ncol(parcel_data) == 70) {atlas=1} 
     else if (ncol(parcel_data) == 100) {atlas=2} 
     else if (ncol(parcel_data) == 200) {atlas=3} 
@@ -305,11 +305,30 @@ atlas_to_fs5=function(parcel_data)
     
     #init variables
     nregions=max(ROImap[[1]][,atlas])
-    fs5_dat=rep(NA,20484)
-  
+    fs5_dat=matrix(NA,nrow = NROW(parcel_data), ncol=20484)
+    
     #mapping atlas label to fsaverage5 space
-    for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=parcel_data[region]}
-    return(as.numeric(fs5_dat))
+    for (sub in 1:NROW(parcel_data))
+    {
+      for (region in 1:nregions)  {fs5_dat[sub,which(ROImap[[1]][,atlas]==region)]=parcel_data[sub,region]}      
+    }
+  } else if(is.vector(parcel_data)==T) #if parcel_data is a vector
+  {
+    if (length(parcel_data) == 70) {atlas=1} 
+    else if (length(parcel_data) == 100) {atlas=2} 
+    else if (length(parcel_data) == 200) {atlas=3} 
+    else if (length(parcel_data) == 360) {atlas=4} 
+    else if (length(parcel_data) == 148) {atlas=5} 
+    else { stop('The function could not identify what atlas your data was parcellated with, based on the number of columns (parcels). The function currently works with the Desikan-Killiany-70, Schaefer-100, Schaefer-200, Glasser-360, or Destrieux-148 atlases.')}
+    
+    #init variables
+    nregions=max(ROImap[[1]][,atlas])
+    fs5_dat=rep(NA,20484)
+
+    #mapping atlas label to fsaverage5 space
+    for (region in 1:nregions)  {fs5_dat[which(ROImap[[1]][,atlas]==region)]=parcel_data[region]}      
+  }
+  return(fs5_dat)
 }
 
 ############################################################################################################################
